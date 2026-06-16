@@ -1,0 +1,9 @@
+schema: spec-driven
+
+# Project context shown to AI when creating artifacts.
+context: |
+  proxima-hub = app.proxima.pe — the web Hub: centralized identity (login/registro/recover/verify),
+  product launcher (app-switcher), and account/billing for the Proxima SaaS suite.
+  Stack: Angular 21 (standalone, signals, OnPush), PrimeNG 21, Tailwind v4, Fraunces+Plus Jakarta+Inter.
+  Consumes the existing proxima-api /auth + /me + /billing + business_status endpoints (no backend rewrite).
+  Design language: light, flat, editorial, premium (NO gradients/glow/glass). Shared cookie on .proxima.pe (ADR-013).
