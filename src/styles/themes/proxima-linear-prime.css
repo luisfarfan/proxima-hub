@@ -1,0 +1,223 @@
+/**
+ * Proxima Linear — global PrimeNG chrome overrides.
+ * Forces hairline + surface ladder on all Prime widgets (light + dark).
+ */
+
+@layer base {
+  /* ── Cards & panels ── */
+  .p-card {
+    background: var(--px-surface-1) !important;
+    border: 1px solid var(--px-hairline) !important;
+    border-radius: var(--radius-card) !important;
+    box-shadow: none !important;
+    color: var(--px-ink);
+  }
+
+  .p-card .p-card-body {
+    padding: 1rem 1.25rem;
+  }
+
+  .p-card .p-card-title {
+    font-size: 0.8125rem;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    color: var(--px-ink);
+  }
+
+  .p-card .p-card-subtitle {
+    font-size: 0.75rem;
+    color: var(--px-ink-muted);
+  }
+
+  .p-panel {
+    border: 1px solid var(--px-hairline);
+    border-radius: var(--radius-card);
+    box-shadow: none;
+    background: var(--px-surface-1);
+  }
+
+  .p-panel .p-panel-header {
+    border-bottom: 1px solid var(--px-hairline);
+    background: var(--px-surface-1);
+    padding: 0.75rem 1.25rem;
+    font-size: 0.8125rem;
+    font-weight: 600;
+  }
+
+  /* ── Buttons (Linear compact) ── */
+  .p-button {
+    border-radius: var(--radius-md) !important;
+    font-size: 0.875rem;
+    font-weight: 500;
+    padding: 0.5rem 0.875rem;
+    box-shadow: none !important;
+    transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+  }
+
+  .p-button:not(:disabled):active {
+    transform: none;
+  }
+
+  .p-button.p-button-primary:not(:disabled):hover {
+    background: var(--px-primary-hover) !important;
+    border-color: var(--px-primary-hover) !important;
+  }
+
+  .p-button.p-button-secondary,
+  .p-button.p-button-outlined {
+    background: var(--px-surface-1) !important;
+    border: 1px solid var(--px-hairline) !important;
+    color: var(--px-ink) !important;
+  }
+
+  .p-button.p-button-secondary:not(:disabled):hover,
+  .p-button.p-button-outlined:not(:disabled):hover {
+    background: var(--px-surface-2) !important;
+    border-color: var(--px-hairline-strong) !important;
+  }
+
+  .p-button.p-button-text:not(:disabled):hover {
+    background: var(--px-surface-2) !important;
+  }
+
+  /* ── Data tables ── */
+  .p-datatable {
+    border: 1px solid var(--px-hairline);
+    border-radius: var(--radius-card);
+    overflow: hidden;
+    background: var(--px-surface-1);
+  }
+
+  .p-datatable .p-datatable-table-container {
+    border-radius: inherit;
+  }
+
+  .p-datatable .p-datatable-thead > tr > th {
+    background: var(--px-surface-1) !important;
+    border-color: var(--px-hairline) !important;
+    color: var(--px-ink-muted) !important;
+    font-size: 0.6875rem;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    padding: 0.625rem 0.75rem;
+  }
+
+  .p-datatable .p-datatable-tbody > tr {
+    background: var(--px-surface-1);
+    color: var(--px-ink);
+  }
+
+  .p-datatable .p-datatable-tbody > tr > td {
+    border-color: var(--px-hairline) !important;
+    padding: 0.5rem 0.75rem;
+    font-size: 0.8125rem;
+  }
+
+  .p-datatable .p-datatable-tbody > tr:hover {
+    background: var(--px-surface-2) !important;
+  }
+
+  .p-paginator {
+    background: var(--px-surface-1) !important;
+    border: none !important;
+    border-top: 1px solid var(--px-hairline) !important;
+    padding: 0.375rem 0.75rem;
+  }
+
+  /* ── Overlays ── */
+  .p-dialog {
+    border: 1px solid var(--px-hairline) !important;
+    border-radius: var(--radius-card) !important;
+    box-shadow: none !important;
+    background: var(--px-surface-1) !important;
+  }
+
+  .p-dialog .p-dialog-header {
+    border-bottom: 1px solid var(--px-hairline);
+    padding: 1rem 1.25rem;
+    background: var(--px-surface-1);
+  }
+
+  .p-dialog .p-dialog-content {
+    padding: 0 1.25rem 1rem;
+    background: var(--px-surface-1);
+  }
+
+  .p-dialog .p-dialog-footer {
+    border-top: 1px solid var(--px-hairline);
+    padding: 0.75rem 1.25rem;
+    background: var(--px-surface-1);
+  }
+
+  .p-drawer {
+    border-left: 1px solid var(--px-hairline) !important;
+    box-shadow: none !important;
+    background: var(--px-surface-1) !important;
+  }
+
+  .p-drawer .p-drawer-header {
+    border-bottom: 1px solid var(--px-hairline);
+  }
+
+  .p-popover {
+    border: 1px solid var(--px-hairline) !important;
+    border-radius: var(--radius-card) !important;
+    box-shadow: none !important;
+    background: var(--px-surface-1) !important;
+  }
+
+  .p-select-overlay,
+  .p-multiselect-overlay,
+  .p-datepicker-panel {
+    border: 1px solid var(--px-hairline) !important;
+    box-shadow: none !important;
+    border-radius: var(--radius-md) !important;
+  }
+
+  /* ── Tabs ── */
+  .p-tabs .p-tablist {
+    border-bottom: 1px solid var(--px-hairline);
+    background: transparent;
+  }
+
+  .p-tabs .p-tab {
+    font-size: 0.8125rem;
+    font-weight: 500;
+    color: var(--px-ink-muted);
+    border: none;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -1px;
+  }
+
+  .p-tabs .p-tab.p-tab-active {
+    color: var(--px-ink);
+    border-bottom-color: var(--p-primary-color);
+  }
+
+  /* ── Tags / badges ── */
+  .p-tag {
+    border-radius: 9999px;
+    font-size: 0.625rem;
+    font-weight: 500;
+    padding: 0.125rem 0.5rem;
+  }
+
+  /* ── Dialog mask (scrim only — Linear) ── */
+  .p-dialog-mask {
+    background: var(--px-overlay-scrim) !important;
+  }
+
+  .p-dialog.command-palette-dialog,
+  .p-dialog.command-palette-dialog .p-dialog-content {
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+  }
+
+  /* ── Drawer / sidebar mobile ── */
+  .p-drawer-content {
+    background: var(--px-surface-1);
+  }
+}

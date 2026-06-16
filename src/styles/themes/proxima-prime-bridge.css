@@ -1,0 +1,175 @@
+/**
+ * Maps Proxima Linear tokens (--px-*) + brand (--theme-*) onto PrimeNG Aura variables.
+ * Depth = surface ladder + hairlines. Shadows reserved for modal scrim only.
+ */
+
+html {
+  /* Primary scale from Proxima brand */
+  --p-primary-50: color-mix(in srgb, var(--theme-sol) 12%, white);
+  --p-primary-100: color-mix(in srgb, var(--theme-sol) 22%, white);
+  --p-primary-200: color-mix(in srgb, var(--theme-sol) 38%, white);
+  --p-primary-300: color-mix(in srgb, var(--theme-sol) 55%, white);
+  --p-primary-400: color-mix(in srgb, var(--theme-sol) 72%, white);
+  --p-primary-500: var(--theme-sol);
+  --p-primary-600: color-mix(in srgb, var(--theme-sol) 62%, var(--theme-carmine));
+  --p-primary-700: color-mix(in srgb, var(--theme-sol) 38%, var(--theme-carmine));
+  --p-primary-800: var(--theme-carmine);
+  --p-primary-900: color-mix(in srgb, var(--theme-carmine) 72%, black);
+  --p-primary-950: color-mix(in srgb, var(--theme-carmine) 88%, black);
+
+  --p-primary-color: var(--theme-sol);
+  --p-primary-contrast-color: #ffffff;
+  --p-primary-hover-color: var(--px-primary-hover);
+  --p-primary-active-color: var(--px-primary-focus);
+
+  /* Linear surface ladder (light) */
+  --p-surface-50: var(--px-canvas);
+  --p-surface-0: var(--px-surface-1);
+  --p-surface-100: var(--px-surface-2);
+  --p-surface-200: var(--px-surface-3);
+  --p-surface-300: var(--px-surface-4);
+  --p-surface-400: color-mix(in srgb, var(--px-ink-subtle) 35%, var(--px-surface-4));
+  --p-surface-500: color-mix(in srgb, var(--px-ink-subtle) 55%, var(--px-surface-4));
+  --p-surface-600: color-mix(in srgb, var(--px-ink-muted) 45%, var(--px-surface-4));
+  --p-surface-700: color-mix(in srgb, var(--px-ink-muted) 65%, var(--px-ink));
+  --p-surface-800: color-mix(in srgb, var(--px-ink) 75%, black);
+  --p-surface-900: color-mix(in srgb, var(--px-ink) 88%, black);
+  --p-surface-950: #010102;
+
+  --p-text-color: var(--px-ink);
+  --p-text-hover-color: var(--px-ink);
+  --p-text-muted-color: var(--px-ink-muted);
+  --p-text-hover-muted-color: var(--px-ink-subtle);
+
+  --p-content-background: var(--px-surface-1);
+  --p-content-hover-background: var(--px-surface-2);
+  --p-content-hover-color: var(--px-ink);
+  --p-content-border-color: var(--px-hairline);
+
+  --p-highlight-background: var(--px-surface-2);
+  --p-highlight-color: var(--px-ink);
+  --p-highlight-focus-background: var(--px-surface-3);
+  --p-highlight-focus-color: var(--px-ink);
+
+  /* Form fields */
+  --p-form-field-background: var(--px-surface-1);
+  --p-form-field-disabled-background: var(--px-surface-2);
+  --p-form-field-filled-background: var(--px-surface-2);
+  --p-form-field-filled-hover-background: var(--px-surface-2);
+  --p-form-field-filled-focus-background: var(--px-surface-1);
+  --p-form-field-border-color: var(--px-hairline);
+  --p-form-field-hover-border-color: var(--px-hairline-strong);
+  --p-form-field-focus-border-color: var(--px-primary-focus);
+  --p-form-field-invalid-border-color: #f87171;
+  --p-form-field-color: var(--px-ink);
+  --p-form-field-disabled-color: var(--px-ink-tertiary);
+  --p-form-field-placeholder-color: var(--px-ink-subtle);
+  --p-form-field-icon-color: var(--px-ink-muted);
+
+  --p-select-background: var(--px-surface-1);
+  --p-select-border-color: var(--px-hairline);
+  --p-select-color: var(--px-ink);
+  --p-select-overlay-background: var(--px-surface-1);
+  --p-select-overlay-border-color: var(--px-hairline);
+  --p-select-overlay-color: var(--px-ink);
+  --p-select-option-color: var(--px-ink);
+  --p-select-option-focus-background: var(--px-surface-2);
+  --p-select-option-focus-color: var(--px-ink);
+  --p-select-option-selected-background: var(--px-surface-2);
+  --p-select-option-selected-color: var(--px-ink);
+  --p-select-option-selected-focus-background: var(--px-surface-3);
+  --p-select-option-selected-focus-color: var(--px-ink);
+
+  --p-datepicker-panel-background: var(--px-surface-1);
+  --p-datepicker-panel-border-color: var(--px-hairline);
+  --p-datepicker-panel-color: var(--px-ink);
+  --p-datepicker-panel-shadow: none;
+  --p-datepicker-header-background: var(--px-surface-1);
+  --p-datepicker-header-border-color: var(--px-hairline);
+  --p-datepicker-header-color: var(--px-ink);
+  --p-datepicker-title-color: var(--px-ink);
+  --p-datepicker-select-month-color: var(--px-ink);
+  --p-datepicker-select-month-hover-background: var(--px-surface-2);
+  --p-datepicker-select-month-hover-color: var(--px-ink);
+  --p-datepicker-select-year-color: var(--px-ink);
+  --p-datepicker-select-year-hover-background: var(--px-surface-2);
+  --p-datepicker-select-year-hover-color: var(--px-ink);
+  --p-datepicker-week-day-color: var(--px-ink-muted);
+  --p-datepicker-date-color: var(--px-ink);
+  --p-datepicker-date-hover-background: var(--px-surface-2);
+  --p-datepicker-date-hover-color: var(--px-ink);
+  --p-datepicker-date-selected-background: var(--p-primary-500);
+  --p-datepicker-date-selected-color: var(--p-primary-contrast-color);
+  --p-datepicker-date-range-selected-background: var(--px-surface-2);
+  --p-datepicker-date-range-selected-color: var(--px-ink);
+  --p-datepicker-month-color: var(--px-ink);
+  --p-datepicker-month-hover-background: var(--px-surface-2);
+  --p-datepicker-month-hover-color: var(--px-ink);
+  --p-datepicker-year-color: var(--px-ink);
+  --p-datepicker-year-hover-background: var(--px-surface-2);
+  --p-datepicker-year-hover-color: var(--px-ink);
+  --p-datepicker-today-background: var(--px-surface-3);
+  --p-datepicker-today-color: var(--px-ink);
+  --p-datepicker-dropdown-background: var(--px-surface-2);
+  --p-datepicker-dropdown-hover-background: var(--px-surface-3);
+  --p-datepicker-dropdown-active-background: var(--px-surface-4);
+  --p-datepicker-dropdown-color: var(--px-ink-muted);
+  --p-datepicker-dropdown-hover-color: var(--px-ink);
+  --p-datepicker-dropdown-active-color: var(--px-ink);
+  --p-datepicker-input-icon-color: var(--px-ink-muted);
+
+  --p-toggleswitch-background: var(--px-surface-3);
+  --p-toggleswitch-active-background: var(--p-primary-500);
+
+  --p-popover-background: var(--px-surface-1);
+  --p-popover-border-color: var(--px-hairline);
+  --p-popover-color: var(--px-ink);
+
+  --p-overlay-popover-shadow: none;
+  --p-overlay-modal-shadow: 0 24px 64px var(--px-overlay-scrim);
+
+  --p-datatable-header-background: var(--px-surface-1);
+  --p-datatable-header-cell-background: transparent;
+  --p-datatable-header-cell-color: var(--px-ink-muted);
+  --p-datatable-row-background: var(--px-surface-1);
+  --p-datatable-row-color: var(--px-ink);
+  --p-datatable-row-hover-background: var(--px-surface-2);
+  --p-datatable-row-hover-color: var(--px-ink);
+  --p-datatable-body-cell-border-color: var(--px-hairline);
+  --p-datatable-header-cell-border-color: var(--px-hairline);
+}
+
+/*
+ * Dark mode reuses --px-* tokens (defined in proxima-linear-tokens.css under html.dark).
+ * Prime scale mapping stays identical — tokens swap automatically.
+ */
+html.dark {
+  --p-primary-contrast-color: #ffffff;
+
+  --p-form-field-background: var(--px-surface-1);
+  --p-form-field-disabled-background: var(--px-surface-2);
+  --p-form-field-filled-background: var(--px-surface-1);
+  --p-form-field-filled-hover-background: var(--px-surface-2);
+  --p-form-field-filled-focus-background: var(--px-surface-1);
+  --p-form-field-border-color: var(--px-hairline);
+  --p-form-field-hover-border-color: var(--px-hairline-strong);
+  --p-form-field-focus-border-color: var(--px-primary-focus);
+  --p-form-field-invalid-border-color: #fca5a5;
+  --p-form-field-placeholder-color: var(--px-ink-subtle);
+
+  --p-overlay-popover-shadow: none;
+  --p-overlay-modal-shadow: 0 24px 64px var(--px-overlay-scrim);
+
+  --p-select-background: var(--px-surface-1);
+  --p-select-border-color: var(--px-hairline);
+  --p-select-overlay-background: var(--px-surface-1);
+  --p-select-overlay-border-color: var(--px-hairline);
+
+  --p-popover-background: var(--px-surface-1);
+  --p-popover-border-color: var(--px-hairline);
+
+  --p-datepicker-today-background: var(--px-surface-3);
+  --p-datepicker-dropdown-background: var(--px-surface-2);
+  --p-datepicker-dropdown-hover-background: var(--px-surface-3);
+  --p-datepicker-dropdown-active-background: var(--px-surface-4);
+}

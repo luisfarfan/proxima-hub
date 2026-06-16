@@ -1,0 +1,148 @@
+@import 'tailwindcss';
+@import 'tailwindcss-primeui';
+@import './styles/themes/proxima-identities.css';
+@import './styles/themes/proxima-linear-tokens.css';
+@import './styles/themes/proxima-prime-bridge.css';
+@import './styles/themes/proxima-linear-prime.css';
+@import './styles/themes/proxima-dark-compat.css';
+@import 'primeicons/primeicons.css';
+
+/* Misma clase `.dark` que PrimeNG (`darkModeSelector`); ver https://primeng.org/tailwind#darkmode */
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --font-display: 'Fraunces', ui-serif, Georgia, serif;
+  --font-heading: 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif;
+  --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
+
+  --spacing-section: 2rem;
+  --spacing-page-x: 1.5rem;
+  --spacing-page-y: 1.5rem;
+
+  --page-shell-max-w: 90rem;
+  --page-shell-max-w-narrow: 42rem;
+  --page-shell-max-w-wide: 112rem;
+
+  --radius-xs: 0.25rem;
+  --radius-sm: 0.375rem;
+  --radius-md: 0.5rem;
+  --radius-card: 0.75rem;
+  --radius-panel: 1rem;
+  --radius-xl: 1rem;
+
+  --shadow-elevated: none;
+
+  --z-header: 20;
+  --z-overlay: 40;
+  --z-toast: 50;
+
+  --transition-fast: 150ms;
+  --transition-base: 200ms;
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+
+  --color-canvas: var(--px-canvas);
+}
+
+@layer base {
+  html {
+    font-family: var(--font-sans);
+    font-size: 16px;
+  }
+
+  body {
+    @apply m-0 min-h-screen antialiased text-color;
+    background: var(--px-canvas);
+    letter-spacing: -0.003em;
+  }
+
+  h1 {
+    font-family: var(--font-display);
+    letter-spacing: -0.025em;
+  }
+
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-heading);
+    letter-spacing: -0.015em;
+  }
+
+  .p-inputtext,
+  .p-password .p-inputtext,
+  .p-textarea {
+    color: var(--p-form-field-color);
+  }
+
+  .p-inputtext:focus,
+  .p-password .p-inputtext:focus,
+  .p-textarea:focus,
+  .p-select:focus-within,
+  .p-multiselect:focus-within {
+    outline: 2px solid var(--px-focus-ring);
+    outline-offset: 1px;
+  }
+
+  .p-inputtext::placeholder,
+  .p-password .p-inputtext::placeholder,
+  .p-textarea::placeholder {
+    color: var(--p-form-field-placeholder-color);
+  }
+}
+
+@layer utilities {
+  .border-hairline {
+    border-color: var(--px-hairline);
+  }
+
+  .border-hairline-strong {
+    border-color: var(--px-hairline-strong);
+  }
+
+  .bg-canvas {
+    background-color: var(--px-canvas);
+  }
+
+  .bg-surface-lift-1 {
+    background-color: var(--px-surface-1);
+  }
+
+  .bg-surface-lift-2 {
+    background-color: var(--px-surface-2);
+  }
+
+  .focus-linear:focus-visible {
+    outline: 2px solid var(--px-focus-ring);
+    outline-offset: 2px;
+  }
+
+  .proxima-skip-link {
+    @apply sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-[60] focus:rounded-md focus:bg-primary focus:px-4 focus:py-2 focus:text-primary-contrast focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary;
+  }
+
+  .custom-scrollbar {
+    scrollbar-width: thin;
+    scrollbar-color: color-mix(in srgb, currentColor 18%, transparent) transparent;
+    overscroll-behavior: contain;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 0.375rem;
+    height: 0.375rem;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    background-color: color-mix(in srgb, currentColor 12%, transparent);
+    border-radius: 9999px;
+    border: 2px solid transparent;
+    background-clip: padding-box;
+    transition: background-color 0.2s ease-out;
+  }
+
+  .custom-scrollbar:hover::-webkit-scrollbar-thumb {
+    background-color: color-mix(in srgb, currentColor 22%, transparent);
+  }
+}

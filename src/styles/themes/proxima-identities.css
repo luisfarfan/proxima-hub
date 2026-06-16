@@ -1,0 +1,27 @@
+/*
+ * PROXIMA — identidad visual única (tenant admin).
+ * Color de marca: #0009dc (--theme-sol).
+ * Bootstrap: index.html data-theme="cielo" + ThemeIdentityService.
+ */
+
+:root,
+[data-theme='cielo'] {
+  --theme-paper: #f8f9ff;
+  --theme-mist: #e6e9f7;
+  --theme-sol: #0009dc;
+  --theme-carmine: #000678;
+  --theme-depth: #010228;
+  --theme-ink: #060818;
+  --theme-on-dark: #f8f9ff;
+}
+
+/*
+ * Dark mode: lift the primary to a luminous indigo-blue.
+ * #0009dc has L≈0.38 in OKLCH — near-invisible on dark surfaces.
+ * oklch(0.64 0.25 284) ≈ #6272f9 — same hue, clearly readable & vibrant.
+ * Carmine darkens toward the canonical deep end so hover/focus stay coherent.
+ */
+html.dark {
+  --theme-sol: oklch(0.64 0.25 284);
+  --theme-carmine: oklch(0.50 0.26 284);
+}

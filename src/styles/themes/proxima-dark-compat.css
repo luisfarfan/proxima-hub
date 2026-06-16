@@ -1,0 +1,186 @@
+/**
+ * Dark mode compatibility layer.
+ *
+ * The codebase uses numeric `text-surface-*` utilities (e.g. text-surface-900 dark:text-surface-50)
+ * while `bg-surface-*` uses the same CSS variables for page/card backgrounds.
+ * In dark mode those variables are dark, so text-surface-50 becomes invisible.
+ *
+ * This file remaps typography-only surface utilities to semantic text tokens in `.dark`.
+ * Background utilities keep using the bridge surface scale unchanged.
+ */
+
+@layer utilities {
+  @variant dark {
+    /* Primary readable text */
+    :is(
+      .text-surface-0,
+      .text-surface-50,
+      .text-surface-100,
+      .text-surface-200,
+      .text-surface-300,
+      .text-surface-600,
+      .text-surface-700,
+      .text-surface-800,
+      .text-surface-900,
+      .text-surface-950
+    ) {
+      color: var(--p-text-color);
+    }
+
+    /* Muted / secondary text */
+    :is(.text-surface-400, .text-surface-500) {
+      color: var(--p-text-muted-color);
+    }
+
+    /* Hover text */
+    :is(
+      .hover\:text-surface-0:hover,
+      .hover\:text-surface-50:hover,
+      .hover\:text-surface-100:hover,
+      .hover\:text-surface-200:hover,
+      .hover\:text-surface-300:hover,
+      .hover\:text-surface-600:hover,
+      .hover\:text-surface-700:hover,
+      .hover\:text-surface-800:hover,
+      .hover\:text-surface-900:hover,
+      .hover\:text-surface-950:hover
+    ) {
+      color: var(--p-text-color);
+    }
+
+    :is(.hover\:text-surface-400:hover, .hover\:text-surface-500:hover) {
+      color: var(--p-text-muted-color);
+    }
+
+    /* dark:hover:text-surface-* (higher specificity than plain hover utilities) */
+    :is(
+      .dark\:hover\:text-surface-0:hover,
+      .dark\:hover\:text-surface-50:hover,
+      .dark\:hover\:text-surface-100:hover,
+      .dark\:hover\:text-surface-200:hover,
+      .dark\:hover\:text-surface-300:hover,
+      .dark\:hover\:text-surface-600:hover,
+      .dark\:hover\:text-surface-700:hover,
+      .dark\:hover\:text-surface-800:hover,
+      .dark\:hover\:text-surface-900:hover,
+      .dark\:hover\:text-surface-950:hover
+    ) {
+      color: var(--p-text-color);
+    }
+
+    :is(.dark\:hover\:text-surface-400:hover, .dark\:hover\:text-surface-500:hover) {
+      color: var(--p-text-muted-color);
+    }
+
+    :is(.dark\:group-hover\:text-surface-0, .dark\:group-hover\:text-surface-50, .dark\:group-hover\:text-surface-900) {
+      color: var(--p-text-color);
+    }
+
+    /* Group / routerLinkActive patterns */
+    :is(
+      .group-\[\.active\]\:text-surface-0,
+      .group-\[\.active\]\:text-surface-50,
+      .group-\[\.active\]\:text-surface-900,
+      .group-\[\.active\]\:text-surface-700
+    ) {
+      color: var(--p-text-color);
+    }
+
+    :is(.group-\[\.active\]\:text-surface-400, .group-\[\.active\]\:text-surface-500) {
+      color: var(--p-text-muted-color);
+    }
+
+    :is(
+      .group-\[\.active\]\:dark\:text-surface-0,
+      .group-\[\.active\]\:dark\:text-surface-50,
+      .group-\[\.active\]\:dark\:text-surface-900
+    ) {
+      color: var(--p-text-color);
+    }
+  }
+}
+
+@layer base {
+  html.dark {
+    color-scheme: dark;
+  }
+
+  /* PrimeNG data surfaces */
+  html.dark .p-datatable .p-datatable-thead > tr > th,
+  html.dark .p-datatable .p-datatable-tbody > tr > td,
+  html.dark .p-treetable .p-treetable-thead > tr > th,
+  html.dark .p-treetable .p-treetable-tbody > tr > td {
+    color: var(--p-text-color);
+  }
+
+  html.dark .p-datatable .p-datatable-thead > tr > th {
+    background: color-mix(in srgb, var(--p-content-background) 88%, var(--p-surface-950));
+  }
+
+  html.dark .p-datatable .p-datatable-tbody > tr {
+    background: var(--p-content-background);
+  }
+
+  html.dark .p-datatable .p-datatable-tbody > tr:hover {
+    background: var(--p-content-hover-background);
+  }
+
+  html.dark .p-card,
+  html.dark .p-panel,
+  html.dark .p-dialog,
+  html.dark .p-drawer,
+  html.dark .p-popover {
+    color: var(--p-text-color);
+  }
+
+  html.dark .p-dialog .p-dialog-header,
+  html.dark .p-dialog .p-dialog-content,
+  html.dark .p-dialog .p-dialog-footer {
+    color: var(--p-text-color);
+  }
+
+  html.dark .p-select,
+  html.dark .p-multiselect,
+  html.dark .p-inputnumber-input,
+  html.dark .p-textarea {
+    color: var(--p-form-field-color);
+    background: var(--p-form-field-background);
+    border-color: var(--p-form-field-border-color);
+  }
+
+  html.dark .p-select .p-select-label,
+  html.dark .p-multiselect .p-multiselect-label {
+    color: var(--p-form-field-color);
+  }
+
+  html.dark .p-select .p-select-label.p-placeholder,
+  html.dark .p-multiselect .p-multiselect-label.p-placeholder {
+    color: var(--p-form-field-placeholder-color);
+  }
+
+  html.dark .p-button.p-button-secondary {
+    color: var(--p-text-color);
+  }
+
+  html.dark .p-button.p-button-text {
+    color: var(--p-text-color);
+  }
+
+  html.dark .p-paginator {
+    color: var(--p-text-color);
+    background: var(--p-content-background);
+  }
+
+  html.dark .p-button.p-button-text:not(:disabled):hover {
+    color: var(--p-text-color);
+  }
+
+  /* Native inputs outside PrimeNG that reuse stripe-linear chrome */
+  html.dark :where(input:not([type='checkbox']):not([type='radio']):not([type='range']):not([type='color']), textarea) {
+    color: var(--p-form-field-color);
+  }
+
+  html.dark :where(input, textarea)::placeholder {
+    color: var(--p-form-field-placeholder-color);
+  }
+}
