@@ -1,5 +1,5 @@
 .reg-root .p-inputtext { width: 100%; height: 2.75rem; background: #fff; border: 1px solid rgba(18, 18, 26, 0.13); color: #15151b; font-size: 0.875rem; border-radius: 0.5rem; transition: border-color 0.14s, box-shadow 0.14s; }
-.reg-root .p-inputtext::placeholder { color: #a4a4ad; }
+.reg-root .p-inputtext::placeholder { color: #767575; }
 .reg-root .p-inputtext:enabled:hover { border-color: rgba(18, 18, 26, 0.26); }
 .reg-root .p-inputtext:enabled:focus { border-color: #0009dc; box-shadow: 0 0 0 3px rgba(0, 9, 220, 0.13); }
 .reg-root .p-select, .reg-root .p-password { width: 100%; }
@@ -7,7 +7,7 @@
 .reg-root .p-select:not(.p-disabled):hover { border-color: rgba(18, 18, 26, 0.26); }
 .reg-root .p-select.p-focus { border-color: #0009dc; box-shadow: 0 0 0 3px rgba(0, 9, 220, 0.13); }
 .reg-root .p-select-label { color: #15151b; display: flex; align-items: center; }
-.reg-root .p-select-label.p-placeholder { color: #a4a4ad; }
+.reg-root .p-select-label.p-placeholder { color: #767575; }
 .reg-root .p-selectbutton { display: flex; width: 100%; gap: 8px; }
 .reg-root .p-selectbutton .p-togglebutton { flex: 1 1 0; justify-content: center; white-space: nowrap; height: 2.75rem; font-size: 0.8125rem; color: #6b6b75; background: #fff; border: 1px solid rgba(18, 18, 26, 0.13); border-radius: 0.5rem; transition: border-color 0.14s, background 0.14s, color 0.14s; }
 .reg-root .p-selectbutton .p-togglebutton:hover { border-color: rgba(18, 18, 26, 0.26); color: #15151b; }
