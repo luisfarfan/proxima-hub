@@ -1,0 +1,90 @@
+:host {
+  display: block;
+  --ink: #1b1a17;
+  --muted: #6c6a63;
+  --faint: #73716a;
+  --line: rgba(27, 26, 23, 0.11);
+  --line-soft: rgba(27, 26, 23, 0.06);
+  --accent: #0009dc;
+  --bg: #fbfaf8;
+  --display: 'Fraunces', Georgia, 'Times New Roman', serif;
+}
+
+.reg-root { color-scheme: light; min-height: 100vh; min-height: 100dvh; background: var(--bg); color: var(--ink); display: flex; flex-direction: column; font-family: var(--font-sans); }
+
+.reg-top { display: flex; align-items: center; justify-content: space-between; padding: 1.75rem 2.5rem; }
+.reg-mark { font-family: var(--font-heading); font-weight: 600; font-size: 1.1875rem; letter-spacing: -0.02em; }
+.reg-top-r { font-size: 0.8125rem; color: var(--muted); }
+.reg-a { color: var(--accent); font-weight: 500; }
+.reg-a:hover { text-decoration: underline; }
+
+.reg-main { flex: 1; display: flex; align-items: center; justify-content: center; padding: 1.5rem 1.5rem 6rem; }
+.reg-col { width: 100%; max-width: 25.5rem; }
+
+.reg-id { display: flex; align-items: center; gap: 13px; padding-bottom: 1.6rem; margin-bottom: 1.6rem; border-bottom: 1px solid var(--line-soft); }
+.reg-mono { width: 42px; height: 42px; flex-shrink: 0; border-radius: 11px; background: var(--ink); color: #fff; font-family: var(--display); font-weight: 500; font-size: 1.25rem; display: flex; align-items: center; justify-content: center; transition: transform 0.25s cubic-bezier(0.34, 1.4, 0.64, 1); }
+.reg-id.named .reg-mono { transform: scale(1.05); }
+.reg-id-meta { display: flex; flex-direction: column; min-width: 0; gap: 1px; }
+.reg-id-name { font-family: var(--font-heading); font-weight: 600; font-size: 0.9375rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.reg-id-sub { font-size: 0.75rem; color: var(--faint); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+.reg-prog { margin-bottom: 2.25rem; }
+.reg-prog-track { display: block; height: 2px; background: var(--line); border-radius: 999px; overflow: hidden; }
+.reg-prog-fill { display: block; height: 100%; background: var(--accent); border-radius: 999px; transition: width 0.5s cubic-bezier(0.16, 1, 0.3, 1); }
+
+.reg-in { animation: regIn 360ms cubic-bezier(0.16, 1, 0.3, 1); }
+.reg-in.is-back { animation: regInB 360ms cubic-bezier(0.16, 1, 0.3, 1); }
+@keyframes regIn { from { opacity: 0; transform: translateX(14px); } to { opacity: 1; transform: none; } }
+@keyframes regInB { from { opacity: 0; transform: translateX(-14px); } to { opacity: 1; transform: none; } }
+.reveal { animation: reveal 240ms ease; overflow: hidden; }
+@keyframes reveal { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: none; } }
+
+.reg-head { margin-bottom: 1.85rem; }
+.reg-eyebrow { display: block; font-size: 0.6875rem; font-weight: 600; letter-spacing: 0.11em; text-transform: uppercase; color: var(--accent); margin-bottom: 0.85rem; }
+.reg-h { font-family: var(--display); font-optical-sizing: auto; font-weight: 500; font-size: 2.125rem; letter-spacing: -0.012em; line-height: 1.08; color: var(--ink); outline: none; }
+.reg-sub { margin-top: 0.6rem; font-size: 0.9375rem; line-height: 1.5; color: var(--muted); }
+
+.reg-fields { display: flex; flex-direction: column; gap: 1.2rem; }
+.field { display: flex; flex-direction: column; }
+.field label, .field-label { font-size: 0.8125rem; font-weight: 500; color: var(--ink); margin-bottom: 0.5rem; }
+.field .opt { color: var(--faint); font-weight: 400; }
+.field-err { margin-top: 0.5rem; font-size: 0.75rem; color: #bb3a2c; }
+
+.reg-nav { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 2.1rem; }
+.reg-nav.solo { justify-content: flex-end; }
+.btn-primary { height: 2.8rem; padding: 0 1.7rem; border-radius: 0.55rem; background: var(--accent); color: #fff; font-weight: 600; font-size: 0.8125rem; letter-spacing: 0.005em; display: inline-flex; align-items: center; justify-content: center; transition: background 0.16s ease, transform 0.12s ease; }
+.btn-primary:hover:not(:disabled) { background: #0007b4; }
+.btn-primary:active:not(:disabled) { transform: scale(0.985); }
+.btn-primary:disabled { background: var(--ink); opacity: 0.16; cursor: not-allowed; }
+.btn-ghost { height: 2.8rem; padding: 0 1.1rem; border-radius: 0.55rem; background: transparent; color: var(--muted); font-weight: 500; font-size: 0.8125rem; transition: color 0.14s ease, background 0.14s ease; }
+.btn-ghost:hover:not(:disabled) { color: var(--ink); background: rgba(27, 26, 23, 0.045); }
+
+.reg-summary { display: flex; flex-direction: column; border: 1px solid var(--line); border-radius: 0.7rem; overflow: hidden; background: #fff; }
+.reg-sum-row { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 0.72rem 0.95rem; font-size: 0.8125rem; }
+.reg-sum-row + .reg-sum-row { border-top: 1px solid var(--line-soft); }
+.reg-sum-row dt { color: var(--muted); flex-shrink: 0; }
+.reg-sum-row dd { color: var(--ink); font-weight: 500; text-align: right; display: flex; align-items: center; gap: 10px; min-width: 0; }
+.reg-sum-row dd.break { word-break: break-all; }
+.reg-edit { font-size: 0.75rem; font-weight: 500; color: var(--accent); flex-shrink: 0; }
+.reg-edit:hover { text-decoration: underline; }
+
+.terms { display: flex; align-items: flex-start; gap: 10px; font-size: 0.8125rem; line-height: 1.5; color: var(--muted); cursor: pointer; }
+.reg-turnstile { min-height: 1px; }
+.reg-strong { color: var(--ink); font-weight: 500; }
+.reg-code-actions { display: flex; align-items: center; justify-content: center; gap: 10px; margin-top: 0.25rem; }
+.reg-textbtn { font-size: 0.8125rem; font-weight: 500; color: var(--accent); }
+.reg-textbtn:hover { text-decoration: underline; }
+.reg-dot { color: var(--faint); }
+.reg-resent { margin-top: 0.5rem; font-size: 0.75rem; color: #1d7a4d; }
+
+.reg-success { display: flex; flex-direction: column; align-items: center; text-align: center; padding: 2rem 0; }
+.reg-success-mark { width: 56px; height: 56px; border-radius: 50%; background: var(--accent); color: #fff; display: flex; align-items: center; justify-content: center; margin-bottom: 1.5rem; animation: pop 420ms cubic-bezier(0.34, 1.56, 0.64, 1) both; }
+@keyframes pop { from { opacity: 0; transform: scale(0.6); } to { opacity: 1; transform: scale(1); } }
+.reg-success-h { font-size: 1.875rem; }
+
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
+
+@media (prefers-reduced-motion: reduce) {
+  .reg-in, .reg-in.is-back, .reveal, .reg-success-mark { animation-duration: 140ms; animation-name: rmFade; }
+  @keyframes rmFade { from { opacity: 0; } to { opacity: 1; } }
+}

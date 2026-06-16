@@ -1,0 +1,85 @@
+<app-auth-guest-shell
+  title="Verifica tu correo"
+  [subtitle]="state() === 'loading' ? 'Verificando tu dirección de correo…' : null"
+  testId="verify-email-page"
+>
+  @switch (state()) {
+    @case ('loading') {
+      <div class="flex flex-col items-center gap-4 py-2" aria-live="polite">
+        <div
+          class="flex h-12 w-12 items-center justify-center rounded-full bg-surface-100 border border-hairline"
+          aria-hidden="true"
+        >
+          <p-progressSpinner styleClass="h-6 w-6" strokeWidth="4" />
+        </div>
+        <p class="text-center text-[0.8125rem] text-muted-color">Verificando…</p>
+      </div>
+    }
+    @case ('success') {
+      <div class="space-y-5">
+        <div class="flex flex-col items-center gap-3 py-1">
+          <div
+            class="flex h-12 w-12 items-center justify-center rounded-full bg-surface-50 border border-hairline"
+            aria-hidden="true"
+          >
+            <svg class="h-6 w-6 text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+            </svg>
+          </div>
+        </div>
+        <app-auth-inline-alert
+          severity="success"
+          message="¡Correo verificado! Ya puedes iniciar sesión."
+        />
+        <a
+          routerLink="/login"
+          [class]="linkClass + ' block text-center'"
+          data-testid="verify-email-back-login"
+        >
+          Ir al inicio de sesión
+        </a>
+      </div>
+    }
+    @case ('error') {
+      <div class="space-y-4">
+        <div class="flex justify-center py-1" aria-hidden="true">
+          <div
+            class="flex h-12 w-12 items-center justify-center rounded-full bg-red-500/[0.06] border border-hairline"
+          >
+            <svg class="h-6 w-6 text-red-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </div>
+        </div>
+        @if (errorMessage(); as err) {
+          <app-auth-inline-alert severity="error" [message]="err" />
+        }
+        <p class="text-center text-[0.75rem] leading-relaxed text-muted-color">
+          Contacta a soporte si el problema persiste.
+        </p>
+        <p-button
+          type="button"
+          label="Intentar de nuevo"
+          [styleClass]="btnClass"
+          (onClick)="retry()"
+        />
+        <a routerLink="/login" [class]="linkClass + ' block text-center'">
+          Ir al inicio de sesión
+        </a>
+      </div>
+    }
+    @case ('missing-token') {
+      <div class="space-y-5">
+        @if (errorMessage(); as err) {
+          <app-auth-inline-alert severity="error" [message]="err" />
+        }
+        <p class="text-center text-[0.75rem] leading-relaxed text-muted-color">
+          Usa el enlace que recibiste por correo electrónico.
+        </p>
+        <a routerLink="/login" [class]="linkClass + ' block text-center'">
+          Ir al inicio de sesión
+        </a>
+      </div>
+    }
+  }
+</app-auth-guest-shell>

@@ -1,0 +1,114 @@
+<div class="flex min-h-screen" [class.bg-canvas]="!split()">
+
+  @if (split()) {
+    <!-- Left: dark brand panel (hidden on mobile) -->
+    <aside
+      class="hidden lg:flex lg:w-[52%] xl:w-[55%] flex-col justify-between px-14 py-12"
+      style="background: var(--theme-depth)"
+      aria-hidden="true"
+    >
+      <div>
+        <img
+          ngSrc="https://media.proxima.pe/media/afdb3a61-4631-4db6-b895-c274e44160c9/brand/proxima_logo_32781d85_medium.webp"
+          alt="Proxima"
+          width="144"
+          height="36"
+          class="brightness-0 invert"
+        />
+      </div>
+
+      <div class="space-y-8">
+        <div class="space-y-4">
+          <h2
+            class="text-[2rem] font-semibold leading-tight tracking-tight"
+            style="color: var(--theme-on-dark); font-family: var(--font-heading)"
+          >
+            Gestión inteligente<br>para tu negocio
+          </h2>
+          <p class="text-[0.9375rem] leading-relaxed" style="color: rgba(248,249,255,0.5)">
+            Catálogo, ventas, inventario y facturación<br>en una sola plataforma.
+          </p>
+        </div>
+
+        <ul class="space-y-4" role="list">
+          @for (feat of features; track feat) {
+            <li class="flex items-center gap-3.5">
+              <div
+                class="flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-lg"
+                style="background: rgba(26,108,246,0.18)"
+              >
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none"
+                  stroke="#1a6cf6" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"
+                  aria-hidden="true">
+                  <polyline points="20 6 9 17 4 12"/>
+                </svg>
+              </div>
+              <span class="text-[0.8125rem]" style="color: rgba(248,249,255,0.65)">{{ feat }}</span>
+            </li>
+          }
+        </ul>
+      </div>
+
+      <p class="text-[0.75rem]" style="color: rgba(248,249,255,0.25)">
+        © 2025 Proxima · proxima.pe
+      </p>
+    </aside>
+  }
+
+  <!-- Right / centered panel -->
+  <div
+    class="flex flex-1 items-center justify-center px-6 py-12 sm:px-12"
+    [class.bg-canvas]="split()"
+    [class.py-10]="!split()"
+  >
+    <div
+      [class]="split()
+        ? 'w-full max-w-[22rem]'
+        : 'w-full max-w-[25rem] rounded-[var(--radius-card)] border border-hairline bg-surface-0 p-8 sm:p-10'"
+      [attr.data-testid]="testId()"
+    >
+      @if (split()) {
+        <div class="mb-10 lg:hidden">
+          <img
+            ngSrc="https://media.proxima.pe/media/afdb3a61-4631-4db6-b895-c274e44160c9/brand/proxima_logo_32781d85_thumbnail.webp"
+            alt="Proxima"
+            width="96"
+            height="24"
+          />
+        </div>
+
+        <header class="mb-8">
+          <h1
+            class="text-[1.375rem] font-semibold tracking-tight text-color"
+            style="font-family: var(--font-heading)"
+          >{{ title() }}</h1>
+          @if (subtitle(); as sub) {
+            <p class="mt-2 text-[0.8125rem] leading-relaxed text-muted-color">{{ sub }}</p>
+          }
+        </header>
+
+      } @else {
+        <header class="mb-8 text-center">
+          <img
+            ngSrc="https://media.proxima.pe/media/afdb3a61-4631-4db6-b895-c274e44160c9/brand/proxima-logo-convergente_4bfcfe72_medium.webp"
+            alt=""
+            width="40"
+            height="40"
+            class="mx-auto mb-4 rounded-lg"
+            aria-hidden="true"
+          />
+          <h1
+            class="text-[1.0625rem] font-semibold tracking-tight text-color"
+            style="font-family: var(--font-heading)"
+          >{{ title() }}</h1>
+          @if (subtitle(); as sub) {
+            <p class="mt-1.5 text-[0.8125rem] leading-relaxed text-muted-color">{{ sub }}</p>
+          }
+        </header>
+      }
+
+      <ng-content />
+    </div>
+  </div>
+
+</div>

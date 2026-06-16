@@ -1,0 +1,179 @@
+<div class="reg-root">
+  <header class="reg-top">
+    <span class="reg-mark">Próxima</span>
+    <span class="reg-top-r">¿Ya tienes cuenta? <a routerLink="/login" class="reg-a">Iniciar sesión</a></span>
+  </header>
+
+  <main class="reg-main">
+    <div class="reg-col">
+      @if (success()) {
+        <div class="reg-success" animate.enter="reg-in">
+          <span class="reg-success-mark">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+          </span>
+          <h1 class="reg-h reg-success-h">Tu cuenta está lista</h1>
+          <p class="reg-sub">Entrando a Próxima…</p>
+        </div>
+      } @else if (awaitingCode()) {
+        <section class="reg-step reg-in">
+          <header class="reg-head">
+            <span class="reg-eyebrow">Verificación</span>
+            <h1 #stepHeading tabindex="-1" class="reg-h">Confirma tu correo</h1>
+            <p class="reg-sub">Ingresa el código de 6 dígitos que enviamos a <b class="reg-strong">{{ verifyEmailAddr() }}</b>.</p>
+          </header>
+          <div class="reg-fields">
+            <div class="field">
+              <input
+                pInputText
+                id="reg-code-field"
+                class="w-full reg-code"
+                [formControl]="codeCtrl"
+                inputmode="numeric"
+                maxlength="6"
+                autocomplete="one-time-code"
+                placeholder="000000"
+                aria-label="Código de verificación"
+                (keyup.enter)="verifyCode()"
+              />
+              @if (codeError(); as e) {
+                <p class="field-err" role="alert">{{ e }}</p>
+              }
+              @if (resentNote()) {
+                <p class="reg-resent">Código reenviado a tu correo.</p>
+              }
+            </div>
+            <div class="reg-code-actions">
+              <button type="button" class="reg-textbtn" (click)="resendCode()">Reenviar código</button>
+              <span class="reg-dot">·</span>
+              <button type="button" class="reg-textbtn" (click)="backToAccount()">Cambiar correo</button>
+            </div>
+          </div>
+          <div class="reg-nav solo">
+            <button type="button" class="btn-primary" (click)="verifyCode()" [disabled]="codeCtrl.invalid || verifying()">
+              @if (verifying()) { Verificando… } @else { Verificar y crear cuenta }
+            </button>
+          </div>
+        </section>
+      } @else {
+        <div class="reg-id" [class.named]="storeName()">
+          <span class="reg-mono">{{ monogram() || '·' }}</span>
+          <span class="reg-id-meta">
+            <span class="reg-id-name">{{ storeName() || 'Tu negocio' }}</span>
+            <span class="reg-id-sub">
+              @if (rubroLabel(); as r) { {{ r }} · }{{ slugPreview() }}.proxima.pe
+            </span>
+          </span>
+        </div>
+
+        <div class="reg-prog" role="progressbar" aria-label="Progreso de registro" aria-valuemin="1" aria-valuemax="3" [attr.aria-valuenow]="step()">
+          <span class="reg-prog-track"><span class="reg-prog-fill" [style.width.%]="step() * 100 / 3"></span></span>
+        </div>
+
+        @for (s of [step()]; track s) {
+          <section class="reg-step" [class.is-back]="isBack()" animate.enter="reg-in">
+            <header class="reg-head">
+              <span class="reg-eyebrow">Paso 0{{ s }} · {{ stepLabel() }}</span>
+              <h1 #stepHeading tabindex="-1" class="reg-h">
+                @switch (s) {
+                  @case (1) { Cuéntanos de tu negocio }
+                  @case (2) { Crea tu cuenta }
+                  @case (3) { Revisa y empieza }
+                }
+              </h1>
+              <p class="reg-sub">
+                @switch (s) {
+                  @case (1) { Con esto preparamos tu catálogo y tu facturación. }
+                  @case (2) { Tu acceso al panel de Próxima. }
+                  @case (3) { Confirma y crea tu cuenta gratis. }
+                }
+              </p>
+            </header>
+
+            @if (s === 1) {
+              <form [formGroup]="negocio" class="reg-fields" (ngSubmit)="next()">
+                <div class="field">
+                  <label for="biz-name">Nombre del negocio</label>
+                  <input pInputText id="biz-name" formControlName="name" placeholder="Bodega San Martín" autocomplete="organization" class="w-full" />
+                </div>
+                <div class="field">
+                  <label for="biz-rubro">Rubro</label>
+                  <p-select inputId="biz-rubro" formControlName="rubro" [options]="rubros()" optionLabel="label" optionValue="value" [filter]="true" filterPlaceholder="Buscar…" placeholder="Selecciona tu rubro" styleClass="w-full" appendTo="body" panelStyleClass="reg-pan" />
+                </div>
+                <div class="field">
+                  <span class="field-label">¿Tu negocio tiene RUC?</span>
+                  <p-selectButton formControlName="hasRuc" [options]="rucOptions" optionLabel="label" optionValue="value" [allowEmpty]="false" styleClass="w-full" />
+                </div>
+                @if (hasRuc() === true) {
+                  <div class="field" animate.enter="reveal">
+                    <label for="biz-ruc">RUC <span class="opt">opcional</span></label>
+                    <input pInputText id="biz-ruc" formControlName="ruc" inputmode="numeric" maxlength="11" placeholder="20XXXXXXXXX" class="w-full" />
+                  </div>
+                }
+              </form>
+            }
+
+            @if (s === 2) {
+              <form [formGroup]="cuenta" class="reg-fields" (ngSubmit)="next()">
+                <div class="field">
+                  <label for="acc-name">Nombre completo</label>
+                  <input pInputText id="acc-name" formControlName="fullName" placeholder="Nombre y apellido" autocomplete="name" class="w-full" />
+                </div>
+                <div class="field">
+                  <label for="acc-email">Correo electrónico</label>
+                  <input pInputText id="acc-email" type="email" formControlName="email" placeholder="tu@correo.com" autocomplete="email" class="w-full" [attr.aria-invalid]="emailTaken() ? 'true' : null" aria-describedby="email-help" />
+                  @if (emailTaken()) {
+                    <p id="email-help" class="field-err" role="alert">Este correo ya tiene una cuenta. <a routerLink="/login" class="reg-a">Iniciar sesión</a></p>
+                  }
+                </div>
+                <div class="field">
+                  <label for="acc-pass">Contraseña</label>
+                  <p-password inputId="acc-pass" formControlName="password" [feedback]="true" [toggleMask]="true" placeholder="Mínimo 8 caracteres" promptLabel="Ingresa una contraseña" weakLabel="Débil" mediumLabel="Media" strongLabel="Fuerte" styleClass="w-full" [inputStyleClass]="'w-full'" />
+                </div>
+              </form>
+            }
+
+            @if (s === 3) {
+              <div class="reg-fields">
+                <dl class="reg-summary">
+                  <div class="reg-sum-row"><dt>Negocio</dt><dd>{{ negocio.controls.name.value }} <button type="button" class="reg-edit" (click)="goTo(1)">Editar</button></dd></div>
+                  <div class="reg-sum-row"><dt>RUC</dt><dd>{{ negocio.controls.hasRuc.value ? 'Sí' : 'Aún no' }}</dd></div>
+                  <div class="reg-sum-row"><dt>Tu nombre</dt><dd>{{ cuenta.controls.fullName.value }} <button type="button" class="reg-edit" (click)="goTo(2)">Editar</button></dd></div>
+                  <div class="reg-sum-row"><dt>Correo</dt><dd class="break">{{ cuenta.controls.email.value }}</dd></div>
+                  <div class="reg-sum-row"><dt>Plan</dt><dd>Gratis · S/ 0 / mes · sin tarjeta</dd></div>
+                </dl>
+
+                <label class="terms">
+                  <p-checkbox [formControl]="form.controls.terms" [binary]="true" inputId="terms" />
+                  <span>Acepto los <a href="https://proxima.pe/terminos" target="_blank" rel="noopener" class="reg-a">Términos</a> y la <a href="https://proxima.pe/privacidad" target="_blank" rel="noopener" class="reg-a">Política de privacidad</a>.</span>
+                </label>
+
+                @if (turnstileSiteKey()) {
+                  <div #turnstileEl class="reg-turnstile"></div>
+                }
+
+                @if (errorKey(); as e) {
+                  <p class="field-err" role="alert">{{ e }}</p>
+                }
+              </div>
+            }
+
+            <div class="reg-nav" [class.solo]="s === 1">
+              @if (s > 1) {
+                <button type="button" class="btn-ghost" (click)="back()" [disabled]="submitting()">Atrás</button>
+              }
+              @if (s < 3) {
+                <button type="button" class="btn-primary" (click)="next()" [disabled]="!canContinue()">Continuar</button>
+              } @else {
+                <button type="button" class="btn-primary" (click)="submit()" [disabled]="!canContinue() || submitting() || !captchaSatisfied()">
+                  @if (submitting()) { Creando tu cuenta… } @else { Crear mi cuenta gratis }
+                </button>
+              }
+            </div>
+          </section>
+        }
+      }
+    </div>
+  </main>
+
+  <p class="sr-only" aria-live="polite">Paso {{ step() }} de 3, {{ stepLabel() }}</p>
+</div>

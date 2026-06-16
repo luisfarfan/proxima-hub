@@ -1,0 +1,82 @@
+<app-auth-guest-shell
+  title="Inicia sesión"
+  subtitle="Bienvenido de vuelta"
+  testId="login-page"
+  [split]="true"
+>
+  @if (passwordUpdatedMessage(); as msg) {
+    <div class="mb-5">
+      <app-auth-inline-alert severity="success" [message]="msg" />
+    </div>
+  }
+
+  @if (authStore.error(); as err) {
+    <div class="mb-5">
+      <app-auth-inline-alert severity="error" [message]="err" />
+    </div>
+  }
+
+  <form [formGroup]="form" (ngSubmit)="submit()" class="space-y-5">
+    <div class="flex flex-col gap-5">
+      <div class="flex flex-col gap-1.5">
+        <label for="login-email" [class]="labelClass">Correo electrónico</label>
+        <input
+          data-testid="login-email"
+          pInputText
+          id="login-email"
+          type="email"
+          autocomplete="username"
+          [formControl]="form.controls.email"
+          [class]="inputClass"
+        />
+        @if (form.controls.email.invalid && form.controls.email.touched) {
+          <p [class]="fieldErrorClass">Ingresa un correo válido.</p>
+        }
+      </div>
+
+      <div class="flex flex-col gap-1.5">
+        <div class="flex items-center justify-between gap-2">
+          <label for="login-password" [class]="labelClass">Contraseña</label>
+          <a routerLink="/recuperar" [class]="linkClass" data-testid="login-forgot-password">
+            ¿Olvidaste tu contraseña?
+          </a>
+        </div>
+        <p-password
+          data-testid="login-password"
+          inputId="login-password"
+          [formControl]="form.controls.password"
+          [feedback]="false"
+          [toggleMask]="true"
+          styleClass="w-full [&_.p-inputtext]:w-full"
+          [inputStyleClass]="passwordInputClass + ' w-full'"
+          autocomplete="current-password"
+        />
+        @if (form.controls.password.invalid && form.controls.password.touched) {
+          <p [class]="fieldErrorClass">La contraseña es requerida.</p>
+        }
+      </div>
+    </div>
+
+    <p-button
+      data-testid="login-submit"
+      type="submit"
+      label="Iniciar sesión"
+      [styleClass]="btnClass"
+      [loading]="authStore.loading()"
+    />
+  </form>
+
+  @if (googleClientId()) {
+    <div class="flex items-center gap-3 my-5">
+      <hr class="flex-1 border-surface-border" />
+      <span class="text-[0.75rem] text-muted-color">o</span>
+      <hr class="flex-1 border-surface-border" />
+    </div>
+    <div #googleBtn class="flex justify-center" data-testid="google-signin-btn"></div>
+  }
+
+  <p class="mt-5 text-center text-[0.75rem] leading-relaxed text-muted-color">
+    ¿No tienes cuenta?
+    <a routerLink="/registro" [class]="linkClass">Regístrate gratis</a>
+  </p>
+</app-auth-guest-shell>

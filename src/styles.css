@@ -6,6 +6,7 @@
 @import './styles/themes/proxima-linear-prime.css';
 @import './styles/themes/proxima-dark-compat.css';
 @import 'primeicons/primeicons.css';
+@import './styles/registro-prime.css';
 
 /* Misma clase `.dark` que PrimeNG (`darkModeSelector`); ver https://primeng.org/tailwind#darkmode */
 @custom-variant dark (&:where(.dark, .dark *));

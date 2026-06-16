@@ -1,0 +1,28 @@
+:host ::ng-deep .p-inputtext,
+:host ::ng-deep .p-password .p-inputtext {
+  border-radius: 0.375rem;
+  transition:
+    background 0.2s ease-in-out,
+    color 0.2s ease-in-out,
+    border-color 0.2s ease-in-out,
+    box-shadow 0.2s ease-in-out;
+}
+
+:host ::ng-deep .p-inputtext:enabled:hover,
+:host ::ng-deep .p-password .p-inputtext:enabled:hover {
+  border-color: var(--p-form-field-hover-border-color);
+}
+
+:host ::ng-deep .p-inputtext:enabled:focus,
+:host ::ng-deep .p-password .p-inputtext:enabled:focus {
+  border-color: var(--p-form-field-focus-border-color);
+  box-shadow: 0 0 0 0.0625rem color-mix(in srgb, var(--p-primary-color) 35%, transparent);
+}
+
+:host ::ng-deep .p-password .p-password-toggle-icon {
+  color: var(--p-form-field-icon-color);
+}
+
+:host ::ng-deep .p-password .p-password-toggle-icon:hover {
+  color: var(--p-primary-color);
+}
