@@ -5,12 +5,59 @@ import { tokenGuard } from './core/guards/token.guard';
 import { businessGuard } from './core/guards/business.guard';
 
 export const routes: Routes = [
-  // ── Hub home (authenticated + business context required) ──────────────────
+  // ── Hub shell: authenticated + business context required ──────────────────
   {
     path: '',
     canActivate: [authGuard, businessGuard],
     loadComponent: () =>
-      import('./features/hub/home/home.component').then((m) => m.HomeComponent),
+      import('./features/hub/shell/hub-shell.component').then((m) => m.HubShellComponent),
+    children: [
+      // Hub home
+      {
+        path: '',
+        pathMatch: 'full',
+        loadComponent: () =>
+          import('./features/hub/home/home.component').then((m) => m.HomeComponent),
+      },
+      // Account pages (shared nav + router-outlet)
+      {
+        path: '',
+        loadComponent: () =>
+          import('./features/hub/account/account-shell.component').then(
+            (m) => m.AccountShellComponent,
+          ),
+        children: [
+          {
+            path: 'cuenta',
+            loadComponent: () =>
+              import('./features/hub/account/cuenta-page.component').then(
+                (m) => m.CuentaPageComponent,
+              ),
+          },
+          {
+            path: 'plan',
+            loadComponent: () =>
+              import('./features/hub/account/plan-page.component').then(
+                (m) => m.PlanPageComponent,
+              ),
+          },
+          {
+            path: 'seguridad',
+            loadComponent: () =>
+              import('./features/hub/account/seguridad-page.component').then(
+                (m) => m.SeguridadPageComponent,
+              ),
+          },
+          {
+            path: 'equipo',
+            loadComponent: () =>
+              import('./features/hub/account/equipo-page.component').then(
+                (m) => m.EquipoPageComponent,
+              ),
+          },
+        ],
+      },
+    ],
   },
 
   // ── Identity: guest-only pages ────────────────────────────────────────────

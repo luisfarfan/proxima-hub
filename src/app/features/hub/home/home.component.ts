@@ -5,14 +5,12 @@ import {
   inject,
   resource,
 } from '@angular/core';
-import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
-import { Menu } from 'primeng/menu';
-import type { MenuItem } from 'primeng/api';
 import { AuthService } from '../../../core/auth/auth.service';
 import { BusinessContextService } from '../../../core/auth/business-context.service';
 import { RuntimeConfigService } from '../../../core/config/runtime-config.service';
+import { QuotaLabelPipe } from '../../../shared/pipes/quota-label.pipe';
 
 // ---------------------------------------------------------------------------
 // Local types (mirrors admin models; kept lean for the hub)
@@ -71,19 +69,18 @@ const FALLBACK_CHECKLIST: ReadinessItem[] = [
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [Menu],
+  imports: [QuotaLabelPipe],
   templateUrl: './home.component.html',
   styleUrl: './home.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class HomeComponent {
   private readonly http = inject(HttpClient);
-  private readonly router = inject(Router);
   private readonly auth = inject(AuthService);
   private readonly businessCtx = inject(BusinessContextService);
   private readonly runtimeConfig = inject(RuntimeConfigService);
 
-  // --- User / business ---
+  // --- User / business (needed for hero section) ---
   protected readonly user = this.auth.user;
   protected readonly memberships = this.auth.memberships;
 
@@ -92,27 +89,10 @@ export class HomeComponent {
     return n ? n.split(' ')[0] : 'tú';
   });
 
-  protected readonly userInitial = computed(
-    () => (this.user()?.full_name?.[0] ?? '?').toUpperCase(),
-  );
-
   protected readonly activeBusinessName = computed(() => {
     const bizId = this.businessCtx.businessId();
     return this.memberships().find((m) => m.id === bizId)?.name ?? 'Mi negocio';
   });
-
-  protected readonly activeBusinessInitial = computed(
-    () => this.activeBusinessName()[0]?.toUpperCase() ?? 'B',
-  );
-
-  // --- Account menu (PrimeNG popup) ---
-  protected readonly accountMenuItems: MenuItem[] = [
-    {
-      label: 'Cerrar sesión',
-      icon: 'pi pi-sign-out',
-      command: () => this.auth.logout(),
-    },
-  ];
 
   // --- App switcher ---
   protected readonly apps = computed((): HubApp[] => {
@@ -254,13 +234,5 @@ export class HomeComponent {
       return;
     }
     window.location.href = app.url;
-  }
-
-  protected switchBusiness(): void {
-    this.router.navigate(['/elegir-negocio']);
-  }
-
-  protected toggleAccountMenu(menu: Menu, event: MouseEvent): void {
-    menu.toggle(event);
   }
 }

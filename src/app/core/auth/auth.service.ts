@@ -164,4 +164,14 @@ export class AuthService {
   resendVerification(): Observable<{ message: string }> {
     return this.http.post<{ message: string }>('auth/resend-verification', {});
   }
+
+  changePassword(
+    currentPassword: string,
+    newPassword: string,
+  ): Observable<{ message: string }> {
+    return this.http.post<{ message: string }>('auth/change-password', {
+      current_password: currentPassword,
+      new_password: newPassword,
+    });
+  }
 }

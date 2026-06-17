@@ -36,10 +36,10 @@
 - [ ] 3.5 Diseño premium (el ya aprobado): claro/editorial/Fraunces/plano. 0 AXE.
 
 ## Fase 4 — Cuenta / organización (migrar settings de cuenta)
-- [ ] 4.1 `/cuenta` (perfil: nombre, correo, cambiar contraseña → `/auth/change-password`).
-- [ ] 4.2 `/plan` (detalle de plan, uso, add-ons, "mejorar").
-- [ ] 4.3 `/seguridad` (sesiones activas, cerrar sesión en dispositivos).
-- [ ] 4.4 `/equipo` (miembros + roles) → endpoints de identity team.
+- [x] 4.1 `/cuenta` (perfil: nombre, correo, cambiar contraseña → `/auth/change-password`).
+- [x] 4.2 `/plan` (detalle de plan, uso, add-ons, "mejorar").
+- [x] 4.3 `/seguridad` (sesiones activas, cerrar sesión en dispositivos).
+- [x] 4.4 `/equipo` (miembros + roles) → endpoints de identity team.
 - [ ] 4.5 Quitar estas secciones de `proxima-admin` settings (quedan Negocio/Sedes).
 
 ## Fase 5 — Librería `@proxima/auth`

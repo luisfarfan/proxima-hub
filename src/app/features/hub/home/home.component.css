@@ -1,114 +1,5 @@
 :host {
   display: block;
-  --ink: #1b1a17;
-  --muted: #6c6a63;
-  --faint: #73716a;
-  --line: rgba(27, 26, 23, 0.11);
-  --line-soft: rgba(27, 26, 23, 0.07);
-  --accent: #0009dc;
-  --bg: #fbfaf8;
-  --surface: #ffffff;
-}
-
-.hub {
-  color-scheme: light;
-  min-height: 100vh;
-  min-height: 100dvh;
-  background: var(--bg);
-  color: var(--ink);
-  font-family: var(--font-sans);
-}
-
-/* ── Top bar ───────────────────────────────────────────────────────────────── */
-.hub-top {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 1.1rem 2rem;
-  border-bottom: 1px solid var(--line-soft);
-}
-
-.hub-mark {
-  font-family: var(--font-heading);
-  font-weight: 600;
-  font-size: 1.1875rem;
-  letter-spacing: -0.02em;
-}
-
-.hub-top-r {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.hub-biz {
-  display: inline-flex;
-  align-items: center;
-  gap: 9px;
-  height: 2.25rem;
-  padding: 0 0.75rem 0 0.5rem;
-  border: 1px solid var(--line);
-  border-radius: 999px;
-  background: var(--surface);
-  color: var(--ink);
-  font-size: 0.8125rem;
-  font-weight: 500;
-  cursor: pointer;
-  transition: border-color 0.14s;
-}
-
-.hub-biz:hover {
-  border-color: rgba(27, 26, 23, 0.26);
-}
-
-.hub-biz:focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: 2px;
-}
-
-.hub-biz-mono {
-  width: 1.5rem;
-  height: 1.5rem;
-  border-radius: 7px;
-  background: var(--ink);
-  color: #fff;
-  font-family: var(--font-display);
-  font-weight: 500;
-  font-size: 0.8125rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-}
-
-.hub-biz svg {
-  color: var(--faint);
-  flex-shrink: 0;
-}
-
-.hub-avatar {
-  width: 2.25rem;
-  height: 2.25rem;
-  border-radius: 50%;
-  background: var(--accent);
-  color: #fff;
-  font-weight: 600;
-  font-size: 0.8125rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: opacity 0.14s;
-  flex-shrink: 0;
-}
-
-.hub-avatar:hover {
-  opacity: 0.85;
-}
-
-.hub-avatar:focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: 2px;
 }
 
 /* ── Main layout ───────────────────────────────────────────────────────────── */
@@ -530,10 +421,6 @@
 }
 
 @media (max-width: 640px) {
-  .hub-top {
-    padding: 1rem 1.25rem;
-  }
-
   .hub-main {
     padding: 2rem 1.25rem 4rem;
   }

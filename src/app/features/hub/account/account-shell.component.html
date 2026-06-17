@@ -1,0 +1,15 @@
+<div class="hub-account">
+  <nav class="account-nav" aria-label="Configuración de cuenta">
+    <a
+      routerLink="/cuenta"
+      routerLinkActive="active"
+      [routerLinkActiveOptions]="{ exact: true }"
+    >Cuenta</a>
+    <a routerLink="/plan" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Plan</a>
+    <a routerLink="/seguridad" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Seguridad</a>
+    <a routerLink="/equipo" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Equipo</a>
+  </nav>
+  <main class="account-main" id="main-content">
+    <router-outlet />
+  </main>
+</div>

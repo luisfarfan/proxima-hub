@@ -1,0 +1,30 @@
+<a href="#main-content" class="proxima-skip-link">Saltar al contenido principal</a>
+
+<div class="hub-shell">
+  <header class="hub-top">
+    <a routerLink="/" class="hub-mark" aria-label="Próxima — ir al inicio">Próxima</a>
+    <div class="hub-top-r">
+      <button
+        class="hub-biz"
+        type="button"
+        (click)="switchBusiness()"
+        aria-label="Cambiar negocio: {{ activeBusinessName() }}"
+      >
+        <span class="hub-biz-mono" aria-hidden="true">{{ activeBusinessInitial() }}</span>
+        <span class="hub-biz-name">{{ activeBusinessName() }}</span>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
+
+      <button
+        class="hub-avatar"
+        type="button"
+        aria-label="Opciones de cuenta"
+        aria-haspopup="menu"
+        (click)="toggleAccountMenu(accountMenu, $event)"
+      >{{ userInitial() }}</button>
+      <p-menu #accountMenu [popup]="true" [model]="accountMenuItems" />
+    </div>
+  </header>
+
+  <router-outlet />
+</div>
