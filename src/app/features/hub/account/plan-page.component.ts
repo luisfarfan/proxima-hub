@@ -4,6 +4,7 @@ import {
   computed,
   inject,
   resource,
+  signal,
 } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
@@ -106,7 +107,7 @@ interface SubscriptionStatus {
           <li class="plan-row" role="listitem">
             <span class="plan-row-name">{{ plan.name }}</span>
             <span class="plan-row-price">S/ {{ plan.monthly_price }} / mes</span>
-            <button class="btn-outline" type="button" (click)="upgrade()">Elegir</button>
+            <button class="btn-outline" type="button" [disabled]="upgrading()" (click)="upgrade(plan.id)">Elegir</button>
           </li>
         }
       </ul>
@@ -229,7 +230,40 @@ export class PlanPageComponent {
     return Math.min(100, Math.round((item.current / item.limit) * 100));
   }
 
-  protected upgrade(): void {
-    // Wired in Fase 8 when CORS is enabled
+  protected readonly upgrading = signal(false);
+  protected readonly upgradeError = signal<string | null>(null);
+
+  /**
+   * Starts the MercadoPago subscription checkout for a paid plan and redirects
+   * the user to MercadoPago's hosted subscription page. On return, the
+   * `?status=` query param lets us refresh the subscription. The plan is
+   * activated by the MercadoPago webhook once the preapproval is authorized.
+   */
+  protected async upgrade(planId?: string): Promise<void> {
+    if (this.upgrading()) return;
+    const id = planId ?? this.plans().find((p) => p.monthly_price > 0)?.id;
+    if (!id) return;
+
+    this.upgrading.set(true);
+    this.upgradeError.set(null);
+    try {
+      const back = `${window.location.origin}/plan`;
+      const res = await firstValueFrom(
+        this.http.post<{ checkout_url: string }>('billing/checkout', {
+          plan_id: id,
+          success_url: `${back}?status=success`,
+          failure_url: `${back}?status=failure`,
+        }),
+      );
+      if (res?.checkout_url) {
+        window.location.href = res.checkout_url;
+        return;
+      }
+      this.upgradeError.set('No se pudo iniciar el pago. Intenta de nuevo.');
+    } catch {
+      this.upgradeError.set('No se pudo iniciar el pago. Intenta de nuevo.');
+    } finally {
+      this.upgrading.set(false);
+    }
   }
 }
