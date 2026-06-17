@@ -11,9 +11,7 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { ButtonModule } from 'primeng/button';
 import { PasswordModule } from 'primeng/password';
 import { HttpErrorResponse } from '@angular/common/http';
-import { AuthService } from '../../core/auth/auth.service';
-import { mapAuthDetailToMessageKey } from '../../core/auth/auth-error.utils';
-import { extractErrorCode } from '../../core/http/api-error.model';
+import { AuthService, mapAuthDetailToMessageKey, extractErrorCode } from '@proxima/auth';
 import { AuthGuestShellComponent } from './auth-guest-shell.component';
 import { AuthInlineAlertComponent } from './auth-inline-alert.component';
 import {

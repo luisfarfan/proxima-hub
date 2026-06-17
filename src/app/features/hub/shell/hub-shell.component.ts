@@ -7,8 +7,7 @@ import {
 import { Router, RouterLink, RouterOutlet } from '@angular/router';
 import { Menu } from 'primeng/menu';
 import type { MenuItem } from 'primeng/api';
-import { AuthService } from '../../../core/auth/auth.service';
-import { BusinessContextService } from '../../../core/auth/business-context.service';
+import { AuthService, BusinessContextService } from '@proxima/auth';
 
 @Component({
   selector: 'app-hub-shell',

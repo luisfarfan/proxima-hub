@@ -3,8 +3,7 @@ import { Router } from '@angular/router';
 import { ButtonModule } from 'primeng/button';
 import { HttpErrorResponse } from '@angular/common/http';
 import { MessageService } from 'primeng/api';
-import { AuthService } from '../../core/auth/auth.service';
-import { isAuthDetailCode } from '../../core/auth/auth-error.utils';
+import { AuthService, isAuthDetailCode } from '@proxima/auth';
 
 @Component({
   selector: 'app-email-verification-banner',

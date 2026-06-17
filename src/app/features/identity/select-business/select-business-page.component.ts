@@ -1,9 +1,7 @@
 import { ChangeDetectionStrategy, Component, OnInit, inject, signal } from '@angular/core';
 import { Message } from 'primeng/message';
 import { ButtonModule } from 'primeng/button';
-import { AuthService } from '../../../core/auth/auth.service';
-import { BusinessContextService } from '../../../core/auth/business-context.service';
-import { BusinessMembership } from '../../../core/models/user.model';
+import { AuthService, BusinessContextService, type BusinessMembership } from '@proxima/auth';
 
 @Component({
   selector: 'app-select-business-page',

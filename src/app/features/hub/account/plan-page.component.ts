@@ -7,7 +7,7 @@ import {
 } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
-import { BusinessContextService } from '../../../core/auth/business-context.service';
+import { BusinessContextService } from '@proxima/auth';
 import { QuotaLabelPipe } from '../../../shared/pipes/quota-label.pipe';
 
 interface Plan {

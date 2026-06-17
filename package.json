@@ -31,6 +31,7 @@
     "@angular/platform-browser": "^21.0.0",
     "@angular/router": "^21.0.0",
     "@primeuix/themes": "^2.0.3",
+    "@proxima/auth": "file:/Users/lucho/projects/me/proxima/proxima-auth/dist",
     "@tailwindcss/postcss": "^4.3.1",
     "primeicons": "^7.0.0",
     "primeng": "^21.1.9",

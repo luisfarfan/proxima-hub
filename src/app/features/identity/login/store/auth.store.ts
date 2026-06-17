@@ -2,11 +2,9 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { Injectable, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { firstValueFrom } from 'rxjs';
-import { AuthService } from '../../../../core/auth/auth.service';
-import { AuthTokenStorage } from '../../../../core/auth/auth-token.storage';
+import { AuthService, AuthTokenStorage, validateNextUrl } from '@proxima/auth';
 import { RuntimeConfigService } from '../../../../core/config/runtime-config.service';
 import { formatHttpError } from '../../../../core/utils/api-error';
-import { validateNextUrl } from '../../../../core/utils/next-redirect.utils';
 
 @Injectable({ providedIn: 'root' })
 export class AuthStore {

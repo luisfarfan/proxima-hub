@@ -1,8 +1,7 @@
 import { HttpClient, HttpContext } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Observable, map } from 'rxjs';
-import { SUPPRESS_ERROR_TOAST } from '../../../core/http/http-context.tokens';
-import type { RegisterPayload } from '../../../core/auth/auth.service';
+import { SUPPRESS_ERROR_TOAST, type RegisterPayload } from '@proxima/auth';
 
 const guestOptions = { context: new HttpContext().set(SUPPRESS_ERROR_TOAST, true) };
 

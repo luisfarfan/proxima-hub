@@ -13,12 +13,13 @@ import { routes } from './app.routes';
 import { proximaAuraPreset } from './theme/proxima-aura-preset';
 import { RuntimeConfigService } from './core/config/runtime-config.service';
 import { loadRuntimeConfigInitializer } from './core/config/load-runtime-config.initializer';
-import { apiBaseInterceptor } from './core/http/api-base.interceptor';
-import { authRefreshInterceptor } from './core/http/auth-refresh.interceptor';
-import { authBearerInterceptor } from './core/http/auth-bearer.interceptor';
-import { businessHeaderInterceptor } from './core/http/business-header.interceptor';
 import { loadingInterceptor } from './core/http/loading.interceptor';
 import { errorInterceptor } from './core/http/error.interceptor';
+import {
+  provideProximaAuth,
+  proximaAuthInterceptors,
+  PROXIMA_AUTH_API_BASE_URL,
+} from '@proxima/auth';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -28,10 +29,7 @@ export const appConfig: ApplicationConfig = {
     provideRouter(routes, withComponentInputBinding(), withViewTransitions()),
     provideHttpClient(
       withInterceptors([
-        authRefreshInterceptor,
-        apiBaseInterceptor,
-        authBearerInterceptor,
-        businessHeaderInterceptor,
+        ...proximaAuthInterceptors,
         loadingInterceptor,
         errorInterceptor,
       ]),
@@ -53,6 +51,19 @@ export const appConfig: ApplicationConfig = {
       useFactory: loadRuntimeConfigInitializer,
       deps: [RuntimeConfigService],
       multi: true,
+    },
+    provideProximaAuth({
+      storageKeys: {
+        accessToken: 'proxima_hub_access_token',
+        refreshToken: 'proxima_hub_refresh_token',
+        isSuperAdmin: 'proxima_hub_is_super_admin',
+        selectedBusinessId: 'selected_business_id',
+      },
+    }),
+    {
+      provide: PROXIMA_AUTH_API_BASE_URL,
+      useFactory: (runtime: RuntimeConfigService) => runtime.requireConfig().apiV1BaseUrl,
+      deps: [RuntimeConfigService],
     },
   ],
 };

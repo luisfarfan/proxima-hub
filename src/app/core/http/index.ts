@@ -1,13 +1,16 @@
+export type {
+  DomainApiError,
+  ValidationApiError,
+  ServerApiError,
+} from '@proxima/auth';
 export {
-  type DomainApiError,
-  type ValidationApiError,
-  type ServerApiError,
   isDomainError,
   isValidationError,
   isServerApiError,
   extractErrorCode,
   extractTypedErrorCode,
-} from './api-error.model';
-
-export { SUPPRESS_ERROR_TOAST, SKIP_GLOBAL_LOADER, SKIP_AUTH_REFRESH } from './http-context.tokens';
+  SUPPRESS_ERROR_TOAST,
+  SKIP_GLOBAL_LOADER,
+  SKIP_AUTH_REFRESH,
+} from '@proxima/auth';
 export { formatHttpError } from '../utils/api-error';

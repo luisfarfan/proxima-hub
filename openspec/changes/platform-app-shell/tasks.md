@@ -8,7 +8,7 @@
 - [ ] 0.3 Portar el design system de admin: `styles/themes/*` (tokens `--theme-*`, `--px-*`), fuentes (Fraunces + Plus Jakarta + Inter en `index.html`), focus-ring global.
 - [ ] 0.4 `RuntimeConfigService` + `public/config.json` (apiBaseUrl, turnstileSiteKey, adminUrl, builderUrl, posUrl, intelligenceUrl, mobileUrl) + APP_INITIALIZER.
 - [ ] 0.5 HTTP interceptors base (api-base, error, loading) + `SUPPRESS_ERROR_TOAST` token.
-- [ ] 0.6 CI + deploy (Cloudflare Pages, alineado con storefront) → `app.proxima.pe` (dev: `app.localhost`).
+- [ ] 0.6 CI + deploy (patrón admin/builder, NO Cloudflare Pages): stack `proxima-prod-hub-static` (S3 + CloudFront + ACM, alias `app.proxima.pe`) en `proxima-infra` (copiar `admin-static-stack.ts`) + rol OIDC en `github-roles-stack.ts` + DNS en `cloudflare/dns.tf` (Terraform, solo edge) + `deploy.yml` en proxima-hub (build → S3 sync → CF invalidation). Fuente de verdad: `proxima-infra/INFRASTRUCTURE.md`.
 
 ## Fase 1 — Fundación de auth (interna por ahora)
 - [ ] 1.1 Portar de admin: `auth.service`, `auth-token.storage`, `token-refresh.service`, `business-context.service`, `auth-error.utils`.
@@ -43,10 +43,10 @@
 - [ ] 4.5 Quitar estas secciones de `proxima-admin` settings (quedan Negocio/Sedes).
 
 ## Fase 5 — Librería `@proxima/auth`
-- [ ] 5.1 Crear repo `proxima-auth` (Angular library, ng-packagr).
-- [ ] 5.2 Extraer la fundación de auth (Fase 1) a la lib; API pública (`provideProximaAuth()`, guards, interceptors, tokens).
-- [ ] 5.3 Publicar a **GitHub Packages** (`@proxima/auth`) vía CI; `.npmrc` documentado.
-- [ ] 5.4 `proxima-hub` consume la lib (reemplaza la copia interna).
+- [x] 5.1 Crear repo `proxima-auth` (Angular library, ng-packagr). Repo en `/proxima/proxima-auth`.
+- [x] 5.2 Extraer la fundación de auth (Fase 1) a la lib; API pública (`provideProximaAuth()`, guards, interceptors, tokens). Mecanismo local: `pnpm add @proxima/auth@file:../proxima-auth/dist`.
+- [ ] 5.3 **[DIFERIDA AL DEPLOY]** Publicar a **GitHub Packages** (`@proxima/auth`) vía CI; `.npmrc` documentado. *Lib funciona en local con `pnpm add file:`; CI/CD pendiente al deploy.*
+- [x] 5.4 `proxima-hub` consume la lib (reemplaza la copia interna). Core auth eliminado del hub; builds y flujo login verificados.
 
 ## Fase 6 — Adelgazar `proxima-admin` (change: admin-delegate-auth)
 - [ ] 6.1 Admin consume `@proxima/auth`.

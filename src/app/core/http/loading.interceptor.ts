@@ -2,7 +2,7 @@ import { HttpInterceptorFn } from '@angular/common/http';
 import { inject } from '@angular/core';
 import { finalize } from 'rxjs';
 import { GlobalHttpLoadingService } from './global-http-loading.service';
-import { SKIP_GLOBAL_LOADER } from './http-context.tokens';
+import { SKIP_GLOBAL_LOADER } from '@proxima/auth';
 
 function shouldTrackGlobalLoading(url: string): boolean {
   if (url.includes('config.json')) return false;
