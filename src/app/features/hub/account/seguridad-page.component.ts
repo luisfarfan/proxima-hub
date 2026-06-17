@@ -16,6 +16,7 @@ interface Session {
   last_seen_at: string;
   created_at: string;
   is_active: boolean;
+  is_current: boolean;
 }
 
 function parseDevice(ua: string): string {
@@ -88,7 +89,7 @@ function formatDate(iso: string): string {
                 <span class="session-device">{{ parseDevice(s.user_agent) }} · {{ parseBrowser(s.user_agent) }}</span>
                 <span class="session-meta">{{ s.ip_address }} · {{ formatDate(s.last_seen_at) }}</span>
               </div>
-              @if (s.is_active) {
+              @if (s.is_current) {
                 <span class="session-chip">Esta sesión</span>
               } @else {
                 <button
@@ -281,8 +282,8 @@ export class SeguridadPageComponent {
       );
       const sessions = this.sessionsRes.value();
       if (sessions) {
-        const inactiveIds = sessions.filter((s) => !s.is_active).map((s) => s.id);
-        this.removedIds.update((ids) => [...new Set([...ids, ...inactiveIds])]);
+        const otherIds = sessions.filter((s) => !s.is_current).map((s) => s.id);
+        this.removedIds.update((ids) => [...new Set([...ids, ...otherIds])]);
       }
     } catch {
       // ignore

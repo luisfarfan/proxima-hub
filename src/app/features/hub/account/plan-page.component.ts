@@ -57,18 +57,24 @@ interface SubscriptionStatus {
             <div class="usage-item">
               <div class="usage-row">
                 <span class="usage-label">{{ item.resource | quotaLabel }}</span>
-                <span class="usage-count">{{ item.current }} / {{ item.limit }}</span>
+                @if (item.limit === 0) {
+                  <span class="usage-count usage-not-included">No incluido</span>
+                } @else {
+                  <span class="usage-count">{{ item.current }} / {{ item.limit }}</span>
+                }
               </div>
-              <div
-                class="usage-bar"
-                role="progressbar"
-                [attr.aria-valuenow]="usagePct(item)"
-                aria-valuemin="0"
-                aria-valuemax="100"
-                [attr.aria-label]="(item.resource | quotaLabel) + ': ' + item.current + ' de ' + item.limit"
-              >
-                <span [style.width.%]="usagePct(item)"></span>
-              </div>
+              @if (item.limit > 0) {
+                <div
+                  class="usage-bar"
+                  role="progressbar"
+                  [attr.aria-valuenow]="usagePct(item)"
+                  aria-valuemin="0"
+                  aria-valuemax="100"
+                  [attr.aria-label]="(item.resource | quotaLabel) + ': ' + item.current + ' de ' + item.limit"
+                >
+                  <span [style.width.%]="usagePct(item)"></span>
+                </div>
+              }
             </div>
           }
         </div>
@@ -148,6 +154,12 @@ interface SubscriptionStatus {
   margin: 0 0 1.25rem;
 }
 
+.usage-not-included {
+  font-weight: 400 !important;
+  font-style: italic;
+  color: var(--faint) !important;
+}
+
 .plans-list {
   list-style: none;
   padding: 0;
@@ -164,9 +176,7 @@ interface SubscriptionStatus {
   border-bottom: 1px solid var(--line-soft);
 }
 
-.plan-row:last-child {
-  border-bottom: none;
-}
+.plan-row:last-child { border-bottom: none; }
 
 .plan-row-name {
   flex: 1;

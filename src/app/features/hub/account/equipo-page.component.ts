@@ -7,6 +7,7 @@ import {
   signal,
 } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { RouterLink } from '@angular/router';
 import { firstValueFrom } from 'rxjs';
 import { BusinessContextService } from '../../../core/auth/business-context.service';
 
@@ -25,9 +26,44 @@ interface TeamRole {
   name: string;
 }
 
+interface UsageItem {
+  resource: string;
+  limit: number;
+  current: number;
+}
+
+interface SubscriptionStatus {
+  plan_name: string;
+  status: string;
+  usage: UsageItem[];
+}
+
+// Strips vendor suffixes (e.g. "Owner-proxima") and maps to readable Spanish labels.
+function humanizeRole(slug: string): string {
+  const key = slug
+    .toLowerCase()
+    .replace(/-proxima$/i, '')
+    .replace(/[-_]/g, ' ')
+    .trim();
+  const MAP: Record<string, string> = {
+    owner: 'Propietario',
+    admin: 'Administrador',
+    administrator: 'Administrador',
+    manager: 'Gerente',
+    staff: 'Empleado',
+    employee: 'Empleado',
+    viewer: 'Lector',
+    cashier: 'Cajero',
+    seller: 'Vendedor',
+    sales: 'Ventas',
+  };
+  return MAP[key] ?? key.replace(/\b\w/g, (c) => c.toUpperCase());
+}
+
 @Component({
   selector: 'app-equipo-page',
   standalone: true,
+  imports: [RouterLink],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
 <div class="page-root">
@@ -39,10 +75,10 @@ interface TeamRole {
       <div class="free-badge">Plan Gratis</div>
       <h2 class="card-h2" id="free-h">Solo tú en tu equipo</h2>
       <p class="free-desc">El plan Gratis incluye un solo usuario. Mejora tu plan para invitar miembros y colaborar en equipo.</p>
-      <button class="btn-primary" type="button">
+      <a routerLink="/plan" class="btn-primary">
         Mejora tu plan
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
-      </button>
+      </a>
     </section>
   } @else {
     <!-- Members section -->
@@ -53,13 +89,21 @@ interface TeamRole {
           class="btn-invite-toggle"
           type="button"
           [attr.aria-expanded]="showInvite()"
+          [disabled]="!canInvite()"
           (click)="showInvite.set(!showInvite())"
         >
           {{ showInvite() ? 'Cancelar' : '+ Invitar' }}
         </button>
       </div>
 
-      @if (showInvite()) {
+      @if (!canInvite()) {
+        <p class="invite-limit-note" role="note">
+          Mejora tu plan para invitar a tu equipo.
+          <a routerLink="/plan" class="upgrade-link">Ver planes →</a>
+        </p>
+      }
+
+      @if (showInvite() && canInvite()) {
         <div class="invite-form" role="region" aria-label="Formulario de invitación">
           <div class="field">
             <label class="field-label" for="invite-email">Correo electrónico</label>
@@ -84,7 +128,7 @@ interface TeamRole {
               >
                 <option value="" disabled>Selecciona un rol</option>
                 @for (r of roles(); track r.id) {
-                  <option [value]="r.id">{{ r.name }}</option>
+                  <option [value]="r.id">{{ humanizeRole(r.name) }}</option>
                 }
               </select>
             </div>
@@ -136,11 +180,11 @@ interface TeamRole {
                     [attr.aria-label]="'Rol de ' + (m.full_name || m.email)"
                   >
                     @for (r of roles(); track r.id) {
-                      <option [value]="r.id">{{ r.name }}</option>
+                      <option [value]="r.id">{{ humanizeRole(r.name) }}</option>
                     }
                   </select>
                 } @else {
-                  <span class="member-role">{{ m.role }}</span>
+                  <span class="member-role">{{ humanizeRole(m.role) }}</span>
                 }
               </li>
             }
@@ -160,9 +204,7 @@ interface TeamRole {
   styles: [`
 :host { display: block; }
 
-.free-card {
-  text-align: left;
-}
+.free-card { text-align: left; }
 
 .free-badge {
   display: inline-block;
@@ -184,6 +226,11 @@ interface TeamRole {
   line-height: 1.55;
 }
 
+/* btn-primary on <a> needs text-decoration reset */
+a.btn-primary {
+  text-decoration: none;
+}
+
 .btn-invite-toggle {
   height: 2rem;
   padding: 0 0.875rem;
@@ -195,17 +242,45 @@ interface TeamRole {
   font-weight: 600;
   cursor: pointer;
   font-family: inherit;
-  transition: background 0.15s;
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
   white-space: nowrap;
 }
 
-.btn-invite-toggle:hover {
+.btn-invite-toggle:hover:not([disabled]) {
   background: rgba(0, 9, 220, 0.05);
 }
 
 .btn-invite-toggle:focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 2px;
+}
+
+.btn-invite-toggle[disabled] {
+  opacity: 0.45;
+  cursor: not-allowed;
+  border-color: var(--line);
+  color: var(--muted);
+}
+
+.invite-limit-note {
+  font-size: 0.8125rem;
+  color: var(--faint);
+  margin: 0.2rem 0 0.75rem;
+  line-height: 1.5;
+}
+
+.upgrade-link {
+  color: var(--accent);
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.upgrade-link:hover { text-decoration: underline; }
+
+.upgrade-link:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: 2px;
 }
 
 .invite-form {
@@ -235,9 +310,7 @@ interface TeamRole {
   border-bottom: 1px solid var(--line-soft);
 }
 
-.member-row:last-child {
-  border-bottom: none;
-}
+.member-row:last-child { border-bottom: none; }
 
 .member-avatar {
   width: 2.25rem;
@@ -321,15 +394,8 @@ interface TeamRole {
   flex-shrink: 0;
 }
 
-.role-select:focus {
-  outline: 2px solid var(--accent);
-  outline-offset: 2px;
-}
-
-.role-select[disabled] {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
+.role-select:focus { outline: 2px solid var(--accent); outline-offset: 2px; }
+.role-select[disabled] { opacity: 0.6; cursor: not-allowed; }
   `],
 })
 export class EquipoPageComponent {
@@ -358,12 +424,46 @@ export class EquipoPageComponent {
     },
   });
 
+  // Subscription: used to detect FREE plan (max_users ≤ 1) and invite capacity.
+  private readonly subRes = resource({
+    loader: async () => {
+      if (!this.businessCtx.businessId()) return null;
+      try {
+        return await firstValueFrom(
+          this.http.get<SubscriptionStatus>('admin/billing/subscription/status'),
+        );
+      } catch {
+        return null;
+      }
+    },
+  });
+
+  private readonly maxUsersQuota = computed(() => {
+    const usage = this.subRes.value()?.usage ?? [];
+    return (
+      usage.find((u) => u.resource === 'max_users' || u.resource === 'users') ?? null
+    );
+  });
+
   protected readonly membersLoading = this.membersRes.isLoading;
   protected readonly members = computed(() => this.membersRes.value() ?? null);
   protected readonly roles = computed(() => this.rolesRes.value() ?? []);
 
-  // FREE plan detection: max_users quota ≤ 1
-  protected readonly isFree = computed(() => false); // resolved in Fase 8 via subscription data
+  // FREE when subscription data confirms max_users ≤ 1. Defaults false (CORS gap).
+  protected readonly isFree = computed(() => {
+    const q = this.maxUsersQuota();
+    return q !== null && q.limit <= 1;
+  });
+
+  // Can invite when below capacity. Defaults true when subscription unavailable.
+  protected readonly canInvite = computed(() => {
+    const q = this.maxUsersQuota();
+    if (q === null) return true;
+    if (q.limit === 0) return true; // unlimited
+    return q.current < q.limit;
+  });
+
+  protected readonly humanizeRole = humanizeRole;
 
   protected readonly showInvite = signal(false);
   protected readonly inviteEmail = signal('');
@@ -410,7 +510,7 @@ export class EquipoPageComponent {
         this.http.patch(`admin/team/members/${memberId}`, { role_id: roleId }),
       );
     } catch {
-      // ignore — the select will revert on next render via the signal
+      // ignore — select reverts on next render
     } finally {
       this.changingRoleId.set(null);
     }
