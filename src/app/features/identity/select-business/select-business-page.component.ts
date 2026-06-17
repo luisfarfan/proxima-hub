@@ -1,7 +1,9 @@
 import { ChangeDetectionStrategy, Component, OnInit, inject, signal } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { Message } from 'primeng/message';
 import { ButtonModule } from 'primeng/button';
-import { AuthService, BusinessContextService, type BusinessMembership } from '@proxima/auth';
+import { AuthService, AuthTokenStorage, BusinessContextService, validateNextUrl, type BusinessMembership } from '@proxima/auth';
+import { RuntimeConfigService } from '../../../core/config/runtime-config.service';
 
 @Component({
   selector: 'app-select-business-page',
@@ -123,6 +125,9 @@ import { AuthService, BusinessContextService, type BusinessMembership } from '@p
 export class SelectBusinessPageComponent implements OnInit {
   readonly auth = inject(AuthService);
   private readonly businessContext = inject(BusinessContextService);
+  private readonly tokens = inject(AuthTokenStorage);
+  private readonly route = inject(ActivatedRoute);
+  private readonly runtimeConfig = inject(RuntimeConfigService);
 
   readonly businesses = signal<BusinessMembership[]>([]);
   readonly loading = signal(true);
@@ -163,6 +168,25 @@ export class SelectBusinessPageComponent implements OnInit {
 
   select(biz: BusinessMembership): void {
     this.businessContext.applyMembership(biz);
+
+    const next = this.route.snapshot.queryParamMap.get('next');
+    if (next) {
+      const config = this.runtimeConfig.requireConfig();
+      const validated = validateNextUrl(next, config);
+      if (validated) {
+        // Cross-app handoff: pass selected business + SSO tokens so the target
+        // app can bootstrap without an extra round-trip to /elegir-negocio.
+        const sep = validated.includes('?') ? '&' : '?';
+        let url = `${validated}${sep}sso_business=${encodeURIComponent(biz.id)}`;
+        const access = this.tokens.getAccessToken();
+        const refresh = this.tokens.getRefreshToken();
+        if (access) url += `&sso=${encodeURIComponent(access)}`;
+        if (refresh) url += `&sso_refresh=${encodeURIComponent(refresh)}`;
+        window.location.href = url;
+        return;
+      }
+    }
+
     window.location.href = '/';
   }
 }

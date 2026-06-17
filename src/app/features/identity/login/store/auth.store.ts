@@ -44,7 +44,8 @@ export class AuthStore {
         }
         window.location.href = redirectUrl;
       } else {
-        await this.router.navigateByUrl('/elegir-negocio');
+        const qs = next ? `?next=${encodeURIComponent(next)}` : '';
+        await this.router.navigateByUrl(`/elegir-negocio${qs}`);
       }
     } catch (err) {
       this.error.set(
