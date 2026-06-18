@@ -836,7 +836,7 @@ export class PlanPageComponent {
       if (!this.businessCtx.businessId()) return [];
       try {
         return await firstValueFrom(
-          this.http.get<Payment[]>('billing/subscription/payments'),
+          this.http.get<Payment[]>('admin/billing/subscription/payments'),
         );
       } catch {
         return [];
