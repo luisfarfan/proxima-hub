@@ -5,11 +5,18 @@ import {
   inject,
   resource,
 } from '@angular/core';
+import { Router, RouterLink } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
 import { AuthService, BusinessContextService } from '@proxima/auth';
 import { RuntimeConfigService } from '../../../core/config/runtime-config.service';
 import { QuotaLabelPipe } from '../../../shared/pipes/quota-label.pipe';
+
+// entitlement key for each add-on app (matches businessCtx.entitlements())
+const ADD_ON_FEATURE_KEY: Record<string, string> = {
+  tienda: 'cms',
+  intelligence: 'pricing_intelligence',
+};
 
 // ---------------------------------------------------------------------------
 // Local types (mirrors admin models; kept lean for the hub)
@@ -68,7 +75,7 @@ const FALLBACK_CHECKLIST: ReadinessItem[] = [
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [QuotaLabelPipe],
+  imports: [QuotaLabelPipe, RouterLink],
   templateUrl: './home.component.html',
   styleUrl: './home.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -78,6 +85,7 @@ export class HomeComponent {
   private readonly auth = inject(AuthService);
   private readonly businessCtx = inject(BusinessContextService);
   private readonly runtimeConfig = inject(RuntimeConfigService);
+  private readonly router = inject(Router);
 
   // --- User / business (needed for hero section) ---
   protected readonly user = this.auth.user;
@@ -222,10 +230,9 @@ export class HomeComponent {
   // --- Actions ---
   protected openApp(app: HubApp): void {
     if (app.addOn) {
-      const adminUrl = this.runtimeConfig.adminUrl();
-      if (adminUrl) {
-        window.open(`${adminUrl}/premium?feature=${app.key}`, '_blank', 'noopener,noreferrer');
-      }
+      // Hub is the single billing destination — route to /plan with feature context.
+      const featureKey = ADD_ON_FEATURE_KEY[app.key] ?? app.key;
+      this.router.navigate(['/plan'], { queryParams: { feature: featureKey } });
       return;
     }
     if (app.key === 'app') {
