@@ -25,5 +25,5 @@
 - [x] 5.1 Hub `/plan`: tabla de pagos desde `GET /billing/subscription/payments` (fecha, monto, estado, método).
 
 ## 6. Validación
-- [ ] 6.1 E2E: desde un gate de admin → aterriza en `${hubUrl}/plan` con el plan correcto pre-seleccionado.
-- [ ] 6.2 E2E: cancelar → la suscripción queda `cancelled` y el acceso se mantiene hasta el fin del período.
+- [x] 6.1 E2E: desde un gate de admin → aterriza en `${hubUrl}/plan` con el plan correcto pre-seleccionado. _(validado en suite Docker: gate de facturación → `app.proxima.test/plan?feature=electronic_invoicing` → Crece resaltado. Fix: el CTA "Ver planes disponibles" iba a `/business-profile`.)_
+- [x] 6.2 E2E: cancelar → la suscripción queda `cancelled` y el acceso se mantiene hasta el fin del período. _(validado: UI → `POST /subscription/cancel` 204 → `status=cancelled`, acceso hasta 18 jul 2026; fallo del preapproval MP tolerado.)_
