@@ -20,9 +20,16 @@
         type="button"
         aria-label="Opciones de cuenta"
         aria-haspopup="menu"
+        [attr.aria-expanded]="accountMenuOpen()"
         (click)="toggleAccountMenu(accountMenu, $event)"
       >{{ userInitial() }}</button>
-      <p-menu #accountMenu [popup]="true" [model]="accountMenuItems" />
+      <p-menu
+        #accountMenu
+        [popup]="true"
+        [model]="accountMenuItems"
+        (onShow)="accountMenuOpen.set(true)"
+        (onHide)="accountMenuOpen.set(false)"
+      />
     </div>
   </header>
 

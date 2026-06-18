@@ -33,10 +33,11 @@
                 autocomplete="one-time-code"
                 placeholder="000000"
                 aria-label="Código de verificación"
+                aria-describedby="reg-code-err"
                 (keyup.enter)="verifyCode()"
               />
               @if (codeError(); as e) {
-                <p class="field-err" role="alert">{{ e }}</p>
+                <p id="reg-code-err" class="field-err" role="alert">{{ e }}</p>
               }
               @if (resentNote()) {
                 <p class="reg-resent">Código reenviado a tu correo.</p>
@@ -93,15 +94,30 @@
               <form [formGroup]="negocio" class="reg-fields" (ngSubmit)="next()">
                 <div class="field">
                   <label for="biz-name">Nombre del negocio</label>
-                  <input pInputText id="biz-name" formControlName="name" placeholder="Bodega San Martín" autocomplete="organization" class="w-full" />
+                  <input pInputText id="biz-name" formControlName="name" placeholder="Bodega San Martín" autocomplete="organization" class="w-full"
+                    [attr.aria-invalid]="negocio.controls.name.invalid && negocio.controls.name.touched ? 'true' : null"
+                    [attr.aria-describedby]="negocio.controls.name.invalid && negocio.controls.name.touched ? 'biz-name-err' : null"
+                  />
+                  @if (negocio.controls.name.invalid && negocio.controls.name.touched) {
+                    <p id="biz-name-err" class="field-err" role="alert">
+                      @if (negocio.controls.name.hasError('required')) { Ingresa el nombre del negocio. }
+                      @else { Mínimo 2 caracteres. }
+                    </p>
+                  }
                 </div>
                 <div class="field">
                   <label for="biz-rubro">Rubro</label>
                   <p-select inputId="biz-rubro" formControlName="rubro" [options]="rubros()" optionLabel="label" optionValue="value" [filter]="true" filterPlaceholder="Buscar…" placeholder="Selecciona tu rubro" styleClass="w-full" appendTo="body" panelStyleClass="reg-pan" />
+                  @if (negocio.controls.rubro.invalid && negocio.controls.rubro.touched) {
+                    <p class="field-err" role="alert">Selecciona el rubro de tu negocio.</p>
+                  }
                 </div>
                 <div class="field">
                   <span class="field-label">¿Tu negocio tiene RUC?</span>
                   <p-selectButton formControlName="hasRuc" [options]="rucOptions" optionLabel="label" optionValue="value" [allowEmpty]="false" styleClass="w-full" />
+                  @if (negocio.controls.hasRuc.invalid && negocio.controls.hasRuc.touched) {
+                    <p class="field-err" role="alert">Selecciona si tienes RUC.</p>
+                  }
                 </div>
                 @if (hasRuc() === true) {
                   <div class="field" animate.enter="reveal">
@@ -116,18 +132,38 @@
               <form [formGroup]="cuenta" class="reg-fields" (ngSubmit)="next()">
                 <div class="field">
                   <label for="acc-name">Nombre completo</label>
-                  <input pInputText id="acc-name" formControlName="fullName" placeholder="Nombre y apellido" autocomplete="name" class="w-full" />
+                  <input pInputText id="acc-name" formControlName="fullName" placeholder="Nombre y apellido" autocomplete="name" class="w-full"
+                    [attr.aria-invalid]="cuenta.controls.fullName.invalid && cuenta.controls.fullName.touched ? 'true' : null"
+                    [attr.aria-describedby]="cuenta.controls.fullName.invalid && cuenta.controls.fullName.touched ? 'acc-name-err' : null"
+                  />
+                  @if (cuenta.controls.fullName.invalid && cuenta.controls.fullName.touched) {
+                    <p id="acc-name-err" class="field-err" role="alert">Ingresa tu nombre completo.</p>
+                  }
                 </div>
                 <div class="field">
                   <label for="acc-email">Correo electrónico</label>
-                  <input pInputText id="acc-email" type="email" formControlName="email" placeholder="tu@correo.com" autocomplete="email" class="w-full" [attr.aria-invalid]="emailTaken() ? 'true' : null" aria-describedby="email-help" />
+                  <input pInputText id="acc-email" type="email" formControlName="email" placeholder="tu@correo.com" autocomplete="email" class="w-full"
+                    [attr.aria-invalid]="(emailTaken() || (cuenta.controls.email.invalid && cuenta.controls.email.touched)) ? 'true' : null"
+                    aria-describedby="email-help"
+                  />
                   @if (emailTaken()) {
                     <p id="email-help" class="field-err" role="alert">Este correo ya tiene una cuenta. <a routerLink="/login" class="reg-a">Iniciar sesión</a></p>
+                  } @else if (cuenta.controls.email.invalid && cuenta.controls.email.touched) {
+                    <p id="email-help" class="field-err" role="alert">
+                      @if (cuenta.controls.email.hasError('required')) { Ingresa tu correo electrónico. }
+                      @else { Ingresa un correo válido. }
+                    </p>
                   }
                 </div>
                 <div class="field">
                   <label for="acc-pass">Contraseña</label>
                   <p-password inputId="acc-pass" formControlName="password" [feedback]="true" [toggleMask]="true" placeholder="Mínimo 8 caracteres" promptLabel="Ingresa una contraseña" weakLabel="Débil" mediumLabel="Media" strongLabel="Fuerte" styleClass="w-full" [inputStyleClass]="'w-full'" />
+                  @if (cuenta.controls.password.invalid && cuenta.controls.password.touched) {
+                    <p class="field-err" role="alert">
+                      @if (cuenta.controls.password.hasError('required')) { Ingresa una contraseña. }
+                      @else { Mínimo 8 caracteres. }
+                    </p>
+                  }
                 </div>
               </form>
             }
@@ -143,9 +179,12 @@
                 </dl>
 
                 <label class="terms">
-                  <p-checkbox [formControl]="form.controls.terms" [binary]="true" inputId="terms" />
+                  <p-checkbox [formControl]="form.controls.terms" [binary]="true" inputId="terms" aria-describedby="terms-err" />
                   <span>Acepto los <a href="https://proxima.pe/terminos" target="_blank" rel="noopener" class="reg-a">Términos</a> y la <a href="https://proxima.pe/privacidad" target="_blank" rel="noopener" class="reg-a">Política de privacidad</a>.</span>
                 </label>
+                @if (form.controls.terms.invalid && form.controls.terms.touched) {
+                  <p id="terms-err" class="field-err" role="alert">Debes aceptar los términos para continuar.</p>
+                }
 
                 @if (turnstileSiteKey()) {
                   <div #turnstileEl class="reg-turnstile"></div>

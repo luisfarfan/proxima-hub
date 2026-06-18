@@ -87,12 +87,15 @@ const ADDON_DEFS: AddonDef[] = [
 <div class="page-root">
   <h1 class="page-h1">Plan</h1>
 
-  <!-- Flash message (post MercadoPago return) -->
-  @if (flashMessage(); as msg) {
-    <div class="alert" [class.alert-success]="msg.type === 'success'" [class.alert-error]="msg.type === 'error'" role="alert">
-      {{ msg.text }}
-    </div>
-  }
+  <!-- Flash message (post MercadoPago return).
+       aria-live wrapper must always be in the DOM so SR picks up content injected via @if. -->
+  <div aria-live="assertive" aria-atomic="true">
+    @if (flashMessage(); as msg) {
+      <div class="alert" [class.alert-success]="msg.type === 'success'" [class.alert-error]="msg.type === 'error'" role="alert">
+        {{ msg.text }}
+      </div>
+    }
+  </div>
 
   <!-- ── Plan actual ──────────────────────────────────────────────────── -->
   <section class="page-card" aria-labelledby="current-plan-h">

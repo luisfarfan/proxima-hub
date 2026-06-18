@@ -28,9 +28,11 @@
           autocomplete="username"
           [formControl]="form.controls.email"
           [class]="inputClass"
+          [attr.aria-invalid]="form.controls.email.invalid && form.controls.email.touched ? 'true' : null"
+          [attr.aria-describedby]="form.controls.email.invalid && form.controls.email.touched ? 'login-email-err' : null"
         />
         @if (form.controls.email.invalid && form.controls.email.touched) {
-          <p [class]="fieldErrorClass">Ingresa un correo válido.</p>
+          <p id="login-email-err" [class]="fieldErrorClass" role="alert">Ingresa un correo válido.</p>
         }
       </div>
 
@@ -52,7 +54,7 @@
           autocomplete="current-password"
         />
         @if (form.controls.password.invalid && form.controls.password.touched) {
-          <p [class]="fieldErrorClass">La contraseña es requerida.</p>
+          <p id="login-password-err" [class]="fieldErrorClass" role="alert">La contraseña es requerida.</p>
         }
       </div>
     </div>

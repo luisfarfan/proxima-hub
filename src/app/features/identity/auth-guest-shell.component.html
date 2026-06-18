@@ -56,7 +56,8 @@
   }
 
   <!-- Right / centered panel -->
-  <div
+  <main
+    id="main-content"
     class="flex flex-1 items-center justify-center px-6 py-12 sm:px-12"
     [class.bg-canvas]="split()"
     [class.py-10]="!split()"
@@ -109,6 +110,6 @@
 
       <ng-content />
     </div>
-  </div>
+  </main>
 
 </div>

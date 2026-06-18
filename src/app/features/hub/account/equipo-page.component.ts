@@ -115,6 +115,8 @@ function humanizeRole(slug: string): string {
               [value]="inviteEmail()"
               (input)="inviteEmail.set($any($event.target).value)"
               autocomplete="email"
+              [attr.aria-describedby]="inviteError() ? 'invite-email-err' : null"
+              [attr.aria-invalid]="inviteError() ? 'true' : null"
             />
           </div>
           @if (roles().length > 0) {
@@ -134,7 +136,7 @@ function humanizeRole(slug: string): string {
             </div>
           }
           @if (inviteError(); as err) {
-            <p class="field-error" role="alert">{{ err }}</p>
+            <p id="invite-email-err" class="field-error" role="alert">{{ err }}</p>
           }
           @if (inviteSuccess()) {
             <p class="field-success" role="status">Invitación enviada correctamente.</p>

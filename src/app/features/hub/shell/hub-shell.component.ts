@@ -3,6 +3,7 @@ import {
   Component,
   computed,
   inject,
+  signal,
 } from '@angular/core';
 import { Router, RouterLink, RouterOutlet } from '@angular/router';
 import { Menu } from 'primeng/menu';
@@ -71,6 +72,8 @@ export class HubShellComponent {
       command: () => this.auth.logout(),
     },
   ];
+
+  protected readonly accountMenuOpen = signal(false);
 
   protected switchBusiness(): void {
     this.router.navigate(['/elegir-negocio']);
