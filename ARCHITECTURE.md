@@ -84,6 +84,8 @@ La base **ya existe** (ADR-013): la cookie de sesión es **HttpOnly en `.proxima
 
 ## 5. La librería compartida `@proxima/auth`
 
+> **Nota (2026-06-20):** la lib se **rescopeó a `@luisfarfan/auth`** y se publicó en **GitHub Packages** (repo `luisfarfan/proxima-auth`). El scope `@proxima` no se pudo usar porque esa cuenta de GitHub es de otro. Los 4 SPAs (admin/hub/pos/builder) ya la consumen del registry (`.npmrc` + `${NODE_AUTH_TOKEN}` read:packages). Donde abajo dice `@proxima/auth`, hoy es `@luisfarfan/auth`.
+
 Auth se usa en hub + admin + pos → para no triplicar código, se extrae a una **Angular library** (ng-packagr).
 
 - **Distribución: GitHub Packages** (registro npm privado **gratis** de GitHub) — versionado semver, `.npmrc` apuntando a `npm.pkg.github.com` + token. (Alternativa simple: git-dependency. Monorepo descartado por costo de cambio.)
