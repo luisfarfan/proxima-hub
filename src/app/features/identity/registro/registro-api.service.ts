@@ -1,4 +1,4 @@
-import { HttpClient, HttpContext } from '@angular/common/http';
+import { HttpClient, HttpContext, HttpParams } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Observable, map } from 'rxjs';
 import { SUPPRESS_ERROR_TOAST, type RegisterPayload } from '@luisfarfan/auth';
@@ -15,6 +15,18 @@ export interface RegistrationStartResponse {
   email: string;
   expires_in: number;
   dev_code?: string | null;
+}
+
+export interface EmailCheckResponse {
+  available: boolean;
+  reason: 'AVAILABLE' | 'EMAIL_TAKEN' | 'DISPOSABLE_EMAIL';
+}
+
+export interface RucLookupResponse {
+  ruc: string;
+  razon_social: string;
+  estado: string | null;
+  condicion: string | null;
 }
 
 interface AcquisitionCategoryItem {
@@ -50,5 +62,19 @@ export class RegistroApiService {
       { registration_id: registrationId },
       guestOptions,
     );
+  }
+
+  checkEmail(email: string): Observable<EmailCheckResponse> {
+    return this.http.get<EmailCheckResponse>('auth/check-email', {
+      ...guestOptions,
+      params: new HttpParams().set('email', email),
+    });
+  }
+
+  lookupRuc(ruc: string): Observable<RucLookupResponse> {
+    return this.http.get<RucLookupResponse>('auth/lookup-ruc', {
+      ...guestOptions,
+      params: new HttpParams().set('ruc', ruc),
+    });
   }
 }

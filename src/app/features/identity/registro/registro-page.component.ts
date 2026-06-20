@@ -9,9 +9,10 @@ import {
   viewChild,
 } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
-import { toSignal } from '@angular/core/rxjs-interop';
+import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RouterLink } from '@angular/router';
+import { catchError, debounceTime, distinctUntilChanged, filter, of, switchMap } from 'rxjs';
 import { InputTextModule } from 'primeng/inputtext';
 import { SelectModule } from 'primeng/select';
 import { SelectButtonModule } from 'primeng/selectbutton';
@@ -21,7 +22,7 @@ import { ButtonModule } from 'primeng/button';
 
 import { AuthService, type RegisterPayload } from '@luisfarfan/auth';
 import { RuntimeConfigService } from '../../../core/config/runtime-config.service';
-import { RegistroApiService, RubroOption } from './registro-api.service';
+import { RegistroApiService, RubroOption, type RucLookupResponse } from './registro-api.service';
 
 interface TurnstileApi {
   render(el: HTMLElement, opts: Record<string, unknown>): string;
@@ -80,6 +81,16 @@ export class RegistroPageComponent {
 
   readonly rubros = signal<RubroOption[]>([]);
 
+  // ── Email availability ───────────────────────────────────────────────────
+  readonly emailStatus = signal<'idle' | 'checking' | 'ok' | 'taken' | 'disposable'>('idle');
+
+  // ── RUC lookup ───────────────────────────────────────────────────────────
+  readonly rucLookup = signal<{ status: 'idle' | 'loading' | 'ok' | 'not_found' | 'error'; data?: Pick<RucLookupResponse, 'razon_social' | 'estado' | 'condicion'> }>({ status: 'idle' });
+  readonly canVerifyRuc = computed(() => {
+    this.formTick();
+    return /^\d{11}$/.test(this.negocio.controls.ruc.value ?? '');
+  });
+
   readonly rucOptions = [
     { label: 'Sí, tengo RUC', value: true },
     { label: 'Aún no', value: false },
@@ -117,7 +128,9 @@ export class RegistroPageComponent {
       case 1:
         return this.negocio.valid;
       case 2:
-        return this.cuenta.valid;
+        return this.cuenta.valid
+          && this.emailStatus() !== 'taken'
+          && this.emailStatus() !== 'disposable';
       case 3:
         return this.form.controls.terms.valid;
     }
@@ -154,6 +167,42 @@ export class RegistroPageComponent {
       error: () => this.rubros.set([]),
     });
     this.negocio.controls.hasRuc.valueChanges.subscribe((v) => this.hasRuc.set(v));
+
+    // Reset RUC lookup result whenever the RUC field changes
+    this.negocio.controls.ruc.valueChanges
+      .pipe(takeUntilDestroyed())
+      .subscribe(() => this.rucLookup.set({ status: 'idle' }));
+
+    // Email uniqueness check with debounce
+    this.cuenta.controls.email.valueChanges
+      .pipe(
+        debounceTime(700),
+        distinctUntilChanged(),
+        filter(() => this.cuenta.controls.email.valid),
+        switchMap((v) => {
+          this.emailStatus.set('checking');
+          return this.api.checkEmail((v ?? '').trim().toLowerCase()).pipe(
+            catchError(() => of(null)),
+          );
+        }),
+        takeUntilDestroyed(),
+      )
+      .subscribe((res) => {
+        if (!res) { this.emailStatus.set('idle'); return; }
+        this.emailStatus.set(
+          res.reason === 'EMAIL_TAKEN' ? 'taken'
+          : res.reason === 'DISPOSABLE_EMAIL' ? 'disposable'
+          : 'ok',
+        );
+      });
+
+    // Reset email status when field becomes invalid
+    this.cuenta.controls.email.valueChanges
+      .pipe(
+        filter(() => !this.cuenta.controls.email.valid),
+        takeUntilDestroyed(),
+      )
+      .subscribe(() => this.emailStatus.set('idle'));
 
     effect(() => {
       const el = this.turnstileEl()?.nativeElement;
@@ -195,6 +244,21 @@ export class RegistroPageComponent {
       ts.reset(this.turnstileWidgetId);
       this.captchaToken.set(null);
     }
+  }
+
+  verifyRuc(): void {
+    if (!this.canVerifyRuc() || this.rucLookup().status === 'loading') return;
+    this.rucLookup.set({ status: 'loading' });
+    this.api.lookupRuc(this.negocio.controls.ruc.value!).subscribe({
+      next: (res) => this.rucLookup.set({
+        status: 'ok',
+        data: { razon_social: res.razon_social, estado: res.estado, condicion: res.condicion },
+      }),
+      error: (err: HttpErrorResponse) => {
+        const detail = (err.error as { detail?: string } | null)?.detail;
+        this.rucLookup.set({ status: detail === 'RUC_NOT_FOUND' ? 'not_found' : 'error' });
+      },
+    });
   }
 
   next(): void {

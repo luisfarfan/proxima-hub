@@ -122,7 +122,26 @@
                 @if (hasRuc() === true) {
                   <div class="field" animate.enter="reveal">
                     <label for="biz-ruc">RUC <span class="opt">opcional</span></label>
-                    <input pInputText id="biz-ruc" formControlName="ruc" inputmode="numeric" maxlength="11" placeholder="20XXXXXXXXX" class="w-full" />
+                    <div class="ruc-row">
+                      <input pInputText id="biz-ruc" formControlName="ruc" inputmode="numeric" maxlength="11" placeholder="20XXXXXXXXX" class="w-full" />
+                      <button type="button" class="btn-verify"
+                        [disabled]="!canVerifyRuc() || rucLookup().status === 'loading'"
+                        (click)="verifyRuc()">
+                        @if (rucLookup().status === 'loading') { Verificando… } @else { Verificar }
+                      </button>
+                    </div>
+                    @if (rucLookup().status === 'ok') {
+                      <p class="ruc-ok">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+                        {{ rucLookup().data?.razon_social }}@if (rucLookup().data?.estado) { · {{ rucLookup().data?.estado }} }
+                      </p>
+                    }
+                    @if (rucLookup().status === 'not_found') {
+                      <p class="field-err" role="alert">RUC no encontrado en SUNAT.</p>
+                    }
+                    @if (rucLookup().status === 'error') {
+                      <p class="field-err" role="alert">No se pudo consultar el RUC. Inténtalo de nuevo.</p>
+                    }
                   </div>
                 }
               </form>
@@ -142,12 +161,23 @@
                 </div>
                 <div class="field">
                   <label for="acc-email">Correo electrónico</label>
-                  <input pInputText id="acc-email" type="email" formControlName="email" placeholder="tu@correo.com" autocomplete="email" class="w-full"
-                    [attr.aria-invalid]="(emailTaken() || (cuenta.controls.email.invalid && cuenta.controls.email.touched)) ? 'true' : null"
-                    aria-describedby="email-help"
-                  />
-                  @if (emailTaken()) {
+                  <div class="email-wrap">
+                    <input pInputText id="acc-email" type="email" formControlName="email" placeholder="tu@correo.com" autocomplete="email" class="w-full"
+                      [attr.aria-invalid]="(emailTaken() || emailStatus() === 'taken' || emailStatus() === 'disposable' || (cuenta.controls.email.invalid && cuenta.controls.email.touched)) ? 'true' : null"
+                      aria-describedby="email-help"
+                    />
+                    @if (emailStatus() === 'checking') {
+                      <span class="email-spin" aria-hidden="true"></span>
+                    } @else if (emailStatus() === 'ok') {
+                      <span class="email-ok" aria-hidden="true">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                      </span>
+                    }
+                  </div>
+                  @if (emailTaken() || emailStatus() === 'taken') {
                     <p id="email-help" class="field-err" role="alert">Este correo ya tiene una cuenta. <a routerLink="/login" class="reg-a">Iniciar sesión</a></p>
+                  } @else if (emailStatus() === 'disposable') {
+                    <p id="email-help" class="field-err" role="alert">Usa un correo real; los correos temporales no están permitidos.</p>
                   } @else if (cuenta.controls.email.invalid && cuenta.controls.email.touched) {
                     <p id="email-help" class="field-err" role="alert">
                       @if (cuenta.controls.email.hasError('required')) { Ingresa tu correo electrónico. }
