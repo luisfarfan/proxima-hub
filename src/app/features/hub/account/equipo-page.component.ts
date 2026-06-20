@@ -9,7 +9,7 @@ import {
 import { HttpClient } from '@angular/common/http';
 import { RouterLink } from '@angular/router';
 import { firstValueFrom } from 'rxjs';
-import { BusinessContextService } from '@proxima/auth';
+import { BusinessContextService } from '@luisfarfan/auth';
 
 interface TeamMember {
   id: string;

@@ -19,7 +19,7 @@ import {
   provideProximaAuth,
   proximaAuthInterceptors,
   PROXIMA_AUTH_API_BASE_URL,
-} from '@proxima/auth';
+} from '@luisfarfan/auth';
 
 export const appConfig: ApplicationConfig = {
   providers: [

@@ -8,7 +8,7 @@ import {
 import { Router, RouterLink } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
-import { AuthService, BusinessContextService } from '@proxima/auth';
+import { AuthService, BusinessContextService } from '@luisfarfan/auth';
 import { RuntimeConfigService } from '../../../core/config/runtime-config.service';
 import { QuotaLabelPipe } from '../../../shared/pipes/quota-label.pipe';
 

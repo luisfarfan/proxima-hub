@@ -3,7 +3,7 @@ import { ActivatedRoute, RouterLink } from '@angular/router';
 import { ButtonModule } from 'primeng/button';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { HttpErrorResponse } from '@angular/common/http';
-import { AuthService, mapAuthDetailToMessageKey } from '@proxima/auth';
+import { AuthService, mapAuthDetailToMessageKey } from '@luisfarfan/auth';
 import { AuthGuestShellComponent } from './auth-guest-shell.component';
 import { AuthInlineAlertComponent } from './auth-inline-alert.component';
 import { AUTH_GUEST_BTN, AUTH_GUEST_LINK } from './auth-guest.styles';

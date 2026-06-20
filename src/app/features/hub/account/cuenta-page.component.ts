@@ -6,7 +6,7 @@ import {
   signal,
 } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
-import { AuthService } from '@proxima/auth';
+import { AuthService } from '@luisfarfan/auth';
 import { GoogleLinkSectionComponent } from '../../identity/google-link-section.component';
 
 @Component({

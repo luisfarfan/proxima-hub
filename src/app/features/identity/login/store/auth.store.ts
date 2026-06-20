@@ -2,7 +2,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { Injectable, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { firstValueFrom } from 'rxjs';
-import { AuthService, AuthTokenStorage, validateNextUrl } from '@proxima/auth';
+import { AuthService, AuthTokenStorage, validateNextUrl } from '@luisfarfan/auth';
 import { RuntimeConfigService } from '../../../../core/config/runtime-config.service';
 import { formatHttpError } from '../../../../core/utils/api-error';
 

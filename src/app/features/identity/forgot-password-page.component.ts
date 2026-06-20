@@ -3,7 +3,7 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
-import { AuthService } from '@proxima/auth';
+import { AuthService } from '@luisfarfan/auth';
 import { AuthGuestShellComponent } from './auth-guest-shell.component';
 import { AuthInlineAlertComponent } from './auth-inline-alert.component';
 import {

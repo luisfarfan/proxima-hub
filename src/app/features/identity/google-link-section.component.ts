@@ -10,7 +10,7 @@ import {
 } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
-import { AuthService } from '@proxima/auth';
+import { AuthService } from '@luisfarfan/auth';
 import { RuntimeConfigService } from '../../core/config/runtime-config.service';
 
 type LinkStatus = 'idle' | 'loading' | 'linked' | 'already_linked' | 'conflict' | 'error';

@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, OnInit, inject, signal } from '@ang
 import { ActivatedRoute } from '@angular/router';
 import { Message } from 'primeng/message';
 import { ButtonModule } from 'primeng/button';
-import { AuthService, AuthTokenStorage, BusinessContextService, validateNextUrl, type BusinessMembership } from '@proxima/auth';
+import { AuthService, AuthTokenStorage, BusinessContextService, validateNextUrl, type BusinessMembership } from '@luisfarfan/auth';
 import { RuntimeConfigService } from '../../../core/config/runtime-config.service';
 
 @Component({

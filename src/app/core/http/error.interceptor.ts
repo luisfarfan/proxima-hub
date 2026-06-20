@@ -2,7 +2,7 @@ import { HttpInterceptorFn, HttpErrorResponse } from '@angular/common/http';
 import { inject } from '@angular/core';
 import { MessageService } from 'primeng/api';
 import { catchError, throwError } from 'rxjs';
-import { SUPPRESS_ERROR_TOAST } from '@proxima/auth';
+import { SUPPRESS_ERROR_TOAST } from '@luisfarfan/auth';
 
 function toastMessage(error: HttpErrorResponse): string {
   if (error.status === 0) return 'No se pudo conectar. Verifica tu conexión a internet.';

@@ -13,7 +13,7 @@ import { HttpClient } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
 import { DatePipe } from '@angular/common';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { BusinessContextService } from '@proxima/auth';
+import { BusinessContextService } from '@luisfarfan/auth';
 import { RuntimeConfigService } from '../../../core/config/runtime-config.service';
 import { QuotaLabelPipe } from '../../../shared/pipes/quota-label.pipe';
 

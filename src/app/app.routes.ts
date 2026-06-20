@@ -1,5 +1,5 @@
 import { Routes } from '@angular/router';
-import { authGuard, guestGuard, tokenGuard, businessGuard } from '@proxima/auth';
+import { authGuard, guestGuard, tokenGuard, businessGuard } from '@luisfarfan/auth';
 
 export const routes: Routes = [
   // ── Hub shell: authenticated + business context required ──────────────────

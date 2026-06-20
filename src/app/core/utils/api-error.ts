@@ -1,5 +1,5 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { isDomainError, isServerApiError, isValidationError } from '@proxima/auth';
+import { isDomainError, isServerApiError, isValidationError } from '@luisfarfan/auth';
 
 export function formatHttpError(err: unknown): string {
   if (!(err instanceof HttpErrorResponse)) {

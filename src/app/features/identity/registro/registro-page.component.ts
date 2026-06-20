@@ -19,7 +19,7 @@ import { PasswordModule } from 'primeng/password';
 import { CheckboxModule } from 'primeng/checkbox';
 import { ButtonModule } from 'primeng/button';
 
-import { AuthService, type RegisterPayload } from '@proxima/auth';
+import { AuthService, type RegisterPayload } from '@luisfarfan/auth';
 import { RuntimeConfigService } from '../../../core/config/runtime-config.service';
 import { RegistroApiService, RubroOption } from './registro-api.service';
 
