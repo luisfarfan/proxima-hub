@@ -122,9 +122,12 @@ export class HomeComponent {
   // Effective permission codes the user holds in the ACTIVE business.
   // Served by GET /me → active_business.permissions (not yet in the auth lib's
   // public type, so read defensively); '*' = super admin.
-  private readonly userPermissions = computed((): ReadonlySet<string> => {
+  // Returns null when the field is ABSENT (older API that predates this) so the
+  // permission gate can fail OPEN — never lock a user out because the backend
+  // didn't ship the field yet. An empty array means "user genuinely has none".
+  private readonly userPermissions = computed((): ReadonlySet<string> | null => {
     const ab = this.user()?.active_business as { permissions?: string[] } | null | undefined;
-    return new Set(ab?.permissions ?? []);
+    return ab?.permissions ? new Set(ab.permissions) : null;
   });
 
   // --- App switcher ---
@@ -133,7 +136,8 @@ export class HomeComponent {
     const has = (key: string) => !!e?.[key];
     const perms = this.userPermissions();
     const hasAnyPerm = (codes?: string[]) =>
-      !codes?.length || perms.has('*') || codes.some((c) => perms.has(c));
+      // Unknown permissions (null) or no requirement → don't gate (fail-open).
+      perms === null || !codes?.length || perms.has('*') || codes.some((c) => perms.has(c));
 
     const build = (app: Omit<HubApp, 'addOn' | 'noAccess'>): HubApp => {
       const gate = APP_GATES[app.key] ?? {};
