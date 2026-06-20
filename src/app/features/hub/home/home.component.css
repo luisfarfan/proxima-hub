@@ -183,6 +183,29 @@
   color: var(--muted);
 }
 
+/* Permission-gated (role lacks access): muted, non-interactive, no upsell. */
+.hub-app.no-access {
+  cursor: not-allowed;
+  opacity: 0.66;
+}
+.hub-app.no-access:hover {
+  transform: none;
+  border-color: var(--border);
+  box-shadow: none;
+}
+.hub-app.no-access .hub-app-icon,
+.hub-app.no-access .hub-app-cta {
+  color: var(--faint);
+}
+.hub-app.no-access .hub-app-cta {
+  opacity: 1;
+  transform: none;
+}
+.hub-app-badge--lock {
+  color: #8a6d1f;
+  background: #fbf3da;
+}
+
 /* ── Bottom grid ───────────────────────────────────────────────────────────── */
 .hub-grid2 {
   display: grid;

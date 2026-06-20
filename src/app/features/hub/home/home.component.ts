@@ -18,6 +18,21 @@ const ADD_ON_FEATURE_KEY: Record<string, string> = {
   intelligence: 'pricing_intelligence',
 };
 
+// Two independent gates per app (mirrors how big apps separate billing from RBAC):
+//   - entitlement: does the BUSINESS pay for it? (plan) → upsell when missing.
+//   - anyPerm: does the USER's role allow it? → "sin acceso" when missing (no upsell).
+interface AppGate {
+  entitlement?: string;        // plan feature key (businessCtx.entitlements())
+  anyPerm?: string[];          // user needs ANY of these permission codes
+}
+const APP_GATES: Record<string, AppGate> = {
+  panel: { anyPerm: ['catalog:manage', 'orders:view', 'orders:manage', 'inventory:manage', 'fulfillment:manage', 'cms:read', 'users:manage'] },
+  caja: { entitlement: 'pos', anyPerm: ['pos:operate', 'pos:manage'] },
+  tienda: { entitlement: 'cms' },
+  intelligence: { entitlement: 'pricing_intelligence' },
+  app: {},
+};
+
 // ---------------------------------------------------------------------------
 // Local types (mirrors admin models; kept lean for the hub)
 // ---------------------------------------------------------------------------
@@ -61,7 +76,10 @@ export interface HubApp {
   desc: string;
   icon: 'panel' | 'caja' | 'tienda' | 'intelligence' | 'app';
   url: string;
+  /** Plan add-on the business hasn't enabled → upsell. */
   addOn: boolean;
+  /** User's role lacks the permission → "sin acceso" (NOT an upsell). */
+  noAccess: boolean;
 }
 
 // Static fallback used while CORS is not yet enabled (Fase 8)
@@ -101,57 +119,42 @@ export class HomeComponent {
     return this.memberships().find((m) => m.id === bizId)?.name ?? 'Mi negocio';
   });
 
+  // Effective permission codes the user holds in the ACTIVE business.
+  // Served by GET /me → active_business.permissions (not yet in the auth lib's
+  // public type, so read defensively); '*' = super admin.
+  private readonly userPermissions = computed((): ReadonlySet<string> => {
+    const ab = this.user()?.active_business as { permissions?: string[] } | null | undefined;
+    return new Set(ab?.permissions ?? []);
+  });
+
   // --- App switcher ---
   protected readonly apps = computed((): HubApp[] => {
     const e = this.businessCtx.entitlements();
     const has = (key: string) => !!e?.[key];
+    const perms = this.userPermissions();
+    const hasAnyPerm = (codes?: string[]) =>
+      !codes?.length || perms.has('*') || codes.some((c) => perms.has(c));
+
+    const build = (app: Omit<HubApp, 'addOn' | 'noAccess'>): HubApp => {
+      const gate = APP_GATES[app.key] ?? {};
+      // Plan gate first: an un-entitled business is an upsell, regardless of role.
+      const addOn = !!gate.entitlement && !has(gate.entitlement);
+      // Permission gate only matters once the business is entitled.
+      const noAccess = !addOn && !hasAnyPerm(gate.anyPerm);
+      return { ...app, addOn, noAccess };
+    };
 
     const candidates: Array<HubApp | null> = [
-      {
-        key: 'panel',
-        name: 'Panel',
-        desc: 'Catálogo, pedidos, stock y clientes',
-        icon: 'panel',
-        url: this.runtimeConfig.adminUrl() ?? '',
-        addOn: false,
-      },
-      {
-        key: 'caja',
-        name: 'Caja',
-        desc: 'Vende en mostrador, sin fricción',
-        icon: 'caja',
-        url: this.runtimeConfig.posUrl() ?? '',
-        addOn: false,
-      },
+      build({ key: 'panel', name: 'Panel', desc: 'Catálogo, pedidos, stock y clientes', icon: 'panel', url: this.runtimeConfig.adminUrl() ?? '' }),
+      build({ key: 'caja', name: 'Caja', desc: 'Vende en mostrador, sin fricción', icon: 'caja', url: this.runtimeConfig.posUrl() ?? '' }),
       this.runtimeConfig.builderUrl()
-        ? {
-            key: 'tienda',
-            name: 'Tienda Web',
-            desc: 'Diseña y publica tu tienda online',
-            icon: 'tienda',
-            url: this.runtimeConfig.builderUrl()!,
-            addOn: !has('cms'),
-          }
+        ? build({ key: 'tienda', name: 'Tienda Web', desc: 'Diseña y publica tu tienda online', icon: 'tienda', url: this.runtimeConfig.builderUrl()! })
         : null,
       this.runtimeConfig.intelligenceUrl()
-        ? {
-            key: 'intelligence',
-            name: 'Intelligence',
-            desc: 'Precios y decisiones con IA',
-            icon: 'intelligence',
-            url: this.runtimeConfig.intelligenceUrl()!,
-            addOn: !has('pricing_intelligence'),
-          }
+        ? build({ key: 'intelligence', name: 'Intelligence', desc: 'Precios y decisiones con IA', icon: 'intelligence', url: this.runtimeConfig.intelligenceUrl()! })
         : null,
       this.runtimeConfig.mobileUrl()
-        ? {
-            key: 'app',
-            name: 'App',
-            desc: 'Tu negocio en el celular',
-            icon: 'app',
-            url: this.runtimeConfig.mobileUrl()!,
-            addOn: false,
-          }
+        ? build({ key: 'app', name: 'App', desc: 'Tu negocio en el celular', icon: 'app', url: this.runtimeConfig.mobileUrl()! })
         : null,
     ];
 
@@ -229,6 +232,11 @@ export class HomeComponent {
 
   // --- Actions ---
   protected openApp(app: HubApp): void {
+    if (app.noAccess) {
+      // Permission gate: upgrading the plan won't help — it's an internal role.
+      // Big apps surface "ask your admin" here, never a billing CTA.
+      return;
+    }
     if (app.addOn) {
       // Hub is the single billing destination — route to /plan with feature context.
       const featureKey = ADD_ON_FEATURE_KEY[app.key] ?? app.key;

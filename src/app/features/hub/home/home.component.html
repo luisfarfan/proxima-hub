@@ -25,9 +25,12 @@
           <button
             class="hub-app"
             [class.locked]="app.addOn"
+            [class.no-access]="app.noAccess"
             type="button"
+            [disabled]="app.noAccess"
             (click)="openApp(app)"
-            [attr.aria-label]="(app.addOn ? 'Activar add-on: ' : 'Abrir ') + app.name + ' — ' + app.desc"
+            [attr.aria-disabled]="app.noAccess"
+            [attr.aria-label]="(app.noAccess ? 'Sin acceso: ' : app.addOn ? 'Activar add-on: ' : 'Abrir ') + app.name + ' — ' + (app.noAccess ? 'habla con tu administrador' : app.desc)"
           >
             <span class="hub-app-icon" aria-hidden="true">
               @switch (app.icon) {
@@ -51,15 +54,21 @@
             <span class="hub-app-body">
               <span class="hub-app-name">
                 {{ app.name }}
-                @if (app.addOn) {
+                @if (app.noAccess) {
+                  <span class="hub-app-badge hub-app-badge--lock">Sin acceso</span>
+                } @else if (app.addOn) {
                   <span class="hub-app-badge">Add-on</span>
                 }
               </span>
-              <span class="hub-app-desc">{{ app.desc }}</span>
+              <span class="hub-app-desc">{{ app.noAccess ? 'Tu rol no incluye este acceso — pídeselo a tu administrador.' : app.desc }}</span>
             </span>
             <span class="hub-app-cta" aria-hidden="true">
-              {{ app.addOn ? 'Activar' : 'Abrir' }}
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+              @if (app.noAccess) {
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
+              } @else {
+                {{ app.addOn ? 'Activar' : 'Abrir' }}
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+              }
             </span>
           </button>
         </li>
