@@ -57,6 +57,17 @@ interface AddonDef {
   name: string;
   description: string;
   entitlementKey: string;
+  /** Website add-ons need the merchant to pick a template before checkout. */
+  needsTemplate?: boolean;
+}
+
+interface WebsiteTemplate {
+  id: string;
+  name: string;
+  description?: string | null;
+  category?: string | null;
+  industry?: string | null;
+  preview_image?: string | null;
 }
 
 const ADDON_DEFS: AddonDef[] = [
@@ -65,6 +76,7 @@ const ADDON_DEFS: AddonDef[] = [
     name: 'Tienda Web',
     description: 'Diseña y publica tu tienda online',
     entitlementKey: 'cms',
+    needsTemplate: true,
   },
   {
     key: 'precios_inteligentes',
@@ -285,6 +297,62 @@ const ADDON_DEFS: AddonDef[] = [
         <p class="field-error" role="alert">{{ addonError() }}</p>
       }
     </section>
+  }
+
+  <!-- ── Selector de plantilla (Tienda Web) ────────────────────────────── -->
+  @if (templatePickerOpen()) {
+    <div class="tpl-backdrop" (click)="closeTemplatePicker()" aria-hidden="true"></div>
+    <div class="tpl-modal" role="dialog" aria-modal="true" aria-labelledby="tpl-h">
+      <div class="tpl-modal-head">
+        <h2 class="card-h2" id="tpl-h">Elige tu plantilla</h2>
+        <button class="tpl-x" type="button" (click)="closeTemplatePicker()" aria-label="Cerrar">✕</button>
+      </div>
+      <p class="tpl-sub">Tu tienda se crea con esta plantilla; la podrás editar después en el Builder.</p>
+
+      @if (templatesLoading()) {
+        <p class="tpl-state">Cargando plantillas…</p>
+      } @else if (templates().length === 0) {
+        <p class="tpl-state">No hay plantillas disponibles por ahora.</p>
+      } @else {
+        <ul class="tpl-grid" role="list">
+          @for (t of templates(); track t.id) {
+            <li>
+              <button
+                type="button"
+                class="tpl-card"
+                [class.tpl-card--on]="selectedTemplateId() === t.id"
+                (click)="selectedTemplateId.set(t.id)"
+                [attr.aria-pressed]="selectedTemplateId() === t.id"
+              >
+                <span class="tpl-thumb">
+                  @if (t.preview_image) {
+                    <img [src]="t.preview_image" [alt]="t.name" loading="lazy" />
+                  } @else {
+                    <span class="tpl-thumb-fallback" aria-hidden="true">🌐</span>
+                  }
+                </span>
+                <span class="tpl-name">{{ t.name }}</span>
+                @if (t.industry || t.category) {
+                  <span class="tpl-meta">{{ t.industry || t.category }}</span>
+                }
+              </button>
+            </li>
+          }
+        </ul>
+      }
+
+      <div class="tpl-actions">
+        <button class="btn-outline" type="button" (click)="closeTemplatePicker()">Cancelar</button>
+        <button
+          class="btn-primary"
+          type="button"
+          [disabled]="!selectedTemplateId()"
+          (click)="confirmTemplateAndCheckout()"
+        >
+          Continuar al pago
+        </button>
+      </div>
+    </div>
   }
 
   <!-- ── Historial de pagos ────────────────────────────────────────────── -->
@@ -565,6 +633,49 @@ const ADDON_DEFS: AddonDef[] = [
 .payment-status.paid    { background: #dcfce7; color: #15803d; }
 .payment-status.pending { background: #fef9c3; color: #92400e; }
 .payment-status.failed  { background: #fee2e2; color: #b91c1c; }
+
+/* Template picker modal */
+.tpl-backdrop {
+  position: fixed; inset: 0; z-index: 40;
+  background: rgba(13, 37, 61, 0.45);
+}
+.tpl-modal {
+  position: fixed; z-index: 41;
+  top: 50%; left: 50%; transform: translate(-50%, -50%);
+  width: min(680px, 92vw); max-height: 86vh; overflow: auto;
+  background: var(--bg, #fff); border: 1px solid var(--border, #e7e5e0);
+  border-radius: 16px; box-shadow: 0 24px 60px -16px rgba(13, 37, 61, 0.35);
+  padding: 1.25rem 1.25rem 1rem;
+}
+.tpl-modal-head { display: flex; align-items: center; justify-content: space-between; }
+.tpl-x {
+  border: none; background: transparent; cursor: pointer;
+  font-size: 1rem; color: var(--muted); padding: 4px 8px; border-radius: 8px;
+}
+.tpl-x:hover { background: #f1f0ec; }
+.tpl-sub { font-size: 0.8125rem; color: var(--muted); margin: 4px 0 1rem; }
+.tpl-state { font-size: 0.875rem; color: var(--muted); padding: 1.5rem 0; text-align: center; }
+.tpl-grid {
+  list-style: none; margin: 0; padding: 0;
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 0.75rem;
+}
+.tpl-card {
+  display: flex; flex-direction: column; gap: 6px; width: 100%;
+  border: 1px solid var(--border, #e7e5e0); border-radius: 12px; padding: 8px;
+  background: var(--bg, #fff); cursor: pointer; text-align: left;
+  transition: border-color 0.15s, box-shadow 0.15s, transform 0.15s;
+}
+.tpl-card:hover { transform: translateY(-2px); box-shadow: 0 10px 24px -14px rgba(13, 37, 61, 0.3); }
+.tpl-card--on { border-color: var(--brand, #2563eb); box-shadow: 0 0 0 2px var(--brand, #2563eb); }
+.tpl-thumb {
+  display: flex; align-items: center; justify-content: center;
+  aspect-ratio: 16 / 10; border-radius: 8px; overflow: hidden; background: #f1f0ec;
+}
+.tpl-thumb img { width: 100%; height: 100%; object-fit: cover; }
+.tpl-thumb-fallback { font-size: 1.5rem; opacity: 0.6; }
+.tpl-name { font-size: 0.8125rem; font-weight: 600; color: var(--ink); }
+.tpl-meta { font-size: 0.6875rem; color: var(--muted); text-transform: capitalize; }
+.tpl-actions { display: flex; justify-content: flex-end; gap: 0.5rem; margin-top: 1.25rem; }
   `],
 })
 export class PlanPageComponent {
@@ -791,8 +902,54 @@ export class PlanPageComponent {
   protected readonly addonLoading = signal<string | null>(null);
   protected readonly addonError = signal<string | null>(null);
 
+  // --- Template picker (website add-ons need a chosen template) ---
+  protected readonly templatePickerOpen = signal<boolean>(false);
+  protected readonly templates = signal<WebsiteTemplate[]>([]);
+  protected readonly templatesLoading = signal<boolean>(false);
+  protected readonly selectedTemplateId = signal<string | null>(null);
+
   protected async contractAddon(addonKey: string): Promise<void> {
     if (this.addonLoading()) return;
+    const def = ADDON_DEFS.find((a) => a.key === addonKey);
+    // Website add-ons require the merchant to pick a template first.
+    if (def?.needsTemplate) {
+      await this.openTemplatePicker();
+      return;
+    }
+    await this.startAddonCheckout(addonKey);
+  }
+
+  private async openTemplatePicker(): Promise<void> {
+    this.addonError.set(null);
+    this.selectedTemplateId.set(null);
+    this.templatePickerOpen.set(true);
+    if (this.templates().length === 0) {
+      this.templatesLoading.set(true);
+      try {
+        const list = await firstValueFrom(
+          this.http.get<WebsiteTemplate[]>('storefront/cms/website-templates'),
+        );
+        this.templates.set(list ?? []);
+      } catch {
+        this.addonError.set('No se pudieron cargar las plantillas. Intenta de nuevo.');
+      } finally {
+        this.templatesLoading.set(false);
+      }
+    }
+  }
+
+  protected closeTemplatePicker(): void {
+    this.templatePickerOpen.set(false);
+  }
+
+  protected async confirmTemplateAndCheckout(): Promise<void> {
+    const templateId = this.selectedTemplateId();
+    if (!templateId) return;
+    this.templatePickerOpen.set(false);
+    await this.startAddonCheckout('tienda_web', templateId);
+  }
+
+  private async startAddonCheckout(addonKey: string, templateId?: string): Promise<void> {
     this.addonLoading.set(addonKey);
     this.addonError.set(null);
     try {
@@ -802,6 +959,7 @@ export class PlanPageComponent {
           addon_key: addonKey,
           success_url: `${back}?status=success`,
           failure_url: `${back}?status=failure`,
+          ...(templateId ? { template_id: templateId } : {}),
         }),
       );
       if (res?.checkout_url) {
