@@ -105,6 +105,42 @@ import { RuntimeConfigService } from '../../../core/config/runtime-config.servic
             }
           }
 
+          @if (auth.isSuperAdmin()) {
+            <div class="mt-5 border-t border-hairline pt-5">
+              <p class="mb-3 text-center text-[0.6875rem] font-medium uppercase tracking-widest text-muted-color">
+                Administrador de plataforma
+              </p>
+              <button
+                type="button"
+                data-testid="go-to-platform"
+                (click)="goToPlatform()"
+                class="group flex w-full items-center gap-3 rounded-lg border border-hairline bg-surface-50 px-4 py-3 text-left transition-all duration-200 hover:border-primary/30 hover:bg-primary/5"
+              >
+                <div
+                  class="flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-surface-200 text-muted-color transition-colors duration-200 group-hover:bg-primary/10 group-hover:text-primary"
+                  aria-hidden="true"
+                >
+                  <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                      d="M9 17.25v1.007a3 3 0 0 1-.879 2.122L7.5 21h9l-.621-.621A3 3 0 0 1 15 18.257V17.25m6-12V15a2.25 2.25 0 0 1-2.25 2.25H5.25A2.25 2.25 0 0 1 3 15V5.25m18 0A2.25 2.25 0 0 0 18.75 3H5.25A2.25 2.25 0 0 0 3 5.25m18 0H3" />
+                  </svg>
+                </div>
+                <div class="flex min-w-0 flex-1 flex-col">
+                  <span class="text-[0.8125rem] font-medium text-color transition-colors duration-200 group-hover:text-primary">
+                    Acceder a Platform
+                  </span>
+                  <span class="text-[0.75rem] text-muted-color">Panel de control global</span>
+                </div>
+                <svg
+                  class="ml-auto h-3.5 w-3.5 shrink-0 text-muted-color opacity-0 transition-all duration-200 group-hover:opacity-100"
+                  fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true"
+                >
+                  <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
+                </svg>
+              </button>
+            </div>
+          }
+
           <footer class="mt-7 border-t border-hairline pt-5 text-center">
             <button
               type="button"
@@ -164,6 +200,19 @@ export class SelectBusinessPageComponent implements OnInit {
         this.loading.set(false);
       },
     });
+  }
+
+  goToPlatform(): void {
+    const adminUrl = this.runtimeConfig.adminUrl();
+    if (!adminUrl) return;
+
+    const params = new URLSearchParams();
+    const access = this.tokens.getAccessToken();
+    const refresh = this.tokens.getRefreshToken();
+    if (access) params.set('sso', access);
+    if (refresh) params.set('sso_refresh', refresh);
+    const qs = params.toString();
+    window.location.href = `${adminUrl}/platform${qs ? '?' + qs : ''}`;
   }
 
   select(biz: BusinessMembership): void {
