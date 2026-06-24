@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, OnInit, inject, signal } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Message } from 'primeng/message';
 import { ButtonModule } from 'primeng/button';
 import { AuthService, AuthTokenStorage, BusinessContextService, validateNextUrl, type BusinessMembership } from '@luisfarfan/auth';
@@ -163,6 +163,7 @@ export class SelectBusinessPageComponent implements OnInit {
   private readonly businessContext = inject(BusinessContextService);
   private readonly tokens = inject(AuthTokenStorage);
   private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
   private readonly runtimeConfig = inject(RuntimeConfigService);
 
   readonly businesses = signal<BusinessMembership[]>([]);
@@ -236,6 +237,7 @@ export class SelectBusinessPageComponent implements OnInit {
       }
     }
 
-    window.location.href = '/';
+    // Same-app: keep Angular alive so cookie-mode _accessToken stays in memory.
+    void this.router.navigateByUrl('/');
   }
 }

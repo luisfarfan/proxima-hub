@@ -23,7 +23,7 @@ export class AuthStore {
       await firstValueFrom(this.auth.login(email, password));
       const memberships = this.auth.memberships();
 
-      if (memberships.length === 1) {
+      if (memberships.length === 1 && !this.auth.isSuperAdmin()) {
         const biz = memberships[0];
         this.auth.businessContext.setBusinessId(biz.id);
 
@@ -32,6 +32,7 @@ export class AuthStore {
         let redirectUrl = validatedNext ?? '/';
 
         if (redirectUrl.startsWith('http')) {
+          // Cross-app redirect: full navigation needed, pass SSO tokens.
           const token = this.tokenStorage.getAccessToken();
           if (token) {
             const sep = redirectUrl.includes('?') ? '&' : '?';
@@ -41,8 +42,11 @@ export class AuthStore {
               redirectUrl += `&sso_refresh=${encodeURIComponent(refreshToken)}`;
             }
           }
+          window.location.href = redirectUrl;
+        } else {
+          // Same-app redirect: keep Angular alive so cookie-mode _accessToken stays in memory.
+          await this.router.navigateByUrl(redirectUrl);
         }
-        window.location.href = redirectUrl;
       } else {
         const qs = next ? `?next=${encodeURIComponent(next)}` : '';
         await this.router.navigateByUrl(`/elegir-negocio${qs}`);
@@ -65,7 +69,7 @@ export class AuthStore {
       await firstValueFrom(this.auth.loginWithGoogle(credential));
       const memberships = this.auth.memberships();
 
-      if (memberships.length === 1) {
+      if (memberships.length === 1 && !this.auth.isSuperAdmin()) {
         const biz = memberships[0];
         this.auth.businessContext.setBusinessId(biz.id);
 
@@ -83,8 +87,10 @@ export class AuthStore {
               redirectUrl += `&sso_refresh=${encodeURIComponent(refreshToken)}`;
             }
           }
+          window.location.href = redirectUrl;
+        } else {
+          await this.router.navigateByUrl(redirectUrl);
         }
-        window.location.href = redirectUrl;
       } else {
         await this.router.navigateByUrl('/elegir-negocio');
       }
