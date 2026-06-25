@@ -8,7 +8,7 @@ import {
 import { Router, RouterLink } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
-import { AuthService, BusinessContextService } from '@luisfarfan/auth';
+import { AuthService, AuthTokenStorage, BusinessContextService } from '@luisfarfan/auth';
 import { RuntimeConfigService } from '../../../core/config/runtime-config.service';
 import { QuotaLabelPipe } from '../../../shared/pipes/quota-label.pipe';
 
@@ -101,6 +101,7 @@ const FALLBACK_CHECKLIST: ReadinessItem[] = [
 export class HomeComponent {
   private readonly http = inject(HttpClient);
   private readonly auth = inject(AuthService);
+  private readonly tokens = inject(AuthTokenStorage);
   private readonly businessCtx = inject(BusinessContextService);
   private readonly runtimeConfig = inject(RuntimeConfigService);
   private readonly router = inject(Router);
@@ -251,6 +252,17 @@ export class HomeComponent {
       window.open(app.url, '_blank', 'noopener,noreferrer');
       return;
     }
-    window.location.href = app.url;
+    // SSO handoff: pass tokens + business so the target app gets a valid session
+    // without needing a hub round-trip (which would end in a loop since the user
+    // is already authenticated and guestGuard would just redirect to hub home).
+    const access = this.tokens.getAccessToken();
+    const refresh = this.tokens.getRefreshToken();
+    const businessId = this.businessCtx.businessId();
+    const params = new URLSearchParams();
+    if (businessId) params.set('sso_business', businessId);
+    if (access) params.set('sso', access);
+    if (refresh) params.set('sso_refresh', refresh);
+    const qs = params.toString();
+    window.location.href = qs ? `${app.url}?${qs}` : app.url;
   }
 }
