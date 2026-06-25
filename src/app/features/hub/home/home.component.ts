@@ -6,10 +6,9 @@ import {
   resource,
 } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
-import { HttpClient } from '@angular/common/http';
-import { firstValueFrom } from 'rxjs';
 import { AuthService, AuthTokenStorage, BusinessContextService } from '@luisfarfan/auth';
 import { RuntimeConfigService } from '../../../core/config/runtime-config.service';
+import { HubDataCacheService } from '../../../core/services/hub-data-cache.service';
 import { QuotaLabelPipe } from '../../../shared/pipes/quota-label.pipe';
 
 // entitlement key for each add-on app (matches businessCtx.entitlements())
@@ -99,12 +98,12 @@ const FALLBACK_CHECKLIST: ReadinessItem[] = [
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class HomeComponent {
-  private readonly http = inject(HttpClient);
   private readonly auth = inject(AuthService);
   private readonly tokens = inject(AuthTokenStorage);
   private readonly businessCtx = inject(BusinessContextService);
   private readonly runtimeConfig = inject(RuntimeConfigService);
   private readonly router = inject(Router);
+  private readonly hubData = inject(HubDataCacheService);
 
   // --- User / business (needed for hero section) ---
   protected readonly user = this.auth.user;
@@ -167,17 +166,9 @@ export class HomeComponent {
   });
 
   // --- Subscription / plan card ---
+  // Uses HubDataCacheService (TTL 5 min) to avoid re-fetching on every mount.
   private readonly billingRes = resource({
-    loader: async () => {
-      if (!this.businessCtx.businessId()) return null;
-      try {
-        return await firstValueFrom(
-          this.http.get<SubscriptionStatus>('admin/billing/subscription/status'),
-        );
-      } catch {
-        return null;
-      }
-    },
+    loader: async () => this.hubData.getSubscriptionStatus(this.businessCtx.businessId()),
   });
 
   protected readonly subscription = computed(() => this.billingRes.value() ?? null);
@@ -194,16 +185,7 @@ export class HomeComponent {
 
   // --- Business status / onboarding checklist ---
   private readonly statusRes = resource({
-    loader: async () => {
-      if (!this.businessCtx.businessId()) return null;
-      try {
-        return await firstValueFrom(
-          this.http.get<BusinessStatus>('admin/business/status'),
-        );
-      } catch {
-        return null;
-      }
-    },
+    loader: async () => this.hubData.getBusinessStatus(this.businessCtx.businessId()),
   });
 
   protected readonly statusLoading = this.statusRes.isLoading;
