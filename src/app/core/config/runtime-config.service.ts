@@ -6,6 +6,7 @@ function normalizeConfig(raw: RuntimeConfigJson): RuntimeConfig {
   return {
     apiBaseUrl: base,
     apiV1BaseUrl: `${base}/api/v1`,
+    appVersion: raw.appVersion?.trim() || undefined,
     turnstileSiteKey: raw.turnstileSiteKey?.trim() || undefined,
     googleClientId: raw.googleClientId?.trim() || undefined,
     adminUrl: raw.adminUrl?.replace(/\/+$/, '') ?? undefined,
@@ -22,6 +23,7 @@ export class RuntimeConfigService {
 
   readonly config = this._config.asReadonly();
 
+  readonly appVersion = computed(() => this._config()?.appVersion ?? null);
   readonly turnstileSiteKey = computed(() => this._config()?.turnstileSiteKey ?? null);
   readonly googleClientId = computed(() => this._config()?.googleClientId ?? null);
   readonly adminUrl = computed(() => this._config()?.adminUrl ?? null);

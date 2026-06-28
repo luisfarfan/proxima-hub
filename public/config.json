@@ -1,8 +1,9 @@
 {
-  "apiBaseUrl": "http://api.localhost",
+  "apiBaseUrl": "http://localhost:8000",
+  "appVersion": "0.1.0",
   "turnstileSiteKey": "",
   "googleClientId": "",
-  "adminUrl": "http://admin.localhost",
+  "adminUrl": "http://localhost:4201",
   "builderUrl": "http://builder.localhost",
   "posUrl": "http://pos.localhost",
   "intelligenceUrl": "http://intelligence.localhost",

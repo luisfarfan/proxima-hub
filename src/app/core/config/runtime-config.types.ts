@@ -1,5 +1,6 @@
 export interface RuntimeConfigJson {
   apiBaseUrl: string;
+  appVersion?: string;
   turnstileSiteKey?: string;
   googleClientId?: string;
   adminUrl?: string;
@@ -12,6 +13,7 @@ export interface RuntimeConfigJson {
 export interface RuntimeConfig {
   readonly apiBaseUrl: string;
   readonly apiV1BaseUrl: string;
+  readonly appVersion?: string;
   readonly turnstileSiteKey?: string;
   readonly googleClientId?: string;
   readonly adminUrl?: string;

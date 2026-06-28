@@ -3,6 +3,9 @@
 <div class="hub-shell">
   <header class="hub-top">
     <a routerLink="/" class="hub-mark" aria-label="Próxima — ir al inicio">Próxima</a>
+    @if (appVersion(); as version) {
+      <span class="hub-version" title="v{{ version }}">v{{ version }}</span>
+    }
     <div class="hub-top-r">
       <button
         class="hub-biz"

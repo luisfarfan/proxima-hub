@@ -35,6 +35,13 @@ jobs:
           # read:packages token to pull @luisfarfan/auth from GitHub Packages (.npmrc).
           NODE_AUTH_TOKEN: ${{ secrets.NODE_AUTH_TOKEN }}
 
+      - name: Resolve app version
+        id: app_version
+        run: |
+          VERSION=$(node -p "JSON.parse(require('fs').readFileSync('.release-please-manifest.json','utf8'))['.']")
+          echo "value=${VERSION}" >> "$GITHUB_OUTPUT"
+          echo "Resolved app version: ${VERSION}"
+
       - name: Build (production)
         run: pnpm run build
 
@@ -44,6 +51,7 @@ jobs:
           cat > "${BUILD_DIR}/config.json" <<JSON
           {
             "apiBaseUrl": "https://api.proxima.pe",
+            "appVersion": "${{ steps.app_version.outputs.value }}",
             "turnstileSiteKey": "${{ vars.TURNSTILE_SITE_KEY }}",
             "googleClientId": "${{ vars.GOOGLE_CLIENT_ID }}",
             "adminUrl": "https://admin.proxima.pe",
