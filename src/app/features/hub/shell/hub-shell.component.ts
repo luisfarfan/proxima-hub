@@ -9,6 +9,7 @@ import { Router, RouterLink, RouterOutlet } from '@angular/router';
 import { Menu } from 'primeng/menu';
 import type { MenuItem } from 'primeng/api';
 import { AuthService, BusinessContextService } from '@luisfarfan/auth';
+import { RuntimeConfigService } from '../../../core/config/runtime-config.service';
 
 @Component({
   selector: 'app-hub-shell',
@@ -22,6 +23,9 @@ export class HubShellComponent {
   private readonly router = inject(Router);
   protected readonly auth = inject(AuthService);
   private readonly businessCtx = inject(BusinessContextService);
+  private readonly runtimeConfig = inject(RuntimeConfigService);
+
+  readonly appVersion = this.runtimeConfig.appVersion;
 
   protected readonly user = this.auth.user;
   protected readonly memberships = this.auth.memberships;

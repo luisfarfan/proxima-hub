@@ -21,6 +21,7 @@
 
 /* ── Top bar ───────────────────────────────────────────────────────────────── */
 .hub-top {
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -41,6 +42,19 @@
   display: flex;
   align-items: center;
   gap: 12px;
+}
+
+.hub-version {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 0.6875rem;
+  font-weight: 500;
+  color: var(--muted);
+  opacity: 0.55;
+  letter-spacing: 0.02em;
+  user-select: none;
+  pointer-events: none;
 }
 
 .hub-biz {
