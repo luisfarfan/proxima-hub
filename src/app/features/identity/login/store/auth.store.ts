@@ -21,11 +21,15 @@ export class AuthStore {
     this.error.set(null);
     try {
       await firstValueFrom(this.auth.login(email, password));
+      // Load /me so user().is_super_admin is authoritative before routing.
+      // login() only fetches me/businesses; isSuperAdmin() would fall back to
+      // JWT kind==='admin' (true for all portal users) without this call.
+      await firstValueFrom(this.auth.ensureUserLoaded());
       const memberships = this.auth.memberships();
 
-      if (memberships.length === 1 && !this.auth.isSuperAdmin()) {
+      if (memberships.length === 1 && !this.auth.user()?.is_super_admin) {
         const biz = memberships[0];
-        this.auth.businessContext.setBusinessId(biz.id);
+        this.auth.businessContext.applyMembership(biz);
 
         const config = this.runtimeConfig.requireConfig();
         const validatedNext = validateNextUrl(next, config);
@@ -67,11 +71,12 @@ export class AuthStore {
     this.error.set(null);
     try {
       await firstValueFrom(this.auth.loginWithGoogle(credential));
+      await firstValueFrom(this.auth.ensureUserLoaded());
       const memberships = this.auth.memberships();
 
-      if (memberships.length === 1 && !this.auth.isSuperAdmin()) {
+      if (memberships.length === 1 && !this.auth.user()?.is_super_admin) {
         const biz = memberships[0];
-        this.auth.businessContext.setBusinessId(biz.id);
+        this.auth.businessContext.applyMembership(biz);
 
         const config = this.runtimeConfig.requireConfig();
         const validatedNext = validateNextUrl(null, config);

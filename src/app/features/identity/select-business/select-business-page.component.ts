@@ -7,7 +7,6 @@ import { RuntimeConfigService } from '../../../core/config/runtime-config.servic
 
 @Component({
   selector: 'app-select-business-page',
-  standalone: true,
   imports: [Message, ButtonModule],
   template: `
     <div class="flex min-h-screen items-center justify-center bg-canvas px-4 py-10 sm:px-6">
@@ -105,7 +104,7 @@ import { RuntimeConfigService } from '../../../core/config/runtime-config.servic
             }
           }
 
-          @if (auth.isSuperAdmin()) {
+          @if (auth.user()?.is_super_admin) {
             <div class="mt-5 border-t border-hairline pt-5">
               <p class="mb-3 text-center text-[0.6875rem] font-medium uppercase tracking-widest text-muted-color">
                 Administrador de plataforma
@@ -167,19 +166,22 @@ export class SelectBusinessPageComponent implements OnInit {
   private readonly runtimeConfig = inject(RuntimeConfigService);
 
   readonly businesses = signal<BusinessMembership[]>([]);
-  readonly loading = signal(true);
+  readonly loading = signal(false);
   readonly loadError = signal<string | null>(null);
 
   ngOnInit(): void {
-    this.loadBusinesses();
+    // Load /me first so user().is_super_admin is authoritative before any auto-select.
+    // login() only fetches me/businesses; the base lib's isSuperAdmin() would fall back
+    // to JWT kind==='admin' (true for all portal users) if we don't load the user here.
+    this.auth.ensureUserLoaded().subscribe(() => this.loadBusinesses());
   }
 
   loadBusinesses(): void {
+    const isSuperAdmin = this.auth.user()?.is_super_admin ?? false;
     const cached = this.auth.memberships();
     if (cached.length > 0) {
       this.businesses.set(cached);
-      this.loading.set(false);
-      if (cached.length === 1 && !this.auth.isSuperAdmin()) {
+      if (cached.length === 1 && !isSuperAdmin) {
         this.select(cached[0]);
       }
       return;
@@ -192,7 +194,7 @@ export class SelectBusinessPageComponent implements OnInit {
       next: (data) => {
         this.businesses.set(data);
         this.loading.set(false);
-        if (data.length === 1 && !this.auth.isSuperAdmin()) {
+        if (data.length === 1 && !isSuperAdmin) {
           this.select(data[0]);
         }
       },
