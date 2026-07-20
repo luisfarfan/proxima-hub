@@ -1,0 +1,7 @@
+{
+  "database": "dolt",
+  "backend": "dolt",
+  "dolt_mode": "embedded",
+  "dolt_database": "proxima_hub",
+  "project_id": "e3118e58-cba8-4de3-a3e2-7e247fb42bd2"
+}
