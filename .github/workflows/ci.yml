@@ -1,4 +1,6 @@
 # PROXIMA Engineering System (D8): CI solo llama 'mise run ci'.
+# NOTA: hub es PÚBLICO y no puede consumir el reusable privado de proxima-engineering
+# → pasos inline (mismo contrato). Si se privatiza, migrar al reusable (ver pos).
 name: ci
 on:
   workflow_dispatch:
@@ -6,5 +8,13 @@ on:
     branches: [main, develop]
 jobs:
   verify:
-    uses: luisfarfan/proxima-engineering/.github/workflows/verify.yml@95a2a7779c832a3735d0e03a57f6a02b502e1333
-    secrets: inherit
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: jdx/mise-action@v2
+        with:
+          version: 2026.7.7
+      - name: mise run ci
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NODE_AUTH_TOKEN }}
+        run: mise run ci
