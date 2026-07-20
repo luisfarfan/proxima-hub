@@ -1,0 +1,10 @@
+# PROXIMA Engineering System (D8): CI solo llama 'mise run ci'.
+name: ci
+on:
+  workflow_dispatch:
+  push:
+    branches: [main, develop]
+jobs:
+  verify:
+    uses: luisfarfan/proxima-engineering/.github/workflows/verify.yml@95a2a7779c832a3735d0e03a57f6a02b502e1333
+    secrets: inherit

@@ -1,0 +1,13 @@
+# PROXIMA Engineering System (D6): hooks rápidos staged; el gate completo es CI.
+pre-commit:
+  parallel: true
+  jobs:
+    - name: gitleaks
+      run: sh -c 'command -v gitleaks >/dev/null || { echo "gitleaks no instalado - saltado"; exit 0; }; gitleaks protect --staged --no-banner --redact'
+    - name: beads-export
+      run: sh -c 'test -d .beads && env -u GIT_INDEX_FILE -u GIT_DIR -u GIT_WORK_TREE timeout 15 bd export > .beads/issues.jsonl 2>/dev/null && git add .beads/issues.jsonl || true'
+
+commit-msg:
+  jobs:
+    - name: conventional-commits
+      run: ../proxima-engineering/scripts/check-commit-msg.sh {1}

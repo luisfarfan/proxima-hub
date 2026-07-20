@@ -1,0 +1,55 @@
+# PROXIMA Engineering System — verbos uniformes + harness
+[tasks.dev]
+description = "ng serve"
+run = "pnpm start"
+
+[tasks.lint]
+description = "PENDIENTE: hub no tiene eslint configurado todavía"
+run = "echo 'AVISO: proxima-hub no tiene lint configurado (pendiente)'"
+
+[tasks.test]
+description = "ng test (Karma — requiere navegador)"
+run = "pnpm test"
+
+[tasks.build]
+run = "pnpm build"
+
+[tasks.verify]
+description = "Gate local real hoy: build"
+depends = ["build"]
+
+[tasks.ci]
+description = "Lo único que CI debe ejecutar"
+run = "pnpm install --frozen-lockfile && pnpm build"
+
+[tasks.doctor]
+run = "node --version && pnpm --version"
+
+[tools]
+node = "22"
+pnpm = "10.28.0"
+# Harness OpenSpec↔Beads (proxima-engineering/harness). Uso: mise run beads-sync <change>
+[tasks.beads-sync]
+description = "Sincroniza un change OpenSpec a Beads (idempotente)"
+usage = 'arg "<change>"'
+run = "../proxima-engineering/harness/bin/beads-harness sync --change {{arg(name='change')}}"
+[tasks.beads-sync-dry]
+description = "Preview del sync (no muta Beads)"
+usage = 'arg "<change>"'
+run = "../proxima-engineering/harness/bin/beads-harness sync --dry-run --change {{arg(name='change')}}"
+[tasks.beads-next]
+description = "Siguiente tarea lista (gate determinista, JSON)"
+usage = 'arg "<change>"'
+run = "../proxima-engineering/harness/bin/beads-harness next --json --change {{arg(name='change')}}"
+[tasks.beads-verify]
+description = "Detecta drift entre OpenSpec y Beads"
+usage = 'arg "<change>"'
+run = "../proxima-engineering/harness/bin/beads-harness verify --change {{arg(name='change')}}"
+[tasks.beads-progress]
+description = "Refleja beads cerrados+verificados en los checkboxes"
+usage = 'arg "<change>"'
+run = "../proxima-engineering/harness/bin/beads-harness update-progress --change {{arg(name='change')}}"
+[tasks.beads-review-gate]
+description = "Gate de revisión (anti-autoaprobación + staleness)"
+usage = 'arg "<change>"'
+run = "../proxima-engineering/harness/bin/beads-harness review-gate --change {{arg(name='change')}}"

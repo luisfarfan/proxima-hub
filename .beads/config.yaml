@@ -68,3 +68,5 @@
 sync.remote: "git+ssh://git@github.com-personal/luisfarfan/proxima-hub.git"
 agents:
     file: BEADS.md
+git:
+    hooks: false
