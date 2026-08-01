@@ -1,0 +1,23 @@
+{
+  "stack": "node",
+  "subtypes": [
+    "frontend"
+  ],
+  "commands": {
+    "test": "pnpm exec ng test --watch=false",
+    "testOne": "pnpm exec ng test --watch=false --include={target}",
+    "typecheck": "pnpm exec tsc --noEmit",
+    "build": "pnpm build",
+    "serve": "pnpm start"
+  },
+  "plan": {
+    "source": "openspec"
+  },
+  "verify": {
+    "mode": "unit",
+    "url": "http://localhost:4200"
+  },
+  "tracker": {
+    "kind": "none"
+  }
+}
