@@ -63,7 +63,14 @@
               "buildTarget": "proxima-hub:build:development"
             }
           },
-          "defaultConfiguration": "development"
+          "defaultConfiguration": "development",
+          "options": {
+            "allowedHosts": [
+              ".proxima.test",
+              "app-dev.proxima.test",
+              "localhost"
+            ]
+          }
         },
         "test": {
           "builder": "@angular/build:unit-test"
