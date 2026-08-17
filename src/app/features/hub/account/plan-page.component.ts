@@ -57,6 +57,8 @@ interface AddonDef {
   name: string;
   description: string;
   entitlementKey: string;
+  /** Qué dice el botón. `tienda_web` no arranca un cobro, arranca un asistente. */
+  cta: string;
 }
 
 const ADDON_DEFS: AddonDef[] = [
@@ -65,12 +67,14 @@ const ADDON_DEFS: AddonDef[] = [
     name: 'Tienda Web',
     description: 'Diseña y publica tu tienda online',
     entitlementKey: 'cms',
+    cta: 'Crear mi tienda',
   },
   {
     key: 'precios_inteligentes',
     name: 'Intelligence',
     description: 'Precios y decisiones con IA',
     entitlementKey: 'pricing_intelligence',
+    cta: 'Contratar',
   },
 ];
 
@@ -274,7 +278,7 @@ const ADDON_DEFS: AddonDef[] = [
                 <button class="btn-outline" type="button"
                         [disabled]="addonLoading() === addon.key"
                         (click)="contractAddon(addon.key)">
-                  {{ addonLoading() === addon.key ? '…' : 'Contratar' }}
+                  {{ addonLoading() === addon.key ? '…' : addon.cta }}
                 </button>
               }
             </div>
@@ -793,6 +797,20 @@ export class PlanPageComponent {
 
   protected async contractAddon(addonKey: string): Promise<void> {
     if (this.addonLoading()) return;
+    // `tienda_web` no puede empezar por el cobro: `provision_addon` exige el
+    // `template_id` del diseño elegido (TEMPLATE_REQUIRED), así que un checkout
+    // sin diseño cobra y después falla al provisionar — el comercio paga y no
+    // recibe nada. El asistente junta diseño, subdominio y respuestas primero.
+    // Que el asistente arranque el cobro es lo que falta: bead proxima-api-3wy.
+    if (addonKey === 'tienda_web') {
+      const admin = this.runtimeConfig.adminUrl();
+      if (!admin) {
+        this.addonError.set('No pudimos abrir el asistente de tienda web.');
+        return;
+      }
+      window.location.href = `${admin}/websites/nueva`;
+      return;
+    }
     this.addonLoading.set(addonKey);
     this.addonError.set(null);
     try {
