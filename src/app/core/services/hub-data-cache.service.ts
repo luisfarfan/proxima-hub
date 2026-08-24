@@ -20,6 +20,13 @@ export interface SubscriptionStatus {
   usage: Array<{ resource: string; limit: number; current: number; unit: string }>;
 }
 
+export interface PlanSummary {
+  id: string;
+  name: string;
+  monthly_price: number;
+  features?: Record<string, boolean>;
+}
+
 export interface BusinessStatus {
   readiness: {
     sections: Array<{ items: Array<{ id: string; complete: boolean; skipped: boolean; blocking: boolean; cta_label: string; status?: string }> }>;
@@ -33,6 +40,7 @@ export class HubDataCacheService {
 
   private subscriptionCache: (CacheEntry<SubscriptionStatus | null> & { bizId: string }) | null = null;
   private statusCache: (CacheEntry<BusinessStatus | null> & { bizId: string }) | null = null;
+  private plansCache: CacheEntry<PlanSummary[]> | null = null;
 
   async getSubscriptionStatus(businessId: string | null): Promise<SubscriptionStatus | null> {
     if (!businessId) return null;
@@ -68,8 +76,26 @@ export class HubDataCacheService {
     }
   }
 
+  /**
+   * Catálogo de planes. El Hub lo necesita para decir QUÉ abre cada app
+   * bloqueada: sin esto solo puede decir «no lo tienes», que es justo lo que
+   * hacía que las tarjetas parecieran todas iguales.
+   */
+  async getPlans(): Promise<PlanSummary[]> {
+    if (this.plansCache && !isStale(this.plansCache)) return this.plansCache.value;
+    try {
+      const value = await firstValueFrom(this.http.get<PlanSummary[]>('billing/plans'));
+      this.plansCache = { value: value ?? [], ts: Date.now() };
+      return this.plansCache.value;
+    } catch {
+      this.plansCache = { value: [], ts: Date.now() };
+      return [];
+    }
+  }
+
   invalidate(): void {
     this.subscriptionCache = null;
     this.statusCache = null;
+    this.plansCache = null;
   }
 }

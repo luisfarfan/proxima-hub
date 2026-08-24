@@ -9,6 +9,7 @@ import { Router, RouterLink } from '@angular/router';
 import { AuthService, AuthTokenStorage, BusinessContextService } from '@luisfarfan/auth';
 import { RuntimeConfigService } from '../../../core/config/runtime-config.service';
 import { HubDataCacheService } from '../../../core/services/hub-data-cache.service';
+import { LowerCasePipe } from '@angular/common';
 import { QuotaLabelPipe } from '../../../shared/pipes/quota-label.pipe';
 
 // entitlement key for each add-on app (matches businessCtx.entitlements())
@@ -16,6 +17,27 @@ const ADD_ON_FEATURE_KEY: Record<string, string> = {
   tienda: 'cms',
   intelligence: 'pricing_intelligence',
 };
+
+/**
+ * Add-ons que se compran sueltos, espejo de `ADDON_LADDER` del API.
+ * Una feature que NO aparece acá y tampoco en ningún plan del catálogo no se
+ * puede anunciar con precio — y entonces no se inventa uno.
+ */
+const ADD_ON_CATALOG: Record<string, { name: string; monthlyPrice: number; minPlan?: string }> = {
+  cms: { name: 'Tienda Web', monthlyPrice: 50, minPlan: 'emprende' },
+  pricing_intelligence: { name: 'Intelligence', monthlyPrice: 100 },
+};
+
+/** Cómo se abre una app bloqueada: comprando un add-on, o subiendo de plan. */
+interface UnlockPath {
+  kind: 'addon' | 'plan' | 'unknown';
+  /** Línea que explica qué hay que hacer. */
+  detail: string;
+  /** Monto grande de la derecha. */
+  amount: string;
+  /** Renglón bajo el monto. */
+  amountNote: string;
+}
 
 // Two independent gates per app (mirrors how big apps separate billing from RBAC):
 //   - entitlement: does the BUSINESS pay for it? (plan) → upsell when missing.
@@ -47,6 +69,10 @@ interface SubscriptionStatus {
   plan_name: string;
   status: string;
   usage: UsageSummary[];
+}
+
+interface HubAppUnlock {
+  unlock?: UnlockPath;
 }
 
 interface ReadinessItem {
@@ -92,7 +118,7 @@ const FALLBACK_CHECKLIST: ReadinessItem[] = [
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [QuotaLabelPipe, RouterLink],
+  imports: [QuotaLabelPipe, RouterLink, LowerCasePipe],
   templateUrl: './home.component.html',
   styleUrl: './home.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -131,6 +157,62 @@ export class HomeComponent {
   });
 
   // --- App switcher ---
+  private readonly plansRes = resource({
+    loader: async () => this.hubData.getPlans(),
+  });
+
+  /** Del más barato al más caro: el primero que incluye una feature es el que hay que nombrar. */
+  private readonly plansByPrice = computed(() =>
+    [...(this.plansRes.value() ?? [])].sort((a, b) => a.monthly_price - b.monthly_price),
+  );
+
+  /**
+   * Qué abre una app bloqueada. Primero se pregunta si algún plan la incluye
+   * —«Caja» sale recién en Lidera, no es un add-on— y solo si ninguno lo hace
+   * se la trata como compra suelta.
+   */
+  protected unlockFor(entitlement: string | undefined): UnlockPath {
+    if (!entitlement) return { kind: 'unknown', detail: '', amount: '', amountNote: '' };
+
+    const plan = this.plansByPrice().find((p) => p.features?.[entitlement] === true);
+    if (plan) {
+      return {
+        kind: 'plan',
+        detail: `Viene incluida desde el plan ${plan.name} — no se compra suelta`,
+        amount: plan.name,
+        amountNote: `S/ ${plan.monthly_price} al mes`,
+      };
+    }
+
+    const addon = ADD_ON_CATALOG[entitlement];
+    if (addon) {
+      const floor = addon.minPlan
+        ? this.plansByPrice().find((p) => p.id === addon.minPlan)?.name ?? addon.minPlan
+        : null;
+      return {
+        kind: 'addon',
+        detail: floor
+          ? `Add-on de S/ ${addon.monthlyPrice} al mes · necesita al menos el plan ${floor}`
+          : `Add-on de S/ ${addon.monthlyPrice} al mes · lo activamos contigo`,
+        amount: `+ S/ ${addon.monthlyPrice}`,
+        amountNote: 'al mes',
+      };
+    }
+
+    // Sin plan que la incluya y sin add-on conocido: se dice lo que se sabe.
+    return { kind: 'unknown', detail: 'Todavía no está disponible en tu cuenta', amount: '', amountNote: '' };
+  }
+
+  /** Lo que el comercio ya puede abrir. */
+  protected readonly ownedApps = computed(() => this.apps().filter((a) => !a.addOn));
+
+  /** Lo que está detrás de un plan o un add-on. */
+  protected readonly lockedApps = computed(() =>
+    this.apps()
+      .filter((a) => a.addOn)
+      .map((app) => ({ ...app, unlock: this.unlockFor(APP_GATES[app.key]?.entitlement) })),
+  );
+
   protected readonly apps = computed((): HubApp[] => {
     const e = this.businessCtx.entitlements();
     const has = (key: string) => !!e?.[key];
@@ -196,6 +278,26 @@ export class HomeComponent {
     return status.readiness.sections
       .flatMap((s) => s.items)
       .filter((it) => it.status !== 'obsoleted');
+  });
+
+  /** El paso que toca ahora: el primero sin completar. */
+  protected readonly nextStep = computed(
+    () => this.checklistItems().find((item) => !item.complete) ?? null,
+  );
+
+  protected readonly restSteps = computed(() => {
+    const next = this.nextStep();
+    return this.checklistItems().filter((item) => item !== next);
+  });
+
+  /**
+   * Un comercio sin productos no puede «salir en vivo»: el catálogo vacío es
+   * lo primero. Mientras ese paso siga pendiente, la tarjeta del plan invita a
+   * comparar, no a publicar algo que no existe.
+   */
+  protected readonly canGoLive = computed(() => {
+    const catalog = this.checklistItems().find((item) => item.id === 'catalog.has_products');
+    return catalog ? catalog.complete : true;
   });
 
   protected readonly doneCount = computed(() => {
