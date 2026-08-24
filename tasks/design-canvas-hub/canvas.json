@@ -1,0 +1,14 @@
+{
+  "artboards": [
+    { "file": "Main.dc.html", "x": 0, "y": 0, "w": 720, "h": 1020, "title": "Portada · el diagnóstico" },
+    { "file": "HoyHub.dc.html", "x": 780, "y": 0, "w": 1180, "h": 1020, "title": "Hoy · el centro del Hub" },
+    { "file": "HubA.dc.html", "x": 2020, "y": 0, "w": 1180, "h": 1020, "title": "A · Lo tuyo y lo que falta" },
+    { "file": "HubB.dc.html", "x": 3260, "y": 0, "w": 1180, "h": 1020, "title": "B · Un solo siguiente paso" }
+  ],
+  "annotations": [
+    { "id": "nota-hoy", "x": 780, "y": -130, "w": 560, "text": "ESTADO ACTUAL — recreado del código y de tu captura.\nCuatro tarjetas idénticas: solo una etiqueta gris de 10 px separa lo que tienes de lo que no." },
+    { "id": "nota-a", "x": 2020, "y": -130, "w": 560, "text": "DIRECCIÓN A · Lo tuyo y lo que falta\nDos estantes distintos hasta en la forma: tarjeta blanca con sombra para lo incluido, papel con borde punteado para lo bloqueado — y el precio real de cada uno." },
+    { "id": "nota-b", "x": 3260, "y": -130, "w": 560, "text": "DIRECCIÓN B · Un solo siguiente paso\nLa pantalla es la próxima acción. El switcher se encoge a lo que es. Pensada para el día uno, con el catálogo vacío." }
+  ],
+  "launch": { "view": "canvas" }
+}

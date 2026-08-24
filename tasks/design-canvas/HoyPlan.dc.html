@@ -1,0 +1,128 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500&family=Plus+Jakarta+Sans:wght@500;600&family=Inter:wght@400;500;600&display=swap">
+  <style>
+    body { margin: 0; font-family: 'Inter', system-ui, sans-serif; letter-spacing: -0.003em; }
+    a { color: #0009dc; text-decoration: none; } a:hover { color: #000678; text-decoration: underline; }
+    .row { display: flex; align-items: center; gap: 16px; padding: 14px 0; border-bottom: 1px solid rgba(27,26,23,0.06); }
+    .row:last-child { border-bottom: none; }
+    .row-name { font-size: 0.9375rem; font-weight: 500; color: #1b1a17; display: flex; align-items: center; gap: 8px; }
+    .row-desc { font-size: 0.8125rem; color: #6c6a63; }
+    .badge { font-size: 0.625rem; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; padding: 1px 6px; border-radius: 999px; }
+    .btn-outline { height: 36px; padding: 0 16px; border-radius: 8px; border: 1px solid rgba(27,26,23,0.16); background: #fff; font-size: 0.8125rem; font-weight: 500; color: #1b1a17; display: inline-flex; align-items: center; }
+    .btn-primary { height: 36px; padding: 0 16px; border-radius: 8px; background: #1b1a17; color: #fff; font-size: 0.8125rem; font-weight: 600; display: inline-flex; align-items: center; gap: 7px; }
+  </style>
+</helmet>
+
+<div style="width: 832px; height: 1060px; box-sizing: border-box; background: #fbfaf8; color: #1b1a17; overflow: hidden;">
+
+  <nav style="display: flex; gap: 0; padding: 0 32px; border-bottom: 1px solid rgba(27,26,23,0.07);">
+    <span style="padding: 13.6px 0; margin-right: 28px; font-size: 0.875rem; font-weight: 500; color: #6c6a63;">Cuenta</span>
+    <span style="padding: 13.6px 0; margin-right: 28px; font-size: 0.875rem; font-weight: 500; color: #1b1a17; border-bottom: 2px solid #1b1a17;">Plan</span>
+    <span style="padding: 13.6px 0; margin-right: 28px; font-size: 0.875rem; font-weight: 500; color: #6c6a63;">Seguridad</span>
+    <span style="padding: 13.6px 0; margin-right: 28px; font-size: 0.875rem; font-weight: 500; color: #6c6a63;">Equipo</span>
+  </nav>
+
+  <main style="max-width: 768px; margin: 0 auto; padding: 40px 32px 80px; display: flex; flex-direction: column; gap: 24px;">
+
+    <h1 style="margin: 0 0 4px; font-family: 'Fraunces', Georgia, serif; font-size: 1.875rem; font-weight: 500; letter-spacing: -0.02em;">Plan</h1>
+
+    <section style="border: 1px solid rgba(27,26,23,0.11); border-radius: 14px; background: #fff; padding: 24px;">
+      <h2 style="margin: 0 0 17.6px; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 0.9375rem; font-weight: 600; letter-spacing: -0.01em;">Plan actual</h2>
+      <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
+        <span style="font-family: 'Fraunces', Georgia, serif; font-size: 1.625rem; font-weight: 500; letter-spacing: -0.01em;">Gratis</span>
+        <span class="badge" style="background: #fef9c3; color: #92400e; padding: 2px 8px;">Prueba</span>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 14px;">
+        <div>
+          <div style="display: flex; justify-content: space-between; font-size: 0.8125rem; margin-bottom: 6px;"><span style="color: #6c6a63;">Productos</span><span style="font-weight: 500;">9 / 10</span></div>
+          <div style="height: 5px; border-radius: 999px; background: rgba(27,26,23,0.08); overflow: hidden;"><span style="display: block; height: 100%; width: 90%; background: #1b1a17; border-radius: 999px;"></span></div>
+        </div>
+        <div>
+          <div style="display: flex; justify-content: space-between; font-size: 0.8125rem; margin-bottom: 6px;"><span style="color: #6c6a63;">Usuarios admin</span><span style="font-weight: 500;">1 / 1</span></div>
+          <div style="height: 5px; border-radius: 999px; background: rgba(27,26,23,0.08); overflow: hidden;"><span style="display: block; height: 100%; width: 100%; background: #1b1a17; border-radius: 999px;"></span></div>
+        </div>
+        <div>
+          <div style="display: flex; justify-content: space-between; font-size: 0.8125rem; margin-bottom: 6px;"><span style="color: #6c6a63;">Pedidos por mes</span><span style="font-weight: 500;">24 / 30</span></div>
+          <div style="height: 5px; border-radius: 999px; background: rgba(27,26,23,0.08); overflow: hidden;"><span style="display: block; height: 100%; width: 80%; background: #1b1a17; border-radius: 999px;"></span></div>
+        </div>
+        <div style="display: flex; justify-content: space-between; font-size: 0.8125rem;"><span style="color: #6c6a63;">Comprobantes por mes</span><span style="font-style: italic; color: #73716a;">No incluido</span></div>
+      </div>
+    </section>
+
+    <section style="border: 1px solid rgba(27,26,23,0.11); border-radius: 14px; background: #fff; padding: 24px;">
+      <h2 style="margin: 0 0 17.6px; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 0.9375rem; font-weight: 600; letter-spacing: -0.01em;">Planes disponibles</h2>
+
+      <div class="row" style="opacity: 0.6;">
+        <span style="flex: 1; display: flex; flex-direction: column; gap: 3px;">
+          <span class="row-name">Gratis <span class="badge" style="background: #f1f0ec; color: #6c6a63;">Plan actual</span></span>
+          <span class="row-desc">Prueba Próxima gratis: catálogo, control de stock y ventas manuales, sin límite de tiempo.</span>
+        </span>
+        <span style="font-size: 0.875rem; color: #6c6a63; white-space: nowrap;">Gratis</span>
+      </div>
+
+      <div class="row">
+        <span style="flex: 1; display: flex; flex-direction: column; gap: 3px;">
+          <span class="row-name">Emprende</span>
+          <span class="row-desc">Catálogo, pedidos manuales y por WhatsApp, control de stock y analítica básica.</span>
+        </span>
+        <span style="font-size: 0.875rem; color: #6c6a63; white-space: nowrap;">S/ 50 / mes</span>
+        <span class="btn-primary" style="background: #0009dc;">Mejorar
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        </span>
+      </div>
+
+      <div class="row">
+        <span style="flex: 1; display: flex; flex-direction: column; gap: 3px;">
+          <span class="row-name">Crece</span>
+          <span class="row-desc">Todo Emprende más CRM de clientes y facturación electrónica SUNAT.</span>
+        </span>
+        <span style="font-size: 0.875rem; color: #6c6a63; white-space: nowrap;">S/ 99 / mes</span>
+        <span class="btn-primary" style="background: #0009dc;">Mejorar
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        </span>
+      </div>
+
+    </section>
+
+    <section style="border: 1px solid rgba(27,26,23,0.11); border-radius: 14px; background: #fff; padding: 24px;">
+      <h2 style="margin: 0 0 17.6px; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 0.9375rem; font-weight: 600; letter-spacing: -0.01em;">Add-ons</h2>
+
+      <div class="row">
+        <span style="flex: 1; display: flex; flex-direction: column; gap: 3px;">
+          <span class="row-name">Tienda Web</span>
+          <span class="row-desc">Diseña y publica tu tienda online</span>
+        </span>
+        <span class="btn-outline">Crear mi tienda</span>
+      </div>
+
+      <div class="row">
+        <span style="flex: 1; display: flex; flex-direction: column; gap: 3px;">
+          <span class="row-name">Intelligence</span>
+          <span class="row-desc">Precios y decisiones con IA</span>
+        </span>
+        <span class="btn-outline">Contratar</span>
+      </div>
+
+    </section>
+
+  </main>
+
+</div>
+</x-dc>
+<script data-dc-script data-props='{"$preview":{"width":832,"height":1060}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {};
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,192 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500&family=Plus+Jakarta+Sans:wght@500;600;700&family=Inter:wght@400;500;600&display=swap">
+  <style>
+    body { margin: 0; font-family: 'Inter', system-ui, sans-serif; letter-spacing: -0.003em; }
+    a { color: #0009dc; text-decoration: none; } a:hover { color: #000678; text-decoration: underline; }
+
+    .tile { border: 1px solid rgba(27,26,23,0.11); border-radius: 16px; background: #fff; padding: 20px; display: flex; flex-direction: column; gap: 14px; }
+    .tile-h { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 0.8125rem; font-weight: 600; color: #1b1a17; }
+    .tile-d { font-size: 0.75rem; line-height: 1.5; color: #6c6a63; margin: 0; }
+    .inp { height: 42px; box-sizing: border-box; display: flex; align-items: center; gap: 8px; padding: 0 12px; background: #fff; border: 1px solid rgba(18,18,26,0.13); border-radius: 9px; font-size: 0.8125rem; color: #15151b; }
+
+    /* Ciclo compartido de 6 s */
+    @keyframes cycOut { 0%, 26% { opacity: 1; } 32%, 100% { opacity: 0; } }
+    @keyframes cycIn  { 0%, 28% { opacity: 0; transform: scale(0.5); } 38% { opacity: 1; transform: scale(1.2); } 46%, 100% { opacity: 1; transform: scale(1); } }
+    @keyframes spin   { to { transform: rotate(360deg); } }
+    @keyframes typing { 0%, 34% { width: 0; } 66%, 100% { width: 100%; } }
+    @keyframes fillSeg { 0%, 10% { transform: scaleX(0); } 40%, 100% { transform: scaleX(1); } }
+    @keyframes digitIn { 0%, 8% { opacity: 0; transform: translateY(4px); } 16%, 100% { opacity: 1; transform: none; } }
+    @keyframes ringOn { 0%, 6% { border-color: rgba(18,18,26,0.13); box-shadow: none; } 8%, 20% { border-color: #0009dc; box-shadow: 0 0 0 3px rgba(0,9,220,0.13); } 26%, 100% { border-color: rgba(18,18,26,0.13); box-shadow: none; } }
+    @keyframes stepIn { 0%, 5% { opacity: 0.35; } 15%, 100% { opacity: 1; } }
+    @keyframes barGrow { 0% { transform: scaleX(0); } 100% { transform: scaleX(1); } }
+
+    .spin { width: 14px; height: 14px; border: 2px solid rgba(27,26,23,0.13); border-top-color: #0009dc; border-radius: 50%; animation: spin 0.75s linear infinite, cycOut 6s ease-in-out infinite; }
+    .okmark { color: #1d7a4d; display: inline-flex; animation: cycIn 6s cubic-bezier(0.34,1.56,0.64,1) infinite; }
+    .hint-a { animation: cycOut 6s ease-in-out infinite; }
+    .hint-b { opacity: 0; animation: cycIn 6s ease-in-out infinite; }
+
+    .seg { flex: 1; height: 4px; border-radius: 999px; background: rgba(27,26,23,0.1); overflow: hidden; }
+    .seg > span { display: block; height: 100%; border-radius: 999px; transform-origin: left; animation: fillSeg 6s cubic-bezier(0.16,1,0.3,1) infinite; }
+
+    .rule { display: flex; align-items: center; gap: 8px; font-size: 0.75rem; color: #6c6a63; }
+    .rule .dot { width: 15px; height: 15px; border-radius: 50%; background: rgba(27,26,23,0.07); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .rule .dot svg { animation: cycIn 6s cubic-bezier(0.34,1.56,0.64,1) infinite; }
+
+    .box { width: 38px; height: 46px; border: 1px solid rgba(18,18,26,0.13); border-radius: 9px; display: flex; align-items: center; justify-content: center; font-size: 1.125rem; font-weight: 500; color: #15151b; background: #fff; animation: ringOn 6s ease-in-out infinite; }
+    .box span { animation: digitIn 6s ease-out infinite; }
+
+    .pstep { display: flex; align-items: center; gap: 10px; font-size: 0.8125rem; color: #1b1a17; animation: stepIn 6s ease-out infinite; }
+    .pstep .tick { width: 18px; height: 18px; border-radius: 6px; background: rgba(29,122,77,0.12); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .pstep .tick svg { animation: cycIn 6s cubic-bezier(0.34,1.56,0.64,1) infinite; }
+
+    @media (prefers-reduced-motion: reduce) {
+      .spin, .okmark, .hint-a, .hint-b, .seg > span, .rule .dot svg, .box, .box span, .pstep, .pstep .tick svg { animation: none !important; opacity: 1; transform: none; }
+    }
+  </style>
+</helmet>
+
+<div style="width: 1180px; height: 760px; box-sizing: border-box; background: #fbfaf8; color: #1b1a17; padding: 40px 48px; display: flex; flex-direction: column; gap: 26px; overflow: hidden;">
+
+  <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 32px;">
+    <div>
+      <span style="display: block; font-size: 0.6875rem; font-weight: 600; letter-spacing: 0.13em; text-transform: uppercase; color: #0009dc; margin-bottom: 10px;">Aplica a las dos direcciones</span>
+      <h1 style="margin: 0; font-family: 'Fraunces', Georgia, serif; font-weight: 500; font-size: 2.25rem; line-height: 1.06; letter-spacing: -0.018em;">La ayuda llega en el momento exacto</h1>
+    </div>
+    <p style="margin: 0; max-width: 27rem; font-size: 0.875rem; line-height: 1.6; color: #6c6a63;">Seis momentos donde hoy el usuario se queda solo. Cada uno responde una pregunta antes de que la haga, y confirma que algo pasó.</p>
+  </div>
+
+  <div style="flex: 1; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); grid-template-rows: repeat(2, minmax(0, 1fr)); gap: 16px;">
+
+    <!-- 1 · Correo disponible -->
+    <div class="tile">
+      <span class="tile-h">Correo · se verifica mientras escribes</span>
+      <div class="inp">
+        <span style="flex: 1;">rosa@bodegasanmartin.pe</span>
+        <span style="position: relative; width: 16px; height: 16px; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0;">
+          <span class="spin" style="position: absolute;" aria-hidden="true"></span>
+          <span class="okmark" style="position: absolute;" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+        </span>
+      </div>
+      <div style="position: relative; min-height: 34px;">
+        <p class="tile-d hint-a" style="position: absolute; inset: 0;">Comprobando que esté libre…</p>
+        <p class="tile-d hint-b" style="position: absolute; inset: 0; color: #1d7a4d; display: flex; align-items: flex-start; gap: 6px;">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0; margin-top: 2px;"><polyline points="20 6 9 17 4 12"/></svg>
+          Disponible. Ahí te llegará el código y tus comprobantes.
+        </p>
+      </div>
+    </div>
+
+    <!-- 2 · Correo ya registrado -->
+    <div class="tile">
+      <span class="tile-h">Correo ya registrado · con salida</span>
+      <div class="inp" style="border-color: #bb3a2c; box-shadow: 0 0 0 3px rgba(187,58,44,0.1);">
+        <span style="flex: 1;">rosa@bodegasanmartin.pe</span>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#bb3a2c" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg>
+      </div>
+      <p class="tile-d" style="color: #bb3a2c;">Este correo ya tiene una cuenta en Próxima.</p>
+      <div style="display: flex; gap: 8px; margin-top: auto;">
+        <span style="height: 34px; padding: 0 14px; border-radius: 8px; background: #0009dc; color: #fff; font-size: 0.75rem; font-weight: 600; display: inline-flex; align-items: center;">Iniciar sesión</span>
+        <span style="height: 34px; padding: 0 14px; border-radius: 8px; border: 1px solid rgba(18,18,26,0.13); color: #4a4841; font-size: 0.75rem; font-weight: 500; display: inline-flex; align-items: center;">Recuperar contraseña</span>
+      </div>
+    </div>
+
+    <!-- 3 · RUC desde SUNAT -->
+    <div class="tile">
+      <span class="tile-h">RUC · SUNAT completa por ti</span>
+      <div style="display: flex; gap: 8px;">
+        <div class="inp" style="flex: 1;">20512345678</div>
+        <span style="height: 42px; padding: 0 14px; border-radius: 9px; background: rgba(27,26,23,0.06); color: #1b1a17; font-size: 0.75rem; font-weight: 500; display: inline-flex; align-items: center; flex-shrink: 0;">Verificar</span>
+      </div>
+      <div style="border: 1px solid rgba(29,122,77,0.25); background: #f4fbf6; border-radius: 10px; padding: 11px 12px;">
+        <span style="display: block; font-size: 0.625rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #1d7a4d; margin-bottom: 5px;">Encontrado en SUNAT</span>
+        <span style="display: block; overflow: hidden; white-space: nowrap; font-size: 0.8125rem; font-weight: 500; color: #1b1a17; animation: typing 6s steps(26, end) infinite;">BODEGA SAN MARTIN E.I.R.L.</span>
+        <span style="display: block; margin-top: 4px; font-size: 0.6875rem; color: #6c6a63;">Activo · Habido</span>
+      </div>
+      <p class="tile-d">Con esto tus boletas salen a nombre correcto desde la primera venta.</p>
+    </div>
+
+    <!-- 4 · Contraseña -->
+    <div class="tile">
+      <span class="tile-h">Contraseña · reglas que se cumplen solas</span>
+      <div class="inp">
+        <span style="flex: 1; letter-spacing: 0.22em;">••••••••••</span>
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#6c6a63" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.6-6 10-6 10 6 10 6-3.6 6-10 6-10-6-10-6z"/><circle cx="12" cy="12" r="2.6"/></svg>
+      </div>
+      <div style="display: flex; gap: 5px;">
+        <span class="seg"><span style="background: #1d7a4d; animation-delay: 0ms;"></span></span>
+        <span class="seg"><span style="background: #1d7a4d; animation-delay: 220ms;"></span></span>
+        <span class="seg"><span style="background: #1d7a4d; animation-delay: 440ms;"></span></span>
+        <span class="seg"><span style="background: rgba(27,26,23,0.1);"></span></span>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 7px;">
+        <span class="rule"><span class="dot"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="#1d7a4d" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round" style="animation-delay: 0ms;"><polyline points="20 6 9 17 4 12"/></svg></span>Al menos 8 caracteres</span>
+        <span class="rule"><span class="dot"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="#1d7a4d" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round" style="animation-delay: 260ms;"><polyline points="20 6 9 17 4 12"/></svg></span>Una mayúscula o un número</span>
+        <span class="rule" style="color: #8a887f;"><span class="dot"></span>Un símbolo la haría muy fuerte</span>
+      </div>
+    </div>
+
+    <!-- 5 · Código de 6 dígitos -->
+    <div class="tile">
+      <span class="tile-h">Código · sin salir a buscar el correo</span>
+      <div style="display: flex; gap: 7px;">
+        <span class="box" style="animation-delay: 0ms;"><span style="animation-delay: 0ms;">4</span></span>
+        <span class="box" style="animation-delay: 320ms;"><span style="animation-delay: 320ms;">1</span></span>
+        <span class="box" style="animation-delay: 640ms;"><span style="animation-delay: 640ms;">9</span></span>
+        <span class="box" style="animation-delay: 960ms;"><span style="animation-delay: 960ms;">2</span></span>
+        <span class="box" style="animation-delay: 1280ms;"><span style="animation-delay: 1280ms;">0</span></span>
+        <span class="box" style="animation-delay: 1600ms;"><span style="animation-delay: 1600ms;">7</span></span>
+      </div>
+      <p class="tile-d">Se pega completo de una vez y avanza solo. Enviado a <b style="color: #1b1a17; font-weight: 500;">rosa@bodegasanmartin.pe</b>.</p>
+      <div style="margin-top: auto; display: flex; align-items: center; gap: 10px; font-size: 0.75rem; color: #6c6a63;">
+        <span style="color: #8a887f;">Reenviar en 0:24</span>
+        <span style="width: 1px; height: 12px; background: rgba(27,26,23,0.13);"></span>
+        <a href="#">Cambiar correo</a>
+      </div>
+    </div>
+
+    <!-- 6 · Creando la cuenta -->
+    <div class="tile" style="background: #060818; border-color: rgba(255,255,255,0.12); color: #f6f6f8;">
+      <span class="tile-h" style="color: #f6f6f8;">Creando tu cuenta · se ve lo que pasa</span>
+      <div style="display: flex; flex-direction: column; gap: 11px;">
+        <span class="pstep" style="animation-delay: 0ms; color: #f6f6f8;">
+          <span class="tick"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#9fe8b6" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round" style="animation-delay: 0ms;"><polyline points="20 6 9 17 4 12"/></svg></span>
+          Creamos tu negocio
+        </span>
+        <span class="pstep" style="animation-delay: 500ms; color: #f6f6f8;">
+          <span class="tick"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#9fe8b6" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round" style="animation-delay: 500ms;"><polyline points="20 6 9 17 4 12"/></svg></span>
+          Reservamos bodega-san-martin.proxima.pe
+        </span>
+        <span class="pstep" style="animation-delay: 1000ms; color: #f6f6f8;">
+          <span class="tick"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#9fe8b6" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round" style="animation-delay: 1000ms;"><polyline points="20 6 9 17 4 12"/></svg></span>
+          Preparamos las categorías de tu rubro
+        </span>
+      </div>
+      <div style="margin-top: auto;">
+        <div style="height: 4px; border-radius: 999px; background: rgba(255,255,255,0.12); overflow: hidden;">
+          <span style="display: block; height: 100%; border-radius: 999px; background: #6272f9; transform-origin: left; animation: barGrow 6s cubic-bezier(0.16,1,0.3,1) infinite;"></span>
+        </div>
+        <p class="tile-d" style="color: rgba(246,246,248,0.6); margin-top: 9px;">Toma unos segundos. No cierres esta pestaña.</p>
+      </div>
+    </div>
+
+  </div>
+
+</div>
+</x-dc>
+<script data-dc-script data-props='{"$preview":{"width":1180,"height":760}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {};
+  }
+}
+</script>
+</body>
+</html>

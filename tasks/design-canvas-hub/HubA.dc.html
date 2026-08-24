@@ -1,0 +1,177 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500&family=Plus+Jakarta+Sans:wght@500;600;700&family=Inter:wght@400;500;600&display=swap">
+  <style>
+    body { margin: 0; font-family: 'Inter', system-ui, sans-serif; letter-spacing: -0.003em; }
+    button { font: inherit; cursor: pointer; border: 0; background: none; color: inherit; text-align: left; }
+
+    .mine { display: flex; align-items: center; gap: 16px; width: 100%; box-sizing: border-box; border: 1px solid rgba(27,26,23,0.11); border-radius: 16px; background: #fff; padding: 20px 22px; box-shadow: 0 2px 10px -6px rgba(27,26,23,0.28); transition: transform 220ms cubic-bezier(0.16,1,0.3,1), box-shadow 220ms ease; }
+    .mine:hover { transform: translateY(-2px); box-shadow: 0 16px 32px -22px rgba(27,26,23,0.5); }
+    .mine-ico { width: 46px; height: 46px; border-radius: 13px; background: #0009dc; color: #fff; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .open { margin-left: auto; display: inline-flex; align-items: center; gap: 8px; height: 40px; padding: 0 18px; border-radius: 10px; background: #0009dc; color: #fff; font-size: 0.8125rem; font-weight: 600; flex-shrink: 0; }
+    .open svg { transition: transform 200ms cubic-bezier(0.16,1,0.3,1); }
+    .mine:hover .open svg { transform: translateX(3px); }
+
+    /* Lo bloqueado NO puede verse igual que lo tuyo: papel, no tarjeta blanca. */
+    .locked { display: flex; align-items: center; gap: 14px; width: 100%; box-sizing: border-box; border: 1px dashed rgba(27,26,23,0.18); border-radius: 14px; background: transparent; padding: 16px 18px; transition: border-color 180ms ease, background 180ms ease; }
+    .locked:hover { border-color: rgba(0,9,220,0.4); background: rgba(0,9,220,0.03); }
+    .locked-ico { width: 38px; height: 38px; border-radius: 11px; background: rgba(27,26,23,0.06); color: #8a887f; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .locked-name { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 0.9375rem; font-weight: 600; color: #4a4841; }
+    .unlock { display: block; margin-top: 3px; font-size: 0.75rem; color: #6c6a63; }
+    .price { margin-left: auto; flex-shrink: 0; text-align: right; }
+    .price b { display: block; font-family: 'Fraunces', Georgia, serif; font-size: 1.125rem; font-weight: 500; color: #1b1a17; }
+    .price span { font-size: 0.6875rem; color: #8a887f; }
+
+    .step { display: flex; align-items: center; gap: 12px; padding: 12px 0; border-bottom: 1px solid rgba(27,26,23,0.06); font-size: 0.875rem; color: #1b1a17; }
+    .step:last-child { border-bottom: none; }
+    .step-box { width: 19px; height: 19px; border-radius: 50%; border: 1.5px solid rgba(27,26,23,0.2); flex-shrink: 0; }
+    .step.is-next { color: #1b1a17; font-weight: 600; }
+    .step.is-next .step-box { border-color: #0009dc; background: rgba(0,9,220,0.1); }
+    .step-go { margin-left: auto; font-size: 0.75rem; font-weight: 600; color: #0009dc; }
+
+    .in { opacity: 0; animation: up 560ms cubic-bezier(0.16,1,0.3,1) forwards; }
+    @keyframes up { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+    @media (prefers-reduced-motion: reduce) { .in { animation-duration: 1ms; opacity: 1; transform: none; } }
+  </style>
+</helmet>
+<div style="width: 1180px; height: 1020px; box-sizing: border-box; background: #fbfaf8; color: #1b1a17; overflow: hidden;">
+
+  <header style="display: flex; align-items: center; justify-content: space-between; padding: 18px 40px; border-bottom: 1px solid rgba(27,26,23,0.07);">
+    <span style="font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 600; font-size: 1.1875rem; letter-spacing: -0.02em;">Próxima</span>
+    <span style="display: flex; align-items: center; gap: 12px;">
+      <span style="display: inline-flex; align-items: center; gap: 8px; height: 34px; padding: 0 12px; border: 1px solid rgba(27,26,23,0.11); border-radius: 999px; background: #fff; font-size: 0.8125rem; font-weight: 500;">
+        <span style="width: 22px; height: 22px; border-radius: 6px; background: #1b1a17; color: #fff; font-family: 'Fraunces', Georgia, serif; font-size: 0.6875rem; display: flex; align-items: center; justify-content: center;">L</span>
+        LuchoEcommerce
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#73716a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+      </span>
+      <span style="width: 32px; height: 32px; border-radius: 50%; background: #0009dc; color: #fff; font-weight: 600; font-size: 0.8125rem; display: flex; align-items: center; justify-content: center;">L</span>
+    </span>
+  </header>
+
+  <main style="max-width: 1100px; margin: 0 auto; padding: 30px 40px; display: flex; flex-direction: column; gap: 26px;">
+
+    <div class="in" style="display: flex; align-items: flex-end; justify-content: space-between; gap: 24px;">
+      <div>
+        <h1 style="margin: 0; font-family: 'Fraunces', Georgia, serif; font-weight: 500; font-size: 2.25rem; letter-spacing: -0.02em;">Hola, Luis</h1>
+        <p style="margin: 8px 0 0; font-size: 0.9375rem; color: #6c6a63;">LuchoEcommerce · <b style="color: #1b1a17; font-weight: 500;">Plan Gratis</b> · sin vencimiento</p>
+      </div>
+      <span style="display: inline-flex; align-items: center; gap: 8px; font-size: 0.8125rem; color: #6c6a63; background: #fff; border: 1px solid rgba(27,26,23,0.11); border-radius: 999px; padding: 7px 14px;">
+        <span style="width: 7px; height: 7px; border-radius: 50%; background: #bb3a2c;"></span>
+        Tu tienda todavía no vende: te falta el primer producto
+      </span>
+    </div>
+
+    <!-- Lo que YA es tuyo -->
+    <section class="in" style="animation-delay: 80ms;">
+      <div style="display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 12px;">
+        <h2 style="margin: 0; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 1rem; font-weight: 600;">Lo que ya puedes usar</h2>
+        <span style="font-size: 0.75rem; color: #8a887f;">Incluido en tu plan</span>
+      </div>
+      <button type="button" class="mine">
+        <span class="mine-ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg></span>
+        <span>
+          <span style="font-family: 'Plus Jakarta Sans', sans-serif; font-size: 1.0625rem; font-weight: 600;">Panel</span>
+          <span style="display: block; margin-top: 3px; font-size: 0.8125rem; color: #6c6a63;">Tu catálogo, tus pedidos, tu stock. Es donde vas a trabajar todos los días.</span>
+        </span>
+        <span class="open">Abrir <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+      </button>
+    </section>
+
+    <!-- Lo que cuesta abrir, con su precio de verdad -->
+    <section class="in" style="animation-delay: 160ms;">
+      <div style="display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 12px;">
+        <h2 style="margin: 0; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 1rem; font-weight: 600;">Para cuando crezcas</h2>
+        <a href="#" style="font-size: 0.75rem; color: #0009dc; text-decoration: none;">Ver todos los planes</a>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 10px;">
+
+        <button type="button" class="locked">
+          <span class="locked-ico"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18"/></svg></span>
+          <span>
+            <span class="locked-name">Tienda Web</span>
+            <span class="unlock">Add-on de S/ 50 al mes · necesita al menos el plan Emprende</span>
+          </span>
+          <span class="price"><b>+ S/ 50</b><span>al mes</span></span>
+        </button>
+
+        <button type="button" class="locked">
+          <span class="locked-ico"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="8" width="18" height="13" rx="2"/><path d="M3 8l2-4h14l2 4M8 13h8M8 17h5"/></svg></span>
+          <span>
+            <span class="locked-name">Caja</span>
+            <span class="unlock">Viene incluida desde el plan Lidera — no se compra suelta</span>
+          </span>
+          <span class="price"><b>Lidera</b><span>S/ 249 al mes</span></span>
+        </button>
+
+        <button type="button" class="locked">
+          <span class="locked-ico"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.8 4.3L18 9l-4.2 1.7L12 15l-1.8-4.3L6 9l4.2-1.7L12 3z"/></svg></span>
+          <span>
+            <span class="locked-name">Intelligence</span>
+            <span class="unlock">Add-on de S/ 100 al mes · lo activamos contigo</span>
+          </span>
+          <span class="price"><b>+ S/ 100</b><span>al mes</span></span>
+        </button>
+
+      </div>
+    </section>
+
+    <!-- Configuración: solo lo alcanzable -->
+    <div class="in" style="animation-delay: 240ms; display: grid; grid-template-columns: 1.35fr 1fr; gap: 14px;">
+      <section style="border: 1px solid rgba(27,26,23,0.11); border-radius: 16px; background: #fff; padding: 22px;">
+        <div style="display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 14px;">
+          <h2 style="margin: 0; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 1rem; font-weight: 600;">Termina de configurar</h2>
+          <span style="font-size: 0.8125rem; color: #6c6a63;"><b style="color: #1b1a17;">0</b> de 5</span>
+        </div>
+        <div style="height: 3px; border-radius: 999px; background: rgba(27,26,23,0.09); margin-bottom: 4px;"></div>
+
+        <div class="step is-next"><span class="step-box"></span>Agrega tu primer producto<span class="step-go">Empezar</span></div>
+        <div class="step"><span class="step-box"></span>Configura métodos de pago</div>
+        <div class="step"><span class="step-box"></span>Ponle nombre a tu tienda</div>
+        <div class="step"><span class="step-box"></span>Sube tu logo</div>
+        <div class="step"><span class="step-box"></span>Configura tu contacto</div>
+
+        <p style="margin: 16px 0 0; font-size: 0.75rem; line-height: 1.55; color: #8a887f; border-top: 1px solid rgba(27,26,23,0.06); padding-top: 14px;">
+          Configurar WhatsApp aparecerá cuando tu plan lo incluya — hoy no se puede completar, así que no cuenta en tu progreso.
+        </p>
+      </section>
+
+      <section style="border: 1px solid rgba(27,26,23,0.11); border-radius: 16px; background: #fff; padding: 22px; display: flex; flex-direction: column;">
+        <span style="display: block; font-size: 0.6875rem; font-weight: 600; letter-spacing: 0.11em; text-transform: uppercase; color: #6c6a63; margin-bottom: 10px;">Tu plan</span>
+        <span style="display: flex; align-items: baseline; gap: 8px; margin-bottom: 4px;">
+          <span style="font-family: 'Fraunces', Georgia, serif; font-size: 1.75rem; font-weight: 500; letter-spacing: -0.02em;">Gratis</span>
+          <span style="font-size: 0.75rem; color: #8a887f;">S/ 0 al mes</span>
+        </span>
+        <p style="margin: 0 0 18px; font-size: 0.8125rem; line-height: 1.5; color: #6c6a63;">Catálogo, stock y ventas manuales. Sin fecha de vencimiento.</p>
+
+        <div style="display: flex; justify-content: space-between; font-size: 0.75rem; margin-bottom: 6px;"><span style="color: #6c6a63;">Productos</span><b>0 / 10</b></div>
+        <div style="height: 5px; border-radius: 999px; background: rgba(27,26,23,0.09); margin-bottom: 12px;"></div>
+        <div style="display: flex; justify-content: space-between; font-size: 0.75rem; margin-bottom: 6px;"><span style="color: #6c6a63;">Usuarios</span><b>1 / 1</b></div>
+        <div style="height: 5px; border-radius: 999px; background: rgba(27,26,23,0.09); margin-bottom: 12px;"><span style="display: block; height: 100%; width: 100%; background: #bb3a2c; border-radius: 999px;"></span></div>
+        <div style="display: flex; justify-content: space-between; font-size: 0.75rem; margin-bottom: 6px;"><span style="color: #6c6a63;">Pedidos del mes</span><b>0 / 30</b></div>
+        <div style="height: 5px; border-radius: 999px; background: rgba(27,26,23,0.09);"></div>
+
+        <span style="margin-top: auto; padding-top: 20px;">
+          <span style="height: 42px; border-radius: 10px; border: 1px solid rgba(27,26,23,0.16); background: #fff; color: #1b1a17; font-weight: 600; font-size: 0.8125rem; display: flex; align-items: center; justify-content: center;">Comparar planes</span>
+          <p style="margin: 10px 0 0; font-size: 0.75rem; line-height: 1.5; color: #8a887f; text-align: center;">Ya no dice «salir en vivo» hasta que tengas algo que vender.</p>
+        </span>
+      </section>
+    </div>
+
+  </main>
+
+</div>
+</x-dc>
+<script data-dc-script data-props='{"$preview":{"width":1180,"height":1020}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

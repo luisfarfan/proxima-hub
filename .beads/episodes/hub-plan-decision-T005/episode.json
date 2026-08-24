@@ -1,0 +1,10 @@
+{
+  "change": "hub-plan-decision",
+  "task": "T005",
+  "verification": "pnpm exec ng test --watch=false --include=src/app/features/hub/account/plan-css-rules.spec.ts",
+  "result": "passed",
+  "tests": "3 passed",
+  "suite": "pnpm exec ng test --watch=false → 62/62",
+  "build": "pnpm build → ok",
+  "recorded_at": "2026-08-24T22:25:37Z"
+}

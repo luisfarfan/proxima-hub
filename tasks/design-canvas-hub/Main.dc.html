@@ -1,0 +1,93 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500&family=Plus+Jakarta+Sans:wght@500;600;700&family=Inter:wght@400;500;600&display=swap">
+  <style>
+    body { margin: 0; font-family: 'Inter', system-ui, sans-serif; letter-spacing: -0.003em; }
+    a { color: #0009dc; } a:hover { color: #000678; }
+    .in { opacity: 0; animation: up 620ms cubic-bezier(0.16,1,0.3,1) forwards; }
+    @keyframes up { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+    @media (prefers-reduced-motion: reduce) { .in { animation-duration: 1ms; opacity: 1; transform: none; } }
+  </style>
+</helmet>
+<div style="width: 720px; height: 1020px; box-sizing: border-box; background: #fbfaf8; color: #1b1a17; padding: 54px 56px 44px; display: flex; flex-direction: column; gap: 26px; overflow: hidden;">
+
+  <div style="display: flex; align-items: baseline; justify-content: space-between;">
+    <span style="font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 600; font-size: 1.1875rem; letter-spacing: -0.02em;">Próxima</span>
+    <span style="font-size: 0.6875rem; font-weight: 600; letter-spacing: 0.11em; text-transform: uppercase; color: #0009dc;">Propuesta de diseño</span>
+  </div>
+
+  <div class="in">
+    <h1 style="margin: 0; font-family: 'Fraunces', Georgia, serif; font-weight: 500; font-size: 3rem; line-height: 1.02; letter-spacing: -0.02em;">El centro<br>del Hub</h1>
+    <p style="margin: 16px 0 0; font-size: 1rem; line-height: 1.55; color: #6c6a63; max-width: 30rem;">La pantalla a la que aterriza un comercio recién creado. Diagnóstico contra datos reales del plan Gratis, no contra suposiciones.</p>
+  </div>
+
+  <span style="display: block; height: 1px; background: rgba(27,26,23,0.11);"></span>
+
+  <div class="in" style="animation-delay: 120ms;">
+    <span style="display: block; font-size: 0.6875rem; font-weight: 600; letter-spacing: 0.11em; text-transform: uppercase; color: #6c6a63; margin-bottom: 16px;">Lo que comprobé en la API</span>
+
+    <div style="display: flex; flex-direction: column; gap: 15px;">
+
+      <div style="display: flex; gap: 14px; align-items: flex-start;">
+        <span style="flex-shrink: 0; width: 22px; height: 22px; border-radius: 7px; background: rgba(29,122,77,0.12); color: #1d7a4d; display: flex; align-items: center; justify-content: center;">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+        </span>
+        <p style="margin: 0; font-size: 0.875rem; line-height: 1.55; color: #6c6a63;"><b style="color: #1b1a17; font-weight: 600;">Los permisos están bien.</b> El plan resuelve <code style="font-size: 0.8125rem;">catalog, manual_sales, orders, stock</code> y deja apagados <code style="font-size: 0.8125rem;">pos</code>, <code style="font-size: 0.8125rem;">cms</code> y <code style="font-size: 0.8125rem;">pricing_intelligence</code>. Nadie tiene acceso de más.</p>
+      </div>
+
+      <div style="display: flex; gap: 14px; align-items: flex-start;">
+        <span style="flex-shrink: 0; width: 22px; height: 22px; border-radius: 7px; background: rgba(187,58,44,0.1); color: #bb3a2c; font-size: 0.6875rem; font-weight: 600; display: flex; align-items: center; justify-content: center;">01</span>
+        <p style="margin: 0; font-size: 0.875rem; line-height: 1.55; color: #6c6a63;"><b style="color: #1b1a17; font-weight: 600;">Pero las cuatro tarjetas se ven iguales.</b> Mismo tamaño, mismo fondo, mismo icono. La única diferencia es una etiqueta gris de 10 px. Por eso se lee como «tengo acceso a todo» — el diseño dice una cosa y el sistema hace otra.</p>
+      </div>
+
+      <div style="display: flex; gap: 14px; align-items: flex-start;">
+        <span style="flex-shrink: 0; width: 22px; height: 22px; border-radius: 7px; background: rgba(187,58,44,0.1); color: #bb3a2c; font-size: 0.6875rem; font-weight: 600; display: flex; align-items: center; justify-content: center;">02</span>
+        <p style="margin: 0; font-size: 0.875rem; line-height: 1.55; color: #6c6a63;"><b style="color: #1b1a17; font-weight: 600;">«Caja» dice ADD-ON y no lo es.</b> <code style="font-size: 0.8125rem;">pos</code> recién aparece en <b style="color:#1b1a17;font-weight:500;">Lidera, S/&nbsp;249</b>. Ningún add-on lo vende. La etiqueta promete una compra chica y detrás hay un salto de plan.</p>
+      </div>
+
+      <div style="display: flex; gap: 14px; align-items: flex-start;">
+        <span style="flex-shrink: 0; width: 22px; height: 22px; border-radius: 7px; background: rgba(187,58,44,0.1); color: #bb3a2c; font-size: 0.6875rem; font-weight: 600; display: flex; align-items: center; justify-content: center;">03</span>
+        <p style="margin: 0; font-size: 0.875rem; line-height: 1.55; color: #6c6a63;"><b style="color: #1b1a17; font-weight: 600;">La checklist pide configurar WhatsApp.</b> El plan Gratis tiene <code style="font-size: 0.8125rem;">whatsapp_checkout: false</code>. Es un paso <b style="color:#1b1a17;font-weight:500;">bloqueante</b> que no se puede completar, y hunde el contador en 0/7.</p>
+      </div>
+
+      <div style="display: flex; gap: 14px; align-items: flex-start;">
+        <span style="flex-shrink: 0; width: 22px; height: 22px; border-radius: 7px; background: rgba(187,58,44,0.1); color: #bb3a2c; font-size: 0.6875rem; font-weight: 600; display: flex; align-items: center; justify-content: center;">04</span>
+        <p style="margin: 0; font-size: 0.875rem; line-height: 1.55; color: #6c6a63;"><b style="color: #1b1a17; font-weight: 600;">«Salir en vivo» es el único botón lleno de la pantalla.</b> Un comercio con 0 productos no puede salir en vivo. La acción más urgente —subir el primer producto— es una fila gris más de una lista de siete.</p>
+      </div>
+
+    </div>
+  </div>
+
+  <span style="display: block; height: 1px; background: rgba(27,26,23,0.11);"></span>
+
+  <div class="in" style="animation-delay: 220ms; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px;">
+    <div style="border: 1px solid rgba(27,26,23,0.11); border-radius: 14px; background: #fff; padding: 18px 20px 20px;">
+      <span style="display: block; font-size: 0.625rem; font-weight: 600; letter-spacing: 0.11em; text-transform: uppercase; color: #0009dc; margin-bottom: 10px;">Dirección A</span>
+      <h2 style="margin: 0 0 8px; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 1rem; font-weight: 600; letter-spacing: -0.015em;">Lo tuyo y lo que falta</h2>
+      <p style="margin: 0; font-size: 0.8125rem; line-height: 1.5; color: #6c6a63;">Dos estantes separados: lo que ya puedes abrir, y lo que cuesta abrir — cada uno con su precio real. La checklist solo pide lo que tu plan permite.</p>
+    </div>
+    <div style="border: 1px solid rgba(27,26,23,0.11); border-radius: 14px; background: #fff; padding: 18px 20px 20px;">
+      <span style="display: block; font-size: 0.625rem; font-weight: 600; letter-spacing: 0.11em; text-transform: uppercase; color: #0009dc; margin-bottom: 10px;">Dirección B</span>
+      <h2 style="margin: 0 0 8px; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 1rem; font-weight: 600; letter-spacing: -0.015em;">Un solo siguiente paso</h2>
+      <p style="margin: 0; font-size: 0.8125rem; line-height: 1.5; color: #6c6a63;">La pantalla entera es la próxima acción. Todo lo demás se repliega hasta que haga falta. Para el día uno, cuando el catálogo está vacío.</p>
+    </div>
+  </div>
+
+  <p style="margin: auto 0 0; font-size: 0.75rem; line-height: 1.5; color: #8a887f;">La lámina «Hoy» está recreada del código y de tu captura. Las cifras del plan salen de <code>PLAN_LADDER</code>.</p>
+
+</div>
+</x-dc>
+<script data-dc-script data-props='{"$preview":{"width":720,"height":1020}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>
