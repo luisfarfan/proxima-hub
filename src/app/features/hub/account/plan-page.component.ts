@@ -11,7 +11,7 @@ import {
 import { ActivatedRoute, Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
-import { DatePipe } from '@angular/common';
+import { DatePipe, LowerCasePipe } from '@angular/common';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { BusinessContextService } from '@luisfarfan/auth';
 import { RuntimeConfigService } from '../../../core/config/runtime-config.service';
@@ -26,7 +26,52 @@ interface Plan {
   name: string;
   monthly_price: number;
   description?: string;
+  /** `PlanRead.features` del API: clave canónica → si el plan la incluye. */
   features?: Record<string, boolean>;
+  /** `PlanRead.quotas` del API: clave canónica → tope numérico (-1 = ilimitado). */
+  quotas?: Record<string, number>;
+}
+
+/**
+ * Etiquetas en español de las features canónicas. Espejo de `FEATURE_LABELS_ES`
+ * del API, que hoy no las expone por HTTP: `PlanRead.features` viaja como
+ * `{clave: bool}`. Mismo trato que `QuotaLabelPipe` le da a las cuotas.
+ */
+const FEATURE_LABELS_ES: Record<string, string> = {
+  catalog: 'Catálogo de productos',
+  whatsapp_checkout: 'Pedidos por WhatsApp',
+  analytics: 'Analítica de tus ventas',
+  stock: 'Control de stock',
+  manual_sales: 'Ventas manuales',
+  orders: 'Gestión de pedidos',
+  crm: 'CRM de clientes',
+  electronic_invoicing: 'Facturación electrónica SUNAT',
+  mostrador: 'Venta de mostrador',
+  inventory: 'Inventario',
+  warehouses: 'Almacenes',
+  fulfillment: 'Despacho y envíos (GRE)',
+  pos: 'Punto de venta (POS)',
+  pricing_intelligence: 'Inteligencia de precios',
+  product_reenrichment: 'Re-enriquecimiento de productos con IA',
+  cms: 'Sitio web y CMS',
+  cart: 'Carrito web',
+};
+
+/** Una cuota que sube al cambiar de plan: `10 → 500`. */
+interface QuotaJump {
+  key: string;
+  from: number;
+  to: number;
+}
+
+interface PlanCard {
+  plan: Plan;
+  isCurrent: boolean;
+  isDowngrade: boolean;
+  /** Solo lo que el plan actual NO tiene, calculado contra sus `features`. */
+  gains: string[];
+  quotaJumps: QuotaJump[];
+  includes: string[];
 }
 
 interface UsageSummary {
@@ -59,15 +104,25 @@ interface AddonDef {
   entitlementKey: string;
   /** Qué dice el botón. `tienda_web` no arranca un cobro, arranca un asistente. */
   cta: string;
+  /** Precio mensual del add-on, para el total que ve el usuario antes de decidir. */
+  monthlyPrice: number;
+  /**
+   * Plan mínimo que lo habilita, espejo de `ADDON_LADDER.min_plan` del API.
+   * Hoy el piso solo lo aplica `provision_addon`: sin declararlo acá, el hub
+   * ofrece un botón que el backend va a rechazar y el usuario se entera tarde.
+   */
+  minPlan?: string;
 }
 
 const ADDON_DEFS: AddonDef[] = [
   {
     key: 'tienda_web',
     name: 'Tienda Web',
-    description: 'Diseña y publica tu tienda online',
+    description: 'Tu sitio con carrito, checkout y subdominio propio',
     entitlementKey: 'cms',
     cta: 'Crear mi tienda',
+    monthlyPrice: 50,
+    minPlan: 'emprende',
   },
   {
     key: 'precios_inteligentes',
@@ -75,6 +130,7 @@ const ADDON_DEFS: AddonDef[] = [
     description: 'Precios y decisiones con IA',
     entitlementKey: 'pricing_intelligence',
     cta: 'Contratar',
+    monthlyPrice: 100,
   },
 ];
 
@@ -85,7 +141,7 @@ const ADDON_DEFS: AddonDef[] = [
 @Component({
   selector: 'app-plan-page',
   standalone: true,
-  imports: [QuotaLabelPipe, DatePipe],
+  imports: [QuotaLabelPipe, DatePipe, LowerCasePipe],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
 <div class="page-root">
@@ -100,6 +156,55 @@ const ADDON_DEFS: AddonDef[] = [
       </div>
     }
   </div>
+
+  <!-- ── Lo que dice tu uso ───────────────────────────────────────────── -->
+  @if (usageRows().length > 0) {
+    <section class="usage-strip" [class.has-alert]="usageAlerts().length > 0" aria-labelledby="usage-h">
+      <div class="usage-strip-lead">
+        <span class="usage-eyebrow" id="usage-h">Lo que dice tu uso</span>
+        @if (usageAlerts().length > 0) {
+          <p class="usage-claim">
+            @for (row of usageAlerts(); track row.key; let last = $last) {
+              @if (row.remaining === 0) {
+                Ya no te queda <b>{{ row.key | quotaLabel | lowercase }}</b>
+              } @else {
+                Te {{ row.remaining === 1 ? 'queda' : 'quedan' }} <b>{{ row.remaining }} de {{ row.limit }}</b> en {{ row.key | quotaLabel | lowercase }}
+              }
+              @if (!last) { · }
+            }
+          </p>
+          @if (suggestedPlan(); as plan) {
+            <p class="usage-suggestion">El plan <b>{{ plan.name }}</b> es el más barato que lo resuelve.</p>
+          } @else {
+            <p class="usage-suggestion">Ningún plan superior sube esas cuotas, así que no te proponemos ninguno.</p>
+          }
+        } @else {
+          <p class="usage-claim">Vas holgado en todas tus cuotas.</p>
+        }
+      </div>
+
+      <div class="usage-meters">
+        @for (row of usageRows(); track row.key) {
+          <div class="usage-meter">
+            <div class="usage-meter-head">
+              <span>{{ row.key | quotaLabel }}</span>
+              <b>{{ row.current }} / {{ row.limit }}</b>
+            </div>
+            <div
+              class="usage-meter-bar"
+              role="progressbar"
+              [attr.aria-valuenow]="row.pct"
+              aria-valuemin="0"
+              aria-valuemax="100"
+              [attr.aria-label]="(row.key | quotaLabel) + ': ' + row.current + ' de ' + row.limit"
+            >
+              <span [class.is-alert]="row.alert" [style.width.%]="row.pct"></span>
+            </div>
+          </div>
+        }
+      </div>
+    </section>
+  }
 
   <!-- ── Plan actual ──────────────────────────────────────────────────── -->
   <section class="page-card" aria-labelledby="current-plan-h">
@@ -117,33 +222,6 @@ const ADDON_DEFS: AddonDef[] = [
           {{ statusLabel(sub.status) }}
         </span>
       </div>
-
-      @if (sub.usage.length > 0) {
-        <div class="usage-list" aria-label="Uso del plan">
-          @for (item of sub.usage; track item.resource) {
-            <div class="usage-item">
-              <div class="usage-row">
-                <span class="usage-label">{{ item.resource | quotaLabel }}</span>
-                @if (item.limit === 0) {
-                  <span class="usage-count usage-not-included">No incluido</span>
-                } @else {
-                  <span class="usage-count">{{ item.current }} / {{ item.limit }}</span>
-                }
-              </div>
-              @if (item.limit > 0) {
-                <div class="usage-bar"
-                     role="progressbar"
-                     [attr.aria-valuenow]="usagePct(item)"
-                     aria-valuemin="0"
-                     aria-valuemax="100"
-                     [attr.aria-label]="(item.resource | quotaLabel) + ': ' + item.current + ' de ' + item.limit">
-                  <span [style.width.%]="usagePct(item)"></span>
-                </div>
-              }
-            </div>
-          }
-        </div>
-      }
 
       @if (sub.status === 'cancelled' && sub.current_period_end) {
         <p class="cancelled-note">
@@ -193,59 +271,105 @@ const ADDON_DEFS: AddonDef[] = [
   }
 
   <!-- ── Planes disponibles ───────────────────────────────────────────── -->
-  @if (!plansLoading() && plans().length > 0) {
+  @if (!plansLoading() && planCards().length > 0) {
     <section class="page-card" aria-labelledby="plans-h">
-      <h2 class="card-h2" id="plans-h">Planes disponibles</h2>
-      <ul class="plans-list" role="list">
-        @for (plan of plans(); track plan.id) {
-          <li class="plan-row"
-              [class.highlighted]="targetPlanId() === plan.id && !isCurrent(plan)"
-              [class.current-row]="isCurrent(plan)"
-              role="listitem">
-            <div class="plan-row-info">
-              <span class="plan-row-name">
-                {{ plan.name }}
-                @if (isCurrent(plan)) {
-                  <span class="plan-current-badge">Plan actual</span>
-                } @else if (targetPlanId() === plan.id) {
-                  <span class="plan-recommended-badge">Recomendado</span>
-                }
-              </span>
-              @if (plan.description) {
-                <span class="plan-row-desc">{{ plan.description }}</span>
+      <div class="card-head">
+        <h2 class="card-h2" id="plans-h">Planes</h2>
+        <span class="plans-hint">Todo se puede cambiar después</span>
+      </div>
+
+      <ul class="plan-cards" role="list">
+        @for (card of planCards(); track card.plan.id) {
+          <li
+            class="plan-card"
+            role="listitem"
+            [class.is-current]="card.isCurrent"
+            [class.is-target]="targetPlanId() === card.plan.id && !card.isCurrent"
+          >
+            @if (card.isCurrent) {
+              <span class="plan-tag is-mute">Tu plan de hoy</span>
+            } @else if (targetPlanId() === card.plan.id) {
+              <span class="plan-tag">Te lleva a lo que buscas</span>
+            } @else if (suggestedPlanId() === card.plan.id) {
+              <span class="plan-tag">Te calza por tu uso</span>
+            }
+
+            <span class="plan-card-name">{{ card.plan.name }}</span>
+            <span class="plan-card-price">
+              @if (card.plan.monthly_price === 0) {
+                <b>Gratis</b>
+              } @else {
+                <b>S/ {{ card.plan.monthly_price }}</b><span class="plan-card-per">/ mes</span>
               }
-            </div>
-            <div class="plan-row-right">
-              <span class="plan-row-price">
-                @if (plan.monthly_price === 0) { Gratis
-                } @else { S/ {{ plan.monthly_price }} / mes }
-              </span>
-              @if (!isCurrent(plan)) {
-                @if (isDowngrade(plan)) {
-                  @if (downgradeConfirmId() === plan.id) {
-                    <div class="inline-confirm">
-                      <span class="inline-confirm-label">¿Confirmar?</span>
-                      <button class="btn-danger-sm" type="button" [disabled]="actionLoading()" (click)="confirmDowngrade()">
-                        {{ actionLoading() ? '…' : 'Sí' }}
-                      </button>
-                      <button class="btn-outline" type="button" (click)="downgradeConfirmId.set(null)">No</button>
-                    </div>
-                  } @else {
-                    <button class="btn-outline" type="button" (click)="downgradeConfirmId.set(plan.id)">
-                      Bajar de plan
+            </span>
+
+            @if (card.isCurrent) {
+              <span class="plan-card-kicker">Lo que ya tienes</span>
+              <ul class="plan-gains" role="list">
+                @for (item of card.includes; track item) {
+                  <li class="plan-gain is-have">
+                    <span class="plan-gain-ico" aria-hidden="true">
+                      <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                    </span>
+                    {{ item }}
+                  </li>
+                }
+              </ul>
+            } @else if (card.gains.length > 0) {
+              <span class="plan-card-kicker">Lo que se te abre</span>
+              <ul class="plan-gains" role="list">
+                @for (item of card.gains; track item) {
+                  <li class="plan-gain">
+                    <span class="plan-gain-ico" aria-hidden="true">
+                      <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
+                    </span>
+                    {{ item }}
+                  </li>
+                }
+              </ul>
+            }
+
+            @if (card.quotaJumps.length > 0) {
+              <ul class="plan-jumps" role="list">
+                @for (jump of card.quotaJumps; track jump.key) {
+                  <li class="plan-jump">
+                    {{ jump.key | quotaLabel }}
+                    <b>{{ quotaValue(jump.from) }}</b>
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-label="sube a"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+                    <b>{{ quotaValue(jump.to) }}</b>
+                  </li>
+                }
+              </ul>
+            }
+
+            <div class="plan-card-foot">
+              @if (card.isCurrent) {
+                <span class="plan-card-note">Sin vencimiento mientras lo necesites.</span>
+              } @else if (card.isDowngrade) {
+                @if (downgradeConfirmId() === card.plan.id) {
+                  <div class="inline-confirm">
+                    <span class="inline-confirm-label">¿Confirmar?</span>
+                    <button class="btn-danger-sm" type="button" [disabled]="actionLoading()" (click)="confirmDowngrade()">
+                      {{ actionLoading() ? '…' : 'Sí' }}
                     </button>
-                  }
+                    <button class="btn-outline" type="button" (click)="downgradeConfirmId.set(null)">No</button>
+                  </div>
                 } @else {
-                  <button class="btn-primary" type="button" [disabled]="upgrading()" (click)="upgrade(plan.id)">
-                    {{ targetPlanId() === plan.id ? 'Elegir' : 'Mejorar' }}
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+                  <button class="btn-outline plan-cta" type="button" (click)="downgradeConfirmId.set(card.plan.id)">
+                    Bajar a {{ card.plan.name }}
                   </button>
                 }
+              } @else {
+                <button class="btn-primary plan-cta" type="button" [disabled]="upgrading()" (click)="upgrade(card.plan.id)">
+                  Cambiar a {{ card.plan.name }}
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+                </button>
               }
             </div>
           </li>
         }
       </ul>
+
       @if (upgradeError()) {
         <p class="field-error" role="alert">{{ upgradeError() }}</p>
       }
@@ -256,38 +380,58 @@ const ADDON_DEFS: AddonDef[] = [
   }
 
   <!-- ── Add-ons ───────────────────────────────────────────────────────── -->
-  @if (addons().length > 0) {
+  @if (addonCards().length > 0) {
     <section class="page-card" aria-labelledby="addons-h">
-      <h2 class="card-h2" id="addons-h">Add-ons</h2>
-      <ul class="plans-list" role="list">
-        @for (addon of addons(); track addon.key) {
-          <li class="plan-row" role="listitem">
-            <div class="plan-row-info">
-              <span class="plan-row-name">{{ addon.name }}</span>
-              <span class="plan-row-desc">{{ addon.description }}</span>
-            </div>
-            <div class="plan-row-right">
-              @if (hasAddon(addon)) {
-                <span class="addon-active-badge">Activo</span>
-                <button class="btn-danger-sm" type="button"
-                        [disabled]="addonLoading() === addon.key"
-                        (click)="cancelAddon(addon.key)">
-                  {{ addonLoading() === addon.key ? 'Cancelando…' : 'Cancelar' }}
-                </button>
-              } @else {
-                <button class="btn-outline" type="button"
-                        [disabled]="addonLoading() === addon.key"
-                        (click)="contractAddon(addon.key)">
-                  {{ addonLoading() === addon.key ? '…' : addon.cta }}
-                </button>
-              }
-            </div>
+      <div class="card-head">
+        <h2 class="card-h2" id="addons-h">Add-ons</h2>
+        <span class="plans-hint">Se suman a tu plan</span>
+      </div>
+
+      <ul class="addon-cards" role="list">
+        @for (card of addonCards(); track card.key) {
+          <li class="addon-card" role="listitem" [class.is-locked]="card.locked">
+            <span class="addon-card-main">
+              <span class="addon-card-name">
+                {{ card.def.name }}
+                <span class="addon-card-price">· S/ {{ card.def.monthlyPrice }} / mes</span>
+              </span>
+              <span class="addon-card-desc">{{ card.def.description }}</span>
+            </span>
+
+            @if (card.active) {
+              <span class="addon-active-badge">Activo</span>
+              <button class="btn-danger-sm" type="button"
+                      [disabled]="addonLoading() === card.key"
+                      (click)="cancelAddon(card.key)">
+                {{ addonLoading() === card.key ? 'Cancelando…' : 'Cancelar' }}
+              </button>
+            } @else if (card.locked) {
+              <span class="addon-lock">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
+                Necesita el plan {{ card.minPlanLabel }} o superior
+              </span>
+            } @else {
+              <button class="btn-outline" type="button"
+                      [disabled]="addonLoading() === card.key"
+                      (click)="contractAddon(card.key)">
+                {{ addonLoading() === card.key ? '…' : card.def.cta }}
+              </button>
+            }
           </li>
         }
       </ul>
+
       @if (addonError()) {
         <p class="field-error" role="alert">{{ addonError() }}</p>
       }
+
+      <div class="total-bar">
+        <span class="total-breakdown">{{ totalBreakdown() }}</span>
+        <span class="total-amount">
+          <span>Tu total mensual</span>
+          <b>S/ {{ monthlyTotal() }}</b>
+        </span>
+      </div>
     </section>
   }
 
@@ -326,250 +470,7 @@ const ADDON_DEFS: AddonDef[] = [
   }
 </div>
   `,
-  styles: [`
-:host { display: block; }
-
-/* Plan header */
-.plan-header {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  margin-bottom: 1rem;
-}
-
-.plan-name {
-  font-family: var(--font-display);
-  font-size: 1.625rem;
-  font-weight: 500;
-  color: var(--ink);
-  letter-spacing: -0.01em;
-}
-
-.plan-status-badge {
-  font-size: 0.6875rem;
-  font-weight: 600;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  padding: 2px 8px;
-  border-radius: 999px;
-  background: #f1f0ec;
-  color: var(--muted);
-}
-
-.plan-status-badge.active  { background: #dcfce7; color: #15803d; }
-.plan-status-badge.trial   { background: #fef9c3; color: #92400e; }
-.plan-status-badge.cancelled { background: #fee2e2; color: #b91c1c; }
-
-.plan-desc, .cancelled-note {
-  font-size: 0.875rem;
-  color: var(--muted);
-  margin: 0 0 0.75rem;
-}
-
-.plan-actions {
-  margin-top: 1.25rem;
-  display: flex;
-  gap: 0.75rem;
-  align-items: center;
-}
-
-.usage-not-included {
-  font-weight: 400 !important;
-  font-style: italic;
-  color: var(--faint) !important;
-}
-
-/* Plans list */
-.plans-list {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-.plan-row {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  padding: 0.875rem 0;
-  border-bottom: 1px solid var(--line-soft);
-}
-
-.plan-row:last-child { border-bottom: none; }
-
-.plan-row.highlighted {
-  margin: 0 -1.5rem;
-  padding-left: 1.5rem;
-  padding-right: 1.5rem;
-  background: #f8f7ff;
-  border-radius: 0.5rem;
-  border-bottom: none;
-  outline: 1.5px solid var(--accent);
-}
-
-.plan-row.current-row { opacity: 0.6; }
-
-.plan-row-info {
-  flex: 1;
-  min-width: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 0.2rem;
-}
-
-.plan-row-name {
-  font-size: 0.9375rem;
-  font-weight: 500;
-  color: var(--ink);
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  flex-wrap: wrap;
-}
-
-.plan-row-desc {
-  font-size: 0.8125rem;
-  color: var(--muted);
-}
-
-.plan-current-badge, .plan-recommended-badge {
-  font-size: 0.625rem;
-  font-weight: 600;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  padding: 1px 6px;
-  border-radius: 999px;
-}
-
-.plan-current-badge     { background: #f1f0ec; color: var(--muted); }
-.plan-recommended-badge { background: var(--accent); color: #fff; }
-
-.plan-row-right {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  flex-shrink: 0;
-}
-
-.plan-row-price {
-  font-size: 0.875rem;
-  color: var(--muted);
-  white-space: nowrap;
-}
-
-/* Inline downgrade confirm */
-.inline-confirm {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.inline-confirm-label {
-  font-size: 0.8125rem;
-  color: var(--muted);
-  white-space: nowrap;
-}
-
-/* Add-on active badge */
-.addon-active-badge {
-  font-size: 0.6875rem;
-  font-weight: 600;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  padding: 2px 8px;
-  border-radius: 999px;
-  background: #dcfce7;
-  color: #15803d;
-}
-
-/* Flash alert */
-.alert {
-  border-radius: 0.6rem;
-  padding: 0.75rem 1rem;
-  font-size: 0.875rem;
-  font-weight: 500;
-}
-
-.alert-success { background: #f0fdf4; border: 1px solid #bbf7d0; color: #15803d; }
-.alert-error   { background: #fef2f2; border: 1px solid #fecaca; color: #b91c1c; }
-
-/* Cancel confirmation card */
-.confirm-card {
-  border: 1px solid rgba(185, 28, 28, 0.25);
-  border-radius: 0.875rem;
-  background: #fff9f9;
-  padding: 1.5rem;
-}
-
-.confirm-h {
-  font-family: var(--font-heading);
-  font-size: 0.9375rem;
-  font-weight: 600;
-  color: var(--ink);
-  margin: 0 0 0.6rem;
-}
-
-.confirm-body {
-  font-size: 0.875rem;
-  color: var(--muted);
-  margin: 0 0 1.1rem;
-  line-height: 1.55;
-}
-
-.confirm-actions {
-  display: flex;
-  gap: 0.75rem;
-  flex-wrap: wrap;
-}
-
-.btn-primary.btn-danger             { background: #b91c1c; }
-.btn-primary.btn-danger:hover:not([disabled]) { background: #991b1b; }
-
-/* Payment history table */
-.payments-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 0.875rem;
-}
-
-.payments-table th {
-  text-align: left;
-  font-size: 0.75rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  color: var(--muted);
-  padding: 0.4rem 0.5rem 0.75rem;
-  border-bottom: 1px solid var(--line);
-}
-
-.payments-table th:first-child,
-.payments-table td:first-child { padding-left: 0; }
-
-.payments-table td {
-  padding: 0.75rem 0.5rem;
-  color: var(--ink);
-  border-bottom: 1px solid var(--line-soft);
-  vertical-align: middle;
-}
-
-.payments-table tr:last-child td { border-bottom: none; }
-
-.payment-status {
-  display: inline-block;
-  font-size: 0.6875rem;
-  font-weight: 600;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  padding: 2px 8px;
-  border-radius: 999px;
-  background: #f1f0ec;
-  color: var(--muted);
-}
-
-.payment-status.paid    { background: #dcfce7; color: #15803d; }
-.payment-status.pending { background: #fef9c3; color: #92400e; }
-.payment-status.failed  { background: #fee2e2; color: #b91c1c; }
-  `],
+  styleUrl: './plan-page.component.css',
 })
 export class PlanPageComponent {
   private readonly http = inject(HttpClient);
@@ -641,7 +542,10 @@ export class PlanPageComponent {
     },
   });
 
-  protected readonly plans = computed(() => this.plansRes.value() ?? []);
+  /** Del más barato al más caro: el orden en que se decide subir. */
+  protected readonly plans = computed(() =>
+    [...(this.plansRes.value() ?? [])].sort((a, b) => a.monthly_price - b.monthly_price),
+  );
   protected readonly plansLoading = this.plansRes.isLoading;
 
   // ---------------------------------------------------------------------------
@@ -678,6 +582,109 @@ export class PlanPageComponent {
     return plan.id === current.id;
   }
 
+  /**
+   * El argumento del cambio de plan, calculado — no escrito a mano.
+   *
+   * `gains` sale de restar las `features` del plan actual a las del candidato,
+   * y `quotaJumps` de comparar sus `quotas`. Si mañana el API mueve una feature
+   * de un plan a otro, esto se entera solo; una lista hardcodeada, no.
+   */
+  /**
+   * El uso real, que es lo que de verdad motiva subir de plan. Una cuota se
+   * marca en alerta desde el 80 %: es el punto en el que al comercio le quedan
+   * días, no semanas, antes de chocar con el tope.
+   */
+  protected readonly usageRows = computed(() => {
+    const usage = this.subscription()?.usage ?? [];
+    return usage
+      .filter((item) => item.limit > 0)
+      .map((item) => {
+        const pct = Math.min(100, Math.round((item.current / item.limit) * 100));
+        return {
+          key: item.resource,
+          current: item.current,
+          limit: item.limit,
+          pct,
+          alert: pct >= 80,
+          remaining: Math.max(0, item.limit - item.current),
+        };
+      });
+  });
+
+  protected readonly usageAlerts = computed(() => this.usageRows().filter((row) => row.alert));
+
+  /**
+   * El plan más barato que resuelve TODO lo que está en alerta. Si ninguno lo
+   * hace, no se sugiere nada — inventar una recomendación es peor que callar.
+   */
+  protected readonly suggestedPlanId = computed<string | null>(() => {
+    const alerts = this.usageAlerts();
+    if (alerts.length === 0) return null;
+
+    const current = this.currentPlanObj();
+    const currentPrice = current?.monthly_price ?? 0;
+
+    const candidate = this.plans()
+      .filter((plan) => plan.id !== current?.id && plan.monthly_price > currentPrice)
+      .find((plan) =>
+        alerts.every((row) => {
+          const cap = plan.quotas?.[row.key];
+          return cap === -1 || (typeof cap === 'number' && cap > row.limit);
+        }),
+      );
+
+    return candidate?.id ?? null;
+  });
+
+  protected readonly suggestedPlan = computed(
+    () => this.plans().find((plan) => plan.id === this.suggestedPlanId()) ?? null,
+  );
+
+  protected readonly planCards = computed<PlanCard[]>(() => {
+    const current = this.currentPlanObj();
+    const currentFeatures = current?.features ?? {};
+    const currentQuotas = current?.quotas ?? {};
+
+    return this.plans().map((plan) => {
+      const isCurrent = current ? plan.id === current.id : false;
+      const features = plan.features ?? {};
+
+      const gains = isCurrent
+        ? []
+        : Object.keys(features)
+            .filter((key) => features[key] === true && currentFeatures[key] !== true)
+            .map((key) => FEATURE_LABELS_ES[key] ?? key);
+
+      const includes = Object.keys(features)
+        .filter((key) => features[key] === true)
+        .map((key) => FEATURE_LABELS_ES[key] ?? key);
+
+      const quotaJumps: QuotaJump[] = isCurrent
+        ? []
+        : Object.entries(plan.quotas ?? {})
+            .filter(([key, to]) => {
+              const from = currentQuotas[key];
+              return typeof from === 'number' && typeof to === 'number' && to > from;
+            })
+            .map(([key, to]) => ({ key, from: currentQuotas[key], to }));
+
+      return {
+        plan,
+        isCurrent,
+        isDowngrade: this.isDowngrade(plan),
+        gains,
+        includes,
+        quotaJumps,
+      };
+    });
+  });
+
+  /** `1000` → `1.000`; `-1` es ilimitado en el ladder del API. */
+  protected quotaValue(value: number): string {
+    if (value === -1) return 'ilimitado';
+    return value.toLocaleString('es-PE');
+  }
+
   protected isDowngrade(plan: Plan): boolean {
     const current = this.currentPlanObj();
     if (!current) return false;
@@ -700,6 +707,11 @@ export class PlanPageComponent {
   // Upgrade (checkout → MercadoPago)
   // ---------------------------------------------------------------------------
 
+  /** Única salida del componente hacia el navegador (seam de prueba). */
+  protected navigateTo(url: string): void {
+    window.location.href = url;
+  }
+
   protected readonly upgrading = signal(false);
   protected readonly upgradeError = signal<string | null>(null);
 
@@ -717,7 +729,7 @@ export class PlanPageComponent {
         }),
       );
       if (res?.checkout_url) {
-        window.location.href = res.checkout_url;
+        this.navigateTo(res.checkout_url);
         return;
       }
       this.upgradeError.set('No se pudo iniciar el pago. Intenta de nuevo.');
@@ -792,11 +804,63 @@ export class PlanPageComponent {
     return !!this.businessCtx.entitlements()?.[addon.entitlementKey];
   }
 
+  /**
+   * Cada add-on con su piso de plan resuelto contra el catálogo real: el rango
+   * sale del precio, que es el mismo orden del `PLAN_LADDER` del API.
+   */
+  protected readonly addonCards = computed(() => {
+    const plans = this.plans();
+    const current = this.currentPlanObj();
+    const rank = (planId: string | undefined) =>
+      planId ? plans.findIndex((p) => p.id === planId) : -1;
+    const currentRank = rank(current?.id);
+
+    return this.addons().map((addon) => {
+      const floorRank = rank(addon.minPlan);
+      const locked = floorRank > -1 && currentRank > -1 && currentRank < floorRank;
+      return {
+        def: addon,
+        key: addon.key,
+        active: this.hasAddon(addon),
+        locked,
+        minPlanLabel: plans[floorRank]?.name ?? addon.minPlan ?? '',
+      };
+    });
+  });
+
+  protected readonly totalBreakdown = computed(() => {
+    const plan = this.currentPlanObj();
+    const active = this.addonCards().filter((card) => card.active);
+    const planPart = plan ? `${plan.name} S/ ${plan.monthly_price}` : 'Plan Gratis S/ 0';
+    if (active.length === 0) return `${planPart}, sin add-ons`;
+    return [planPart, ...active.map((c) => `${c.def.name} S/ ${c.def.monthlyPrice}`)].join('  +  ');
+  });
+
+  /** Plan vigente más los add-ons activos: lo que se cobra este mes, en un número. */
+  protected readonly monthlyTotal = computed(() => {
+    const planPrice = this.currentPlanObj()?.monthly_price ?? 0;
+    const addonsPrice = this.addonCards()
+      .filter((card) => card.active)
+      .reduce((sum, card) => sum + card.def.monthlyPrice, 0);
+    return planPrice + addonsPrice;
+  });
+
   protected readonly addonLoading = signal<string | null>(null);
   protected readonly addonError = signal<string | null>(null);
 
   protected async contractAddon(addonKey: string): Promise<void> {
     if (this.addonLoading()) return;
+
+    // Piso de plan: `provision_addon` lo rechazaría igual, pero después de
+    // haber prometido algo. Se corta acá, con el motivo escrito.
+    const card = this.addonCards().find((c) => c.key === addonKey);
+    if (card?.locked) {
+      this.addonError.set(
+        `${card.def.name} necesita el plan ${card.minPlanLabel} o superior.`,
+      );
+      return;
+    }
+
     // `tienda_web` no puede empezar por el cobro: `provision_addon` exige el
     // `template_id` del diseño elegido (TEMPLATE_REQUIRED), así que un checkout
     // sin diseño cobra y después falla al provisionar — el comercio paga y no
@@ -808,7 +872,7 @@ export class PlanPageComponent {
         this.addonError.set('No pudimos abrir el asistente de tienda web.');
         return;
       }
-      window.location.href = `${admin}/websites/nueva`;
+      this.navigateTo(`${admin}/websites/nueva`);
       return;
     }
     this.addonLoading.set(addonKey);
@@ -823,7 +887,7 @@ export class PlanPageComponent {
         }),
       );
       if (res?.checkout_url) {
-        window.location.href = res.checkout_url;
+        this.navigateTo(res.checkout_url);
       } else {
         this.addonError.set('No se pudo iniciar el pago. Intenta de nuevo.');
       }
