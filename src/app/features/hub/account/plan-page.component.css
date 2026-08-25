@@ -339,8 +339,30 @@
 .total-amount b { font-family: var(--font-display); font-size: 1.625rem; font-weight: 500; letter-spacing: -0.02em; color: var(--ink); }
 
 @media (max-width: 640px) {
-  .addon-card { flex-wrap: wrap; }
+  /*
+   * Envolver dejaba «/ mes» solo en una línea y el botón flotando a media
+   * altura. En una columna cada cosa ocupa su renglón y la acción es del ancho
+   * del dedo.
+   */
+  .addon-card { flex-direction: column; align-items: stretch; gap: 0.875rem; }
+  .addon-card .btn-outline,
+  .addon-card .btn-danger-sm,
+  .addon-lock { align-self: flex-start; }
+  .addon-card .btn-outline { width: 100%; justify-content: center; }
+  .addon-card .btn-outline,
+  .addon-card .btn-danger-sm,
+  .step-cta,
+  .rung { min-height: 44px; }
+  .addon-lock { white-space: normal; height: auto; padding: 6px 11px; line-height: 1.4; }
+
   .total-bar { flex-direction: column; align-items: flex-start; gap: 0.625rem; }
+
+  /* «Almacenami…» cortado: en dos columnas angostas la etiqueta necesita envolver. */
+  .usage-meter-head { align-items: flex-start; }
+  .usage-meter-head span { white-space: normal; }
+
+  /* El título del peldaño y su diferencia de precio, uno debajo del otro. */
+  .card-head { flex-direction: column; align-items: flex-start; gap: 0.25rem; }
 }
 
 /* ── La escalera ──────────────────────────────────────────────────────────
@@ -371,7 +393,8 @@
   display: flex;
   align-items: flex-end;
   gap: 8px;
-  height: 190px;
+  /* Debe coincidir con RUNG_MIN_H + RUNG_RANGE_H del componente. */
+  min-height: 224px;
 }
 
 .rung-slot { flex: 1; min-width: 0; display: flex; }
@@ -529,3 +552,14 @@
   .ladder-ground { display: none; }
   .step-detail { grid-template-columns: minmax(0, 1fr); }
 }
+
+.step-cta.btn-primary {
+  background: var(--accent);
+  height: 2.875rem;
+  font-size: 0.9375rem;
+}
+
+.step-cta.btn-primary:hover:not(:disabled) { background: #0007b4; }
+
+/* La franja de uso convive con el rail: menos ancho, cuotas más angostas. */
+.usage-meters { grid-template-columns: repeat(auto-fit, minmax(8rem, 1fr)); }

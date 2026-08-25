@@ -45,6 +45,46 @@ function planLabel(plan: { name: string }): string {
   return plan.name.split('—')[0].trim() || plan.name;
 }
 
+/**
+ * Qué feature encabeza un peldaño cuando agrega varias.
+ *
+ * `PlanRead.features` llega como objeto y su orden de claves es el del hash,
+ * no el de importancia: tomar la primera hacía que Emprende se anunciara con
+ * «Analítica» en vez de «Pedidos por WhatsApp», y Crece con «CRM» en vez de
+ * «Facturación SUNAT». Esta lista decide qué merece ser el titular.
+ */
+const HEADLINE_PRIORITY = [
+  'electronic_invoicing',
+  'pos',
+  'mostrador',
+  'whatsapp_checkout',
+  'crm',
+  'fulfillment',
+  'inventory',
+  'warehouses',
+  'analytics',
+  'pricing_intelligence',
+  'cms',
+  'product_reenrichment',
+];
+
+function byHeadlinePriority(a: string, b: string): number {
+  const ia = HEADLINE_PRIORITY.indexOf(a);
+  const ib = HEADLINE_PRIORITY.indexOf(b);
+  return (ia === -1 ? 99 : ia) - (ib === -1 ? 99 : ib);
+}
+
+/**
+ * Alto mínimo de un peldaño. No es el alto del contenido pelado (118 px): el
+ * peldaño más bajo es justo el que lleva la etiqueta «Estás aquí», y el
+ * contenido va alineado abajo, así que el aire de más se convierte en la
+ * separación entre la etiqueta y el nombre. Con 124 quedaban 5 px y se leía
+ * como choque.
+ */
+const RUNG_MIN_H = 142;
+/** Cuánto crece del más barato al más caro. */
+const RUNG_RANGE_H = 82;
+
 /** `launch_posture: assisted_only` en el packaging del API: no se contratan solos. */
 const ASSISTED_PLAN_IDS = ['despega', 'lidera'];
 
@@ -270,9 +310,7 @@ const ADDON_DEFS: AddonDef[] = [
                 <span class="rung-flag is-mute">Asistido</span>
               }
               <span class="rung-name">{{ planTitle(rung.plan) }}</span>
-              <span class="rung-price">
-                @if (rung.plan.monthly_price === 0) { Gratis } @else { S/ {{ rung.plan.monthly_price }} }
-              </span>
+              <span class="rung-price">S/ {{ rung.plan.monthly_price }}</span>
               <span class="rung-headline">{{ rung.headline }}</span>
             </button>
           </li>
@@ -703,8 +741,13 @@ export class PlanPageComponent {
       isBelow: idx < currentIdx,
       /** Un plan sin precio público se activa con el equipo, no solo. */
       assisted: ASSISTED_PLAN_IDS.includes(plan.id),
-      /** Altura del peldaño: proporcional al precio, con un piso legible. */
-      height: 46 + Math.round((plan.monthly_price / (maxPrice || 1)) * 54),
+      /**
+       * Altura en px, proporcional al precio. El piso NO es decorativo: el
+       * peldaño tiene que caber su nombre, su precio y su titular —unos 118 px
+       * con el ramp actual—; por debajo de eso el contenido se desborda hacia
+       * arriba y el nombre desaparece.
+       */
+      height: RUNG_MIN_H + Math.round((plan.monthly_price / (maxPrice || 1)) * RUNG_RANGE_H),
       /** Lo primero que agrega respecto del peldaño anterior. */
       headline: this.stepHeadline(plans, idx),
     }));
@@ -733,6 +776,7 @@ export class PlanPageComponent {
       const features = target.plan.features ?? {};
       return Object.keys(features)
         .filter((key) => features[key] === true)
+        .sort(byHeadlinePriority)
         .map((key) => FEATURE_LABELS_ES[key] ?? key);
     }
     const currentFeatures = rungs[currentIdx]?.plan.features ?? {};
@@ -741,6 +785,7 @@ export class PlanPageComponent {
       const features = rungs[i].plan.features ?? {};
       Object.keys(features)
         .filter((key) => features[key] === true && currentFeatures[key] !== true)
+        .sort(byHeadlinePriority)
         .forEach((key) => {
           const label = FEATURE_LABELS_ES[key] ?? key;
           if (gained.indexOf(label) === -1) gained.push(label);
@@ -762,10 +807,17 @@ export class PlanPageComponent {
 
   /** Lo que distingue a este peldaño del anterior, en una línea. */
   private stepHeadline(plans: Plan[], idx: number): string {
-    if (idx === 0) return plans[idx].description ?? '';
+    if (idx === 0) {
+      // El peldaño base no «agrega» nada: describe de dónde partes. La cola del
+      // nombre del API ya lo dice («Gratis — Catálogo y control de stock»), y
+      // `description` no viene en la respuesta.
+      return this.planSubtitle(plans[idx]) || 'Tu punto de partida';
+    }
     const prev = plans[idx - 1].features ?? {};
     const here = plans[idx].features ?? {};
-    const added = Object.keys(here).filter((key) => here[key] === true && prev[key] !== true);
+    const added = Object.keys(here)
+      .filter((key) => here[key] === true && prev[key] !== true)
+      .sort(byHeadlinePriority);
     if (added.length === 0) return 'Más capacidad';
     return '+ ' + (FEATURE_LABELS_ES[added[0]] ?? added[0]);
   }
@@ -984,7 +1036,7 @@ export class PlanPageComponent {
         key: addon.key,
         active: this.hasAddon(addon),
         locked,
-        minPlanLabel: plans[floorRank]?.name ?? addon.minPlan ?? '',
+        minPlanLabel: plans[floorRank] ? planLabel(plans[floorRank]) : addon.minPlan ?? '',
       };
     });
   });
@@ -992,7 +1044,7 @@ export class PlanPageComponent {
   protected readonly totalBreakdown = computed(() => {
     const plan = this.currentPlanObj();
     const active = this.addonCards().filter((card) => card.active);
-    const planPart = plan ? `${plan.name} S/ ${plan.monthly_price}` : 'Plan Gratis S/ 0';
+    const planPart = plan ? `${planLabel(plan)} S/ ${plan.monthly_price}` : 'Plan Gratis S/ 0';
     if (active.length === 0) return `${planPart}, sin add-ons`;
     return [planPart, ...active.map((c) => `${c.def.name} S/ ${c.def.monthlyPrice}`)].join('  +  ');
   });

@@ -117,7 +117,7 @@
 .account-main {
   flex: 1;
   min-width: 0;
-  max-width: 62rem;
+  max-width: 68rem;
   padding: 2rem 2.125rem 5rem;
 }
 
@@ -125,26 +125,41 @@
  * Bajo 900 px el rail dejaría al contenido sin ancho útil: pasa a ser una fila
  * horizontal arriba, con los dos grupos uno tras otro.
  */
+/*
+ * Bajo 900 px el rail dejaría al contenido sin ancho útil. Se vuelve dos
+ * bloques apilados —uno por dueño— con sus destinos en fila. Un solo scroller
+ * horizontal con los dos grupos cortaba «TU CUENTA» a la mitad y no había nada
+ * que sugiriera que había más a la derecha.
+ */
 @media (max-width: 900px) {
   .hub-account { display: block; }
 
   .account-rail {
     width: auto;
     position: static;
-    display: flex;
-    gap: 1.75rem;
-    overflow-x: auto;
-    padding: 1rem 1.25rem;
+    padding: 0.875rem 1.25rem 0.25rem;
     border-right: 0;
     border-bottom: 1px solid var(--line-soft);
+  }
+
+  .rail-group + .rail-group { margin-top: 0.625rem; }
+
+  .rail-group-h { margin-bottom: 0.375rem; }
+
+  /* El nombre del dueño se pierde, pero el encabezado del grupo ya lo dice. */
+  .rail-who { display: none; }
+
+  .rail-links {
+    flex-direction: row;
+    gap: 4px;
+    overflow-x: auto;
+    padding-bottom: 0.375rem;
     scrollbar-width: none;
   }
 
-  .account-rail::-webkit-scrollbar { display: none; }
-  .rail-group + .rail-group { margin-top: 0; }
-  .rail-who { display: none; }
-  .rail-links { flex-direction: row; gap: 4px; }
-  .rail-links a { white-space: nowrap; }
+  .rail-links::-webkit-scrollbar { display: none; }
+  /* 44 px es el mínimo para el dedo; con 37 se falla el toque. */
+  .rail-links a { white-space: nowrap; padding: 8px 14px; min-height: 44px; box-sizing: border-box; }
   .rail-note { display: none; }
 
   .account-main { padding: 1.75rem 1.25rem 4rem; }

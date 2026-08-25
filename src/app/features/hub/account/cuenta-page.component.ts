@@ -14,11 +14,12 @@ import { AuthService } from '@luisfarfan/auth';
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
 <div class="page-root">
-  <h1 class="page-h1">Perfil</h1>
+  <h1 class="page-h1" id="perfil-h">Perfil</h1>
 
-  <!-- Profile -->
+  <!-- Con la contraseña y las conexiones mudadas a «Acceso y seguridad», la
+       página quedó de un solo tema: repetir «Perfil» dentro de la tarjeta era
+       decirlo dos veces seguidas. -->
   <section class="page-card" aria-labelledby="perfil-h">
-    <h2 class="card-h2" id="perfil-h">Perfil</h2>
     <div class="user-row">
       <span class="user-avatar" aria-hidden="true">{{ userInitial() }}</span>
       <div class="user-info">
@@ -68,37 +69,6 @@ import { AuthService } from '@luisfarfan/auth';
 .user-email {
   font-size: 0.8125rem;
   color: var(--muted);
-}
-
-.pwd-wrap {
-  position: relative;
-  display: flex;
-  align-items: center;
-}
-
-.pwd-input {
-  padding-right: 2.75rem !important;
-}
-
-.pwd-toggle {
-  position: absolute;
-  right: 0.65rem;
-  background: none;
-  border: none;
-  padding: 0.25rem;
-  cursor: pointer;
-  color: var(--faint);
-  display: flex;
-  align-items: center;
-  border-radius: 0.25rem;
-  line-height: 1;
-}
-
-.pwd-toggle:hover { color: var(--ink); }
-
-.pwd-toggle:focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: 2px;
 }
   `],
 })

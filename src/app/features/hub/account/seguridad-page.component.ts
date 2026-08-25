@@ -211,6 +211,38 @@ function formatDate(iso: string): string {
   styles: [`
 :host { display: block; }
 
+/* Contraseña: llegó junto con su sección desde «Mi cuenta». */
+.pwd-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.pwd-input {
+  padding-right: 2.75rem !important;
+}
+
+.pwd-toggle {
+  position: absolute;
+  right: 0.65rem;
+  background: none;
+  border: none;
+  padding: 0.25rem;
+  cursor: pointer;
+  color: var(--faint);
+  display: flex;
+  align-items: center;
+  border-radius: 0.25rem;
+  line-height: 1;
+}
+
+.pwd-toggle:hover { color: var(--ink); }
+
+.pwd-toggle:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
 .sessions-list {
   list-style: none;
   padding: 0;

@@ -19,9 +19,8 @@ import { PlanPageComponent } from './plan-page.component';
 export const PLANS_FAKE = [
   {
     id: 'free',
-    name: 'Gratis',
+    name: 'Gratis — Catálogo y control de stock',
     monthly_price: 0,
-    description: 'Catálogo, control de stock y ventas manuales, sin límite de tiempo.',
     features: {
       catalog: true,
       stock: true,
@@ -36,9 +35,8 @@ export const PLANS_FAKE = [
   },
   {
     id: 'emprende',
-    name: 'Emprende',
+    name: 'Emprende — Catálogo, pedidos y control de stock',
     monthly_price: 50,
-    description: 'Catálogo, pedidos por WhatsApp, stock y analítica básica.',
     features: {
       catalog: true,
       stock: true,
@@ -53,9 +51,8 @@ export const PLANS_FAKE = [
   },
   {
     id: 'crece',
-    name: 'Crece',
+    name: 'Crece — CRM y facturación electrónica',
     monthly_price: 99,
-    description: 'Todo Emprende más CRM y facturación electrónica SUNAT.',
     features: {
       catalog: true,
       stock: true,

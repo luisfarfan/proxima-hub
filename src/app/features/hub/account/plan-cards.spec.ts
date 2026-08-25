@@ -28,13 +28,34 @@ describe('Plan — la escalera', () => {
     expect(rungs(dom)[1].classList.contains('is-now')).toBe(false);
   });
 
-  it('cada peldaño anuncia lo primero que agrega sobre el anterior', async () => {
+  it('cada peldaño anuncia lo que agrega, y elige lo que más pesa', async () => {
     const { dom } = await renderPlanPage();
     const headlines = rungs(dom).map((r) => r.querySelector('.rung-headline')?.textContent?.trim());
 
-    // Calculado restando features, no escrito a mano.
+    // El peldaño base describe de dónde partes, sin «+».
+    expect(headlines[0]).toBe('Catálogo y control de stock');
+
+    // Calculado restando features. Y entre varias, gana la que más pesa:
+    // `PlanRead.features` llega en orden de hash, así que tomar la primera
+    // anunciaba Crece con «CRM» en vez de con la facturación SUNAT.
     expect(headlines[1]).toBe('+ Pedidos por WhatsApp');
-    expect(headlines[2]).toBe('+ CRM de clientes');
+    expect(headlines[2]).toBe('+ Facturación electrónica SUNAT');
+  });
+
+  it('la lista de ganancias también empieza por lo que más pesa', async () => {
+    const { dom, settle } = await renderPlanPage();
+
+    dom.querySelectorAll<HTMLButtonElement>('.rung')[2].click();
+    await settle();
+
+    const gains = Array.from(dom.querySelectorAll('.step-gain')).map((g) => g.textContent?.trim());
+
+    // El orden general lo manda la escalera —primero lo de Emprende, después lo
+    // de Crece—; dentro de cada peldaño, lo que más pesa va arriba.
+    expect(gains[0]).toBe('Pedidos por WhatsApp');
+    expect(gains.indexOf('Facturación electrónica SUNAT')).toBeLessThan(
+      gains.indexOf('CRM de clientes'),
+    );
   });
 
   it('el alto del peldaño crece con el precio', async () => {
