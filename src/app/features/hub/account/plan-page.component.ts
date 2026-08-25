@@ -37,6 +37,17 @@ interface Plan {
  * del API, que hoy no las expone por HTTP: `PlanRead.features` viaja como
  * `{clave: bool}`. Mismo trato que `QuotaLabelPipe` le da a las cuotas.
  */
+/**
+ * `PlanRead.name` viene como «Emprende — Catálogo, pedidos y control de stock»:
+ * sirve para un listado, no para un peldaño de 190 px.
+ */
+function planLabel(plan: { name: string }): string {
+  return plan.name.split('—')[0].trim() || plan.name;
+}
+
+/** `launch_posture: assisted_only` en el packaging del API: no se contratan solos. */
+const ASSISTED_PLAN_IDS = ['despega', 'lidera'];
+
 const FEATURE_LABELS_ES: Record<string, string> = {
   catalog: 'Catálogo de productos',
   whatsapp_checkout: 'Pedidos por WhatsApp',
@@ -60,7 +71,8 @@ const FEATURE_LABELS_ES: Record<string, string> = {
 /** Una cuota que sube al cambiar de plan: `10 → 500`. */
 interface QuotaJump {
   key: string;
-  from: number;
+  /** Ausente cuando el plan vigente ni siquiera declara esa cuota. */
+  from: number | undefined;
   to: number;
 }
 
@@ -231,72 +243,76 @@ const ADDON_DEFS: AddonDef[] = [
     </section>
   }
 
-  <!-- ── Planes disponibles ───────────────────────────────────────────── -->
-  @if (!plansLoading() && planCards().length > 0) {
-    <section class="page-card" aria-labelledby="plans-h">
-      <div class="card-head">
-        <h2 class="card-h2" id="plans-h">Planes</h2>
-        <span class="plans-hint">Todo se puede cambiar después</span>
-      </div>
+  <!-- ── La escalera ──────────────────────────────────────────────────── -->
+  @if (!plansLoading() && ladder().length > 0) {
+    <section aria-labelledby="ladder-h">
+      <h2 class="ladder-h" id="ladder-h">Hasta dónde puede llegar tu negocio</h2>
+      <p class="ladder-sub">
+        {{ ladder().length }} peldaños. Cada uno agrega una cosa concreta — toca cualquiera
+        para ver qué cambia desde donde estás hoy.
+      </p>
 
-      <ul class="plan-cards" role="list">
-        @for (card of planCards(); track card.plan.id) {
-          <li
-            class="plan-card"
-            role="listitem"
-            [class.is-current]="card.isCurrent"
-            [class.is-target]="targetPlanId() === card.plan.id && !card.isCurrent"
-          >
-            @if (card.isCurrent) {
-              <span class="plan-tag is-mute">{{ currentStatusLabel() }}</span>
-            } @else if (targetPlanId() === card.plan.id) {
-              <span class="plan-tag">Te lleva a lo que buscas</span>
-            } @else if (suggestedPlanId() === card.plan.id) {
-              <span class="plan-tag">Te calza por tu uso</span>
-            }
-
-            <span class="plan-card-name">{{ planTitle(card.plan) }}</span>
-            @if (planSubtitle(card.plan); as sub) {
-              <span class="plan-card-sub">{{ sub }}</span>
-            }
-            <span class="plan-card-price">
-              @if (card.plan.monthly_price === 0) {
-                <b>Gratis</b>
-              } @else {
-                <b>S/ {{ card.plan.monthly_price }}</b><span class="plan-card-per">/ mes</span>
+      <ul class="ladder" role="list">
+        @for (rung of ladder(); track rung.plan.id) {
+          <li class="rung-slot" [style.height.px]="rung.height">
+            <button
+              type="button"
+              class="rung"
+              [class.is-now]="rung.isCurrent"
+              [class.is-assisted]="rung.assisted"
+              [class.is-on]="rung.plan.id === selectedStep()?.plan?.id"
+              [attr.aria-pressed]="rung.plan.id === selectedStep()?.plan?.id"
+              (click)="pickStep(rung.plan.id)"
+            >
+              @if (rung.isCurrent) {
+                <span class="rung-flag">Estás aquí</span>
+              } @else if (rung.assisted) {
+                <span class="rung-flag is-mute">Asistido</span>
               }
-            </span>
+              <span class="rung-name">{{ planTitle(rung.plan) }}</span>
+              <span class="rung-price">
+                @if (rung.plan.monthly_price === 0) { Gratis } @else { S/ {{ rung.plan.monthly_price }} }
+              </span>
+              <span class="rung-headline">{{ rung.headline }}</span>
+            </button>
+          </li>
+        }
+      </ul>
+      <div class="ladder-ground" aria-hidden="true"></div>
 
-            @if (card.isCurrent) {
-              <span class="plan-card-kicker">Lo que ya tienes</span>
-              <ul class="plan-gains" role="list">
-                @for (item of card.includes; track item) {
-                  <li class="plan-gain is-have">
-                    <span class="plan-gain-ico" aria-hidden="true">
-                      <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-                    </span>
-                    {{ item }}
-                  </li>
+      @if (selectedStep(); as step) {
+        <div class="step-detail">
+          <section class="page-card">
+            <div class="card-head">
+              <h3 class="card-h2">
+                @if (step.isCurrent) {
+                  Lo que ya tienes con {{ planTitle(step.plan) }}
+                } @else {
+                  De {{ planTitle(currentPlanName()) }} a {{ planTitle(step.plan) }}, ganas
                 }
-              </ul>
-            } @else if (card.gains.length > 0) {
-              <span class="plan-card-kicker">Lo que se te abre</span>
-              <ul class="plan-gains" role="list">
-                @for (item of card.gains; track item) {
-                  <li class="plan-gain">
-                    <span class="plan-gain-ico" aria-hidden="true">
-                      <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
-                    </span>
-                    {{ item }}
-                  </li>
-                }
-              </ul>
-            }
+              </h3>
+              <span class="step-delta">{{ stepDeltaLabel() }}</span>
+            </div>
 
-            @if (card.quotaJumps.length > 0) {
-              <ul class="plan-jumps" role="list">
-                @for (jump of card.quotaJumps; track jump.key) {
-                  <li class="plan-jump">
+            <ul class="step-gains" role="list">
+              @for (gain of stepGains(); track gain) {
+                <li class="step-gain">
+                  <span class="step-gain-ico" aria-hidden="true">
+                    @if (step.isCurrent) {
+                      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                    } @else {
+                      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
+                    }
+                  </span>
+                  {{ gain }}
+                </li>
+              }
+            </ul>
+
+            @if (stepJumps().length > 0) {
+              <ul class="step-jumps" role="list">
+                @for (jump of stepJumps(); track jump.key) {
+                  <li class="step-jump">
                     {{ jump.key | quotaLabel }}
                     <b>{{ quotaValue(jump.from) }}</b>
                     <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-label="sube a"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
@@ -305,27 +321,30 @@ const ADDON_DEFS: AddonDef[] = [
                 }
               </ul>
             }
+          </section>
 
-            <div class="plan-card-foot">
-              @if (card.isCurrent) {
+          <section class="page-card step-how">
+            <h3 class="card-h2">Cómo se activa</h3>
+            <p class="step-how-text">{{ stepHowText() }}</p>
+
+            <div class="step-how-cta">
+              @if (step.isCurrent) {
                 @if (subscription(); as sub) {
                   @if (sub.status === 'cancelled' && sub.current_period_end) {
-                    <span class="plan-card-note">
+                    <p class="cancelled-note">
                       Cancelado. Tienes acceso hasta el
                       <strong>{{ sub.current_period_end | date:'d MMM yyyy' : undefined : 'es-PE' }}</strong>.
-                    </span>
-                  } @else if (card.plan.monthly_price > 0) {
+                    </p>
+                  } @else if (step.plan.monthly_price > 0) {
                     <button class="btn-danger-sm" type="button" (click)="cancelConfirm.set(true)">
                       Cancelar suscripción
                     </button>
-                  } @else {
-                    <span class="plan-card-note">Sin vencimiento mientras lo necesites.</span>
                   }
-                } @else {
-                  <span class="plan-card-note">Sin vencimiento mientras lo necesites.</span>
                 }
-              } @else if (card.isDowngrade) {
-                @if (downgradeConfirmId() === card.plan.id) {
+              } @else if (step.assisted) {
+                <a class="btn-primary step-cta" [href]="assistedContactHref()">Hablar con el equipo</a>
+              } @else if (step.isBelow) {
+                @if (downgradeConfirmId() === step.plan.id) {
                   <div class="inline-confirm">
                     <span class="inline-confirm-label">¿Confirmar?</span>
                     <button class="btn-danger-sm" type="button" [disabled]="actionLoading()" (click)="confirmDowngrade()">
@@ -334,20 +353,20 @@ const ADDON_DEFS: AddonDef[] = [
                     <button class="btn-outline" type="button" (click)="downgradeConfirmId.set(null)">No</button>
                   </div>
                 } @else {
-                  <button class="btn-outline plan-cta" type="button" (click)="downgradeConfirmId.set(card.plan.id)">
-                    Bajar a {{ planTitle(card.plan) }}
+                  <button class="btn-outline step-cta" type="button" (click)="downgradeConfirmId.set(step.plan.id)">
+                    Bajar a {{ planTitle(step.plan) }}
                   </button>
                 }
               } @else {
-                <button class="btn-primary plan-cta" type="button" [disabled]="upgrading()" (click)="upgrade(card.plan.id)">
-                  Cambiar a {{ planTitle(card.plan) }}
+                <button class="btn-primary step-cta" type="button" [disabled]="upgrading()" (click)="upgrade(step.plan.id)">
+                  Cambiar a {{ planTitle(step.plan) }}
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
                 </button>
               }
             </div>
-          </li>
-        }
-      </ul>
+          </section>
+        </div>
+      }
 
       @if (upgradeError()) {
         <p class="field-error" role="alert">{{ upgradeError() }}</p>
@@ -665,6 +684,137 @@ export class PlanPageComponent {
    * El API tiene `public_name` en su packaging pero no lo expone por HTTP, así
    * que el corte se hace acá, por el guión largo, y el resto queda de bajada.
    */
+  /**
+   * La escalera. `PLAN_LADDER` del API trae los cinco planes; los dos de arriba
+   * son `assisted_only` y hoy esta pantalla no los mencionaba nunca, aunque son
+   * la mitad del catálogo. Se muestran, con su borde punteado, porque un
+   * comercio que evalúa necesita ver hasta dónde llega esto.
+   */
+  protected readonly ladder = computed(() => {
+    const plans = this.plans();
+    const current = this.currentPlanObj();
+    const currentIdx = current ? plans.findIndex((p) => p.id === current.id) : 0;
+    const maxPrice = plans.length ? plans[plans.length - 1].monthly_price : 1;
+
+    return plans.map((plan, idx) => ({
+      plan,
+      idx,
+      isCurrent: idx === currentIdx,
+      isBelow: idx < currentIdx,
+      /** Un plan sin precio público se activa con el equipo, no solo. */
+      assisted: ASSISTED_PLAN_IDS.includes(plan.id),
+      /** Altura del peldaño: proporcional al precio, con un piso legible. */
+      height: 46 + Math.round((plan.monthly_price / (maxPrice || 1)) * 54),
+      /** Lo primero que agrega respecto del peldaño anterior. */
+      headline: this.stepHeadline(plans, idx),
+    }));
+  });
+
+  protected readonly selectedPlanId = signal<string | null>(null);
+
+  protected readonly selectedStep = computed(() => {
+    const rungs = this.ladder();
+    if (rungs.length === 0) return null;
+    const chosen = rungs.find((r) => r.plan.id === this.selectedPlanId());
+    // Sin elección previa, se abre en el peldaño siguiente al actual: es la
+    // pregunta que trae a esta pantalla.
+    const currentIdx = rungs.findIndex((r) => r.isCurrent);
+    return chosen ?? rungs[Math.min(currentIdx + 1, rungs.length - 1)] ?? rungs[0];
+  });
+
+  /** Todo lo que se acumula entre el plan vigente y el peldaño elegido. */
+  protected readonly stepGains = computed(() => {
+    const rungs = this.ladder();
+    const target = this.selectedStep();
+    if (!target) return [];
+    const currentIdx = rungs.findIndex((r) => r.isCurrent);
+    if (target.idx <= currentIdx) {
+      // Mirando el propio peldaño (o uno menor): se lista lo que ya se tiene.
+      const features = target.plan.features ?? {};
+      return Object.keys(features)
+        .filter((key) => features[key] === true)
+        .map((key) => FEATURE_LABELS_ES[key] ?? key);
+    }
+    const currentFeatures = rungs[currentIdx]?.plan.features ?? {};
+    const gained: string[] = [];
+    for (let i = currentIdx + 1; i <= target.idx; i++) {
+      const features = rungs[i].plan.features ?? {};
+      Object.keys(features)
+        .filter((key) => features[key] === true && currentFeatures[key] !== true)
+        .forEach((key) => {
+          const label = FEATURE_LABELS_ES[key] ?? key;
+          if (gained.indexOf(label) === -1) gained.push(label);
+        });
+    }
+    return gained;
+  });
+
+  protected readonly stepJumps = computed<QuotaJump[]>(() => {
+    const rungs = this.ladder();
+    const target = this.selectedStep();
+    const currentIdx = rungs.findIndex((r) => r.isCurrent);
+    if (!target || target.idx <= currentIdx) return [];
+    const from = rungs[currentIdx]?.plan.quotas ?? {};
+    return Object.entries(target.plan.quotas ?? {})
+      .filter(([key, to]) => to === -1 || typeof from[key] !== 'number' || to > from[key])
+      .map(([key, to]) => ({ key, from: from[key], to }));
+  });
+
+  /** Lo que distingue a este peldaño del anterior, en una línea. */
+  private stepHeadline(plans: Plan[], idx: number): string {
+    if (idx === 0) return plans[idx].description ?? '';
+    const prev = plans[idx - 1].features ?? {};
+    const here = plans[idx].features ?? {};
+    const added = Object.keys(here).filter((key) => here[key] === true && prev[key] !== true);
+    if (added.length === 0) return 'Más capacidad';
+    return '+ ' + (FEATURE_LABELS_ES[added[0]] ?? added[0]);
+  }
+
+  protected readonly currentPlanName = computed(
+    () => this.currentPlanObj() ?? { name: this.subscription()?.plan_name ?? 'Gratis' } as Plan,
+  );
+
+  protected readonly stepDeltaLabel = computed(() => {
+    const step = this.selectedStep();
+    if (!step) return '';
+    const current = this.currentPlanObj();
+    if (step.isCurrent) {
+      return step.plan.monthly_price === 0 ? 'S/ 0 al mes' : `S/ ${step.plan.monthly_price} al mes`;
+    }
+    const delta = step.plan.monthly_price - (current?.monthly_price ?? 0);
+    return delta >= 0
+      ? `S/ ${delta} más al mes`
+      : `S/ ${Math.abs(delta)} menos al mes`;
+  });
+
+  protected readonly stepHowText = computed(() => {
+    const step = this.selectedStep();
+    if (!step) return '';
+    if (step.isCurrent) {
+      return step.plan.monthly_price === 0
+        ? 'Ya estás acá. El plan Gratis no vence: se queda mientras lo necesites.'
+        : 'Es tu plan vigente. Se renueva solo cada mes.';
+    }
+    if (step.assisted) {
+      return `${planLabel(step.plan)} se arma con nuestro equipo: revisamos tu operación, migramos lo que haga falta y lo dejamos andando. No se contrata solo desde esta pantalla.`;
+    }
+    if (step.isBelow) {
+      return 'El cambio a un plan menor aplica al final del período que ya pagaste.';
+    }
+    return 'Al confirmar te llevamos a MercadoPago. El cambio aplica de inmediato y el cobro sale prorrateado.';
+  });
+
+  /** Contacto para los planes asistidos. No hay flujo self-serve que ofrecer. */
+  protected readonly assistedContactHref = computed(() => {
+    const step = this.selectedStep();
+    const plan = step ? planLabel(step.plan) : '';
+    return `mailto:hola@proxima.pe?subject=${encodeURIComponent('Quiero activar el plan ' + plan)}`;
+  });
+
+  protected pickStep(planId: string): void {
+    this.selectedPlanId.set(planId);
+  }
+
   /** «Tu plan de hoy», o el estado real cuando no es el normal. */
   protected readonly currentStatusLabel = computed(() => {
     const status = this.subscription()?.status;
@@ -674,7 +824,7 @@ export class PlanPageComponent {
   });
 
   protected planTitle(plan: Plan): string {
-    return plan.name.split('—')[0].trim() || plan.name;
+    return planLabel(plan);
   }
 
   protected planSubtitle(plan: Plan): string {
@@ -683,8 +833,15 @@ export class PlanPageComponent {
     return tail || plan.description || '';
   }
 
-  /** `1000` → `1.000`; `-1` es ilimitado en el ladder del API. */
-  protected quotaValue(value: number): string {
+  /**
+   * `1000` → `1.000`; `-1` es ilimitado en el ladder del API.
+   *
+   * `undefined` es un caso real, no defensivo: Crece declara
+   * `invoices_per_month` y Emprende no, así que al saltar de uno a otro el
+   * «desde» no existe. Se dice «—», no se revienta la página.
+   */
+  protected quotaValue(value: number | undefined): string {
+    if (value === undefined) return '—';
     if (value === -1) return 'ilimitado';
     return value.toLocaleString('es-PE');
   }

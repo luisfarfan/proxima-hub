@@ -73,6 +73,6 @@ describe('Plan — el uso decide', () => {
     const { dom } = await renderPlanPage({ status: 'error' });
 
     expect(dom.querySelector('.usage-strip')).toBeNull();
-    expect(dom.querySelectorAll('.plan-card').length).toBe(3);
+    expect(dom.querySelectorAll('.rung').length).toBe(3);
   });
 });

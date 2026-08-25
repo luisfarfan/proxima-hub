@@ -241,124 +241,6 @@
 .payment-status.pending { background: #fef9c3; color: #92400e; }
 .payment-status.failed  { background: #fee2e2; color: #b91c1c; }
   
-/* ── Tarjetas de plan ──────────────────────────────────────────────────── */
-.plans-hint { font-size: 0.75rem; color: var(--faint); }
-
-.plan-cards {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 0.875rem;
-}
-
-.plan-card {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  border: 1px solid var(--line);
-  border-radius: 1rem;
-  background: #fff;
-  padding: 1.25rem;
-  transition: border-color 0.2s ease, box-shadow 0.24s ease, transform 0.24s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.plan-card:hover { transform: translateY(-2px); box-shadow: 0 16px 34px -24px rgba(27, 26, 23, 0.5); }
-.plan-card.is-current { background: #f8f7f4; }
-.plan-card.is-target { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(0, 9, 220, 0.1); }
-
-.plan-tag {
-  position: absolute;
-  top: -11px;
-  left: 20px;
-  height: 24px;
-  padding: 0 11px;
-  border-radius: 999px;
-  background: var(--accent);
-  color: #fff;
-  font-size: 0.6875rem;
-  font-weight: 600;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  display: inline-flex;
-  align-items: center;
-}
-
-.plan-tag.is-mute { background: #e7e5e0; color: var(--muted); }
-
-.plan-card-name {
-  font-family: var(--font-heading);
-  font-size: 1.0625rem;
-  font-weight: 600;
-  color: var(--ink);
-  margin-bottom: 0.25rem;
-}
-
-.plan-card-sub {
-  display: block;
-  font-size: 0.75rem;
-  line-height: 1.45;
-  color: var(--muted);
-  margin: -0.1rem 0 0.75rem;
-}
-
-.plan-card-price { display: flex; align-items: baseline; gap: 5px; margin-bottom: 1rem; }
-.plan-card-price b { font-family: var(--font-display); font-size: 2rem; font-weight: 500; letter-spacing: -0.02em; }
-.plan-card-per { font-size: 0.75rem; color: var(--faint); }
-
-.plan-card-kicker {
-  display: block;
-  font-size: 0.6875rem;
-  font-weight: 600;
-  letter-spacing: 0.09em;
-  text-transform: uppercase;
-  color: var(--accent);
-  margin-bottom: 0.6rem;
-}
-
-.plan-card.is-current .plan-card-kicker { color: var(--muted); }
-
-.plan-gains { list-style: none; margin: 0 0 0.875rem; padding: 0; display: flex; flex-direction: column; gap: 0.55rem; }
-.plan-gain { display: flex; align-items: flex-start; gap: 9px; font-size: 0.8125rem; line-height: 1.4; color: var(--ink); }
-.plan-gain-ico {
-  width: 17px;
-  height: 17px;
-  border-radius: 5px;
-  background: rgba(0, 9, 220, 0.1);
-  color: var(--accent);
-  flex-shrink: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-top: 1px;
-}
-/* Lo que el plan actual YA incluye: presente, no ausente. */
-.plan-gain.is-have { color: #4a4841; }
-.plan-gain.is-have .plan-gain-ico { background: rgba(27, 26, 23, 0.07); color: var(--muted); }
-
-.plan-jumps {
-  list-style: none;
-  margin: 0 0 1rem;
-  padding: 0.875rem 0 0;
-  border-top: 1px solid var(--line-soft);
-  display: flex;
-  flex-direction: column;
-  gap: 0.45rem;
-}
-
-.plan-jump { display: flex; align-items: center; gap: 6px; font-size: 0.75rem; color: var(--muted); }
-.plan-jump b { font-weight: 600; color: var(--ink); }
-.plan-jump svg { color: var(--accent); }
-
-.plan-card-foot { margin-top: auto; }
-.plan-cta { width: 100%; justify-content: center; }
-.plan-card-note { font-size: 0.75rem; line-height: 1.5; color: var(--faint); }
-
-@media (max-width: 640px) {
-  .plan-cards { grid-template-columns: minmax(0, 1fr); }
-}
-
 /* ── Franja de uso ─────────────────────────────────────────────────────── */
 .usage-strip {
   display: flex;
@@ -459,4 +341,191 @@
 @media (max-width: 640px) {
   .addon-card { flex-wrap: wrap; }
   .total-bar { flex-direction: column; align-items: flex-start; gap: 0.625rem; }
+}
+
+/* ── La escalera ──────────────────────────────────────────────────────────
+   Cinco peldaños de altura creciente. El alto sale del precio (calculado en
+   el componente), así que la forma dice lo mismo que el número.
+   ──────────────────────────────────────────────────────────────────────── */
+.ladder-h {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+  margin: 0 0 0.4rem;
+}
+
+.ladder-sub {
+  margin: 0 0 1.5rem;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  color: var(--muted);
+  max-width: 38rem;
+}
+
+.ladder {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+  height: 190px;
+}
+
+.rung-slot { flex: 1; min-width: 0; display: flex; }
+
+.rung {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  border: 1px solid var(--line);
+  border-bottom: 0;
+  border-radius: 0.875rem 0.875rem 0 0;
+  background: var(--surface);
+  padding: 1rem 0.9375rem 1.125rem;
+  text-align: left;
+  cursor: pointer;
+  font-family: inherit;
+  transition: background 0.18s ease, border-color 0.18s ease, transform 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.rung:hover { transform: translateY(-3px); border-color: var(--line-strong, rgba(27, 26, 23, 0.3)); }
+.rung:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+/* Orden importa: `is-on` tiene que ganarle a `is-now`. */
+.rung.is-now { background: #f4f2ee; }
+.rung.is-assisted { border-style: dashed; }
+.rung.is-on { border-color: var(--accent); background: #f7f7ff; }
+
+.rung-flag {
+  position: absolute;
+  top: -11px;
+  left: 15px;
+  height: 22px;
+  padding: 0 10px;
+  border-radius: 999px;
+  background: var(--ink);
+  color: #fff;
+  font-size: 0.625rem;
+  font-weight: 600;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  display: inline-flex;
+  align-items: center;
+  white-space: nowrap;
+}
+
+.rung-flag.is-mute { background: #e7e5e0; color: var(--muted); }
+
+.rung-name {
+  font-family: var(--font-heading);
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: var(--ink);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.rung-price {
+  display: block;
+  margin-top: 3px;
+  font-family: var(--font-display);
+  font-size: 1.375rem;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+}
+
+.rung-headline {
+  display: block;
+  margin-top: 0.5625rem;
+  font-size: 0.75rem;
+  line-height: 1.4;
+  color: var(--muted);
+}
+
+.ladder-ground {
+  height: 3px;
+  border-radius: 999px;
+  background: var(--line);
+}
+
+/* ── El detalle del peldaño ───────────────────────────────────────────────── */
+.step-detail {
+  display: grid;
+  grid-template-columns: 1.25fr 1fr;
+  gap: 0.875rem;
+  margin-top: 1.5rem;
+}
+
+.step-delta { font-size: 0.8125rem; color: var(--muted); flex-shrink: 0; }
+
+.step-gains { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0.75rem; }
+
+.step-gain {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 0.875rem;
+  line-height: 1.45;
+  color: var(--ink);
+}
+
+.step-gain-ico {
+  width: 18px;
+  height: 18px;
+  border-radius: 6px;
+  background: rgba(0, 9, 220, 0.1);
+  color: var(--accent);
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 1px;
+}
+
+.step-jumps {
+  list-style: none;
+  margin: 1.25rem 0 0;
+  padding: 1.125rem 0 0;
+  border-top: 1px solid var(--line-soft);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.step-jump {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 7px 12px;
+  border-radius: 999px;
+  background: rgba(27, 26, 23, 0.05);
+  font-size: 0.75rem;
+  color: var(--muted);
+}
+
+.step-jump b { font-weight: 600; color: var(--ink); }
+.step-jump svg { color: var(--accent); }
+
+.step-how { display: flex; flex-direction: column; }
+.step-how-text { margin: 0 0 1.125rem; font-size: 0.875rem; line-height: 1.55; color: var(--muted); }
+.step-how-cta { margin-top: auto; }
+.step-cta { width: 100%; justify-content: center; text-decoration: none; box-sizing: border-box; }
+
+@media (max-width: 860px) {
+  /* Cinco peldaños en 860 px dejan 150 px cada uno: la escalera se vuelve lista. */
+  .ladder { height: auto; flex-direction: column; align-items: stretch; gap: 6px; }
+  .rung-slot { height: auto !important; }
+  .rung { border-radius: 0.875rem; border-bottom: 1px solid var(--line); padding: 1rem 1.125rem; }
+  .rung:hover { transform: none; }
+  .rung-flag { position: static; margin-bottom: 0.5rem; align-self: flex-start; }
+  .ladder-ground { display: none; }
+  .step-detail { grid-template-columns: minmax(0, 1fr); }
 }

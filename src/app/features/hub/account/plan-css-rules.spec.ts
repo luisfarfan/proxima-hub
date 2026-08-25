@@ -62,10 +62,17 @@ function overriddenSelectors(css: string): string[] {
 describe('Plan — reglas de CSS', () => {
   it('los estilos del componente están compilados y traen lo nuevo', () => {
     expect(CSS.length).toBeGreaterThan(0);
-    expect(CSS).toContain('.plan-card');
+    expect(CSS).toContain('.rung');
+    expect(CSS).toContain('.step-detail');
     expect(CSS).toContain('.usage-strip');
     expect(CSS).toContain('.addon-card');
     expect(CSS).toContain('.total-bar');
+  });
+
+  it('el peldaño seleccionado le gana al peldaño actual', () => {
+    // Misma especificidad: si `.is-now` viniera después, elegir tu propio plan
+    // perdería el azul contra el gris de «estás aquí».
+    expect(CSS.indexOf('.rung.is-now')).toBeLessThan(CSS.indexOf('.rung.is-on'));
   });
 
   it('la franja de uso acomoda las cuotas que haya, no exactamente tres', () => {
@@ -75,11 +82,13 @@ describe('Plan — reglas de CSS', () => {
     expect(CSS).not.toMatch(/\.usage-meters[^{]*\{[^}]*repeat\(3,/);
   });
 
-  it('las tarjetas pasan a una sola columna en pantallas chicas', () => {
-    const breakpoint = CSS.slice(CSS.indexOf('@media (max-width: 640px)'));
+  it('la escalera se vuelve lista en pantallas chicas', () => {
+    // Cinco peldaños en 860 px dejan 150 px cada uno: ilegible en horizontal.
+    const breakpoint = CSS.slice(CSS.indexOf('@media (max-width: 860px)'));
 
-    expect(CSS).toContain('@media (max-width: 640px)');
-    expect(breakpoint).toMatch(/\.plan-cards[^{]*\{[^}]*grid-template-columns:\s*minmax\(0,\s*1fr\)/);
+    expect(CSS).toContain('@media (max-width: 860px)');
+    expect(breakpoint).toMatch(/\.ladder[^-{][^{]*\{[^}]*flex-direction:\s*column/);
+    expect(breakpoint).toMatch(/\.step-detail[^{]*\{[^}]*grid-template-columns:\s*minmax\(0,\s*1fr\)/);
   });
 
   it('toda animación tiene su anulación bajo prefers-reduced-motion', () => {
