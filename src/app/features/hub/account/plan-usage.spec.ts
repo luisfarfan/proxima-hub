@@ -29,7 +29,7 @@ describe('Plan — el uso decide', () => {
     const claim = dom.querySelector('.usage-claim')!.textContent!.replace(/\s+/g, ' ');
     expect(claim).toContain('1 de 10');
     expect(claim).toContain('productos');
-    expect(claim).toContain('Ya no te queda');
+    expect(claim).toContain('Llegaste al tope de');
   });
 
   it('sugiere el plan más barato que supera todo lo que está en alerta', async () => {

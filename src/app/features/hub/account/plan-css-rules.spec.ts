@@ -68,6 +68,13 @@ describe('Plan — reglas de CSS', () => {
     expect(CSS).toContain('.total-bar');
   });
 
+  it('la franja de uso acomoda las cuotas que haya, no exactamente tres', () => {
+    // Con `repeat(3, …)` la cuarta cuota caía sola a una segunda fila y las
+    // etiquetas largas se pisaban con su número.
+    expect(CSS).toMatch(/\.usage-meters[^{]*\{[^}]*grid-template-columns:\s*repeat\(auto-fit/);
+    expect(CSS).not.toMatch(/\.usage-meters[^{]*\{[^}]*repeat\(3,/);
+  });
+
   it('las tarjetas pasan a una sola columna en pantallas chicas', () => {
     const breakpoint = CSS.slice(CSS.indexOf('@media (max-width: 640px)'));
 

@@ -166,7 +166,7 @@ const ADDON_DEFS: AddonDef[] = [
           <p class="usage-claim">
             @for (row of usageAlerts(); track row.key; let last = $last) {
               @if (row.remaining === 0) {
-                Ya no te queda <b>{{ row.key | quotaLabel | lowercase }}</b>
+                Llegaste al tope de <b>{{ row.key | quotaLabel | lowercase }}</b>
               } @else {
                 Te {{ row.remaining === 1 ? 'queda' : 'quedan' }} <b>{{ row.remaining }} de {{ row.limit }}</b> en {{ row.key | quotaLabel | lowercase }}
               }
@@ -174,7 +174,7 @@ const ADDON_DEFS: AddonDef[] = [
             }
           </p>
           @if (suggestedPlan(); as plan) {
-            <p class="usage-suggestion">El plan <b>{{ plan.name }}</b> es el más barato que lo resuelve.</p>
+            <p class="usage-suggestion">El plan <b>{{ planTitle(plan) }}</b> es el más barato que lo resuelve.</p>
           } @else {
             <p class="usage-suggestion">Ningún plan superior sube esas cuotas, así que no te proponemos ninguno.</p>
           }
@@ -205,45 +205,6 @@ const ADDON_DEFS: AddonDef[] = [
       </div>
     </section>
   }
-
-  <!-- ── Plan actual ──────────────────────────────────────────────────── -->
-  <section class="page-card" aria-labelledby="current-plan-h">
-    <h2 class="card-h2" id="current-plan-h">Plan actual</h2>
-
-    @if (subLoading()) {
-      <div class="skeleton" role="status" aria-label="Cargando plan"></div>
-    } @else if (subscription(); as sub) {
-      <div class="plan-header">
-        <span class="plan-name">{{ sub.plan_name }}</span>
-        <span class="plan-status-badge"
-              [class.active]="sub.status === 'active'"
-              [class.trial]="sub.status === 'trial'"
-              [class.cancelled]="sub.status === 'cancelled'">
-          {{ statusLabel(sub.status) }}
-        </span>
-      </div>
-
-      @if (sub.status === 'cancelled' && sub.current_period_end) {
-        <p class="cancelled-note">
-          Tienes acceso hasta el <strong>{{ sub.current_period_end | date:'d MMM yyyy' : undefined : 'es-PE' }}</strong>.
-        </p>
-      }
-
-      @if (sub.status === 'active' || sub.status === 'trial') {
-        <div class="plan-actions">
-          <button class="btn-danger-sm" type="button" (click)="cancelConfirm.set(true)">
-            Cancelar suscripción
-          </button>
-        </div>
-      }
-    } @else {
-      <div class="plan-header">
-        <span class="plan-name">Gratis</span>
-        <span class="plan-status-badge">Prueba</span>
-      </div>
-      <p class="plan-desc">Estás en el plan gratuito de Próxima.</p>
-    }
-  </section>
 
   <!-- ── Confirmación de cancelación ─────────────────────────────────── -->
   @if (cancelConfirm()) {
@@ -287,14 +248,17 @@ const ADDON_DEFS: AddonDef[] = [
             [class.is-target]="targetPlanId() === card.plan.id && !card.isCurrent"
           >
             @if (card.isCurrent) {
-              <span class="plan-tag is-mute">Tu plan de hoy</span>
+              <span class="plan-tag is-mute">{{ currentStatusLabel() }}</span>
             } @else if (targetPlanId() === card.plan.id) {
               <span class="plan-tag">Te lleva a lo que buscas</span>
             } @else if (suggestedPlanId() === card.plan.id) {
               <span class="plan-tag">Te calza por tu uso</span>
             }
 
-            <span class="plan-card-name">{{ card.plan.name }}</span>
+            <span class="plan-card-name">{{ planTitle(card.plan) }}</span>
+            @if (planSubtitle(card.plan); as sub) {
+              <span class="plan-card-sub">{{ sub }}</span>
+            }
             <span class="plan-card-price">
               @if (card.plan.monthly_price === 0) {
                 <b>Gratis</b>
@@ -344,7 +308,22 @@ const ADDON_DEFS: AddonDef[] = [
 
             <div class="plan-card-foot">
               @if (card.isCurrent) {
-                <span class="plan-card-note">Sin vencimiento mientras lo necesites.</span>
+                @if (subscription(); as sub) {
+                  @if (sub.status === 'cancelled' && sub.current_period_end) {
+                    <span class="plan-card-note">
+                      Cancelado. Tienes acceso hasta el
+                      <strong>{{ sub.current_period_end | date:'d MMM yyyy' : undefined : 'es-PE' }}</strong>.
+                    </span>
+                  } @else if (card.plan.monthly_price > 0) {
+                    <button class="btn-danger-sm" type="button" (click)="cancelConfirm.set(true)">
+                      Cancelar suscripción
+                    </button>
+                  } @else {
+                    <span class="plan-card-note">Sin vencimiento mientras lo necesites.</span>
+                  }
+                } @else {
+                  <span class="plan-card-note">Sin vencimiento mientras lo necesites.</span>
+                }
               } @else if (card.isDowngrade) {
                 @if (downgradeConfirmId() === card.plan.id) {
                   <div class="inline-confirm">
@@ -356,12 +335,12 @@ const ADDON_DEFS: AddonDef[] = [
                   </div>
                 } @else {
                   <button class="btn-outline plan-cta" type="button" (click)="downgradeConfirmId.set(card.plan.id)">
-                    Bajar a {{ card.plan.name }}
+                    Bajar a {{ planTitle(card.plan) }}
                   </button>
                 }
               } @else {
                 <button class="btn-primary plan-cta" type="button" [disabled]="upgrading()" (click)="upgrade(card.plan.id)">
-                  Cambiar a {{ card.plan.name }}
+                  Cambiar a {{ planTitle(card.plan) }}
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
                 </button>
               }
@@ -678,6 +657,31 @@ export class PlanPageComponent {
       };
     });
   });
+
+  /**
+   * `PlanRead.name` viene como «Emprende — Catálogo, pedidos y control de
+   * stock»: sirve para un listado, no para el título de una tarjeta de 300 px
+   * —se comía cuatro líneas y repetía la palabra «Gratis» encima del precio—.
+   * El API tiene `public_name` en su packaging pero no lo expone por HTTP, así
+   * que el corte se hace acá, por el guión largo, y el resto queda de bajada.
+   */
+  /** «Tu plan de hoy», o el estado real cuando no es el normal. */
+  protected readonly currentStatusLabel = computed(() => {
+    const status = this.subscription()?.status;
+    if (status === 'cancelled') return 'Cancelado';
+    if (status === 'trial') return 'En prueba';
+    return 'Tu plan de hoy';
+  });
+
+  protected planTitle(plan: Plan): string {
+    return plan.name.split('—')[0].trim() || plan.name;
+  }
+
+  protected planSubtitle(plan: Plan): string {
+    const [, ...rest] = plan.name.split('—');
+    const tail = rest.join('—').trim();
+    return tail || plan.description || '';
+  }
 
   /** `1000` → `1.000`; `-1` es ilimitado en el ladder del API. */
   protected quotaValue(value: number): string {

@@ -1,4 +1,4 @@
-import { renderPlanPage } from './plan-page.testing';
+import { STATUS_FAKE, renderPlanPage } from './plan-page.testing';
 
 /**
  * Antes cada plan era una fila con su `description`: el usuario tenía que
@@ -35,13 +35,51 @@ describe('Plan — tarjetas con la diferencia', () => {
     expect(jumps).toContainEqual({ label: 'Pedidos / mes', from: '30', to: '300' });
   });
 
-  it('el plan actual se marca y no ofrece botón de cambio', async () => {
+  it('el plan actual se marca con su estado y no ofrece botón de cambio', async () => {
     const { dom } = await renderPlanPage();
     const gratis = cards(dom)[0];
 
     expect(gratis.classList.contains('is-current')).toBe(true);
-    expect(gratis.querySelector('.plan-tag')?.textContent?.trim()).toBe('Tu plan de hoy');
+    // El fixture está en `trial`: la etiqueta dice el estado real, no un genérico.
+    expect(gratis.querySelector('.plan-tag')?.textContent?.trim()).toBe('En prueba');
     expect(gratis.querySelector('button')).toBeNull();
+  });
+
+  it('un plan gratuito activo no ofrece cancelar: no hay nada que cancelar', async () => {
+    const { dom } = await renderPlanPage({
+      status: { ...STATUS_FAKE, status: 'active' },
+    });
+    const gratis = cards(dom)[0];
+
+    expect(gratis.querySelector('.plan-tag')?.textContent?.trim()).toBe('Tu plan de hoy');
+    expect(gratis.textContent).toContain('Sin vencimiento');
+    expect(gratis.querySelector('.btn-danger-sm')).toBeNull();
+  });
+
+  it('un plan pagado sí ofrece cancelar, dentro de su propia tarjeta', async () => {
+    const { dom } = await renderPlanPage({
+      status: { ...STATUS_FAKE, plan_id: 'emprende', plan_name: 'Emprende', status: 'active' },
+    });
+    const emprende = cards(dom)[1];
+
+    expect(emprende.classList.contains('is-current')).toBe(true);
+    expect(emprende.querySelector('.btn-danger-sm')?.textContent?.trim()).toBe('Cancelar suscripción');
+  });
+
+  it('el título de la tarjeta no arrastra la descripción del plan', async () => {
+    const { dom } = await renderPlanPage({
+      plans: [
+        { id: 'free', name: 'Gratis — Catálogo y control de stock', monthly_price: 0, features: { catalog: true }, quotas: { max_products: 10 } },
+        { id: 'emprende', name: 'Emprende — Catálogo, pedidos y control de stock', monthly_price: 50, features: { catalog: true, analytics: true }, quotas: { max_products: 500 } },
+      ],
+    });
+
+    expect(cards(dom)[1].querySelector('.plan-card-name')?.textContent?.trim()).toBe('Emprende');
+    expect(cards(dom)[1].querySelector('.plan-card-sub')?.textContent?.trim()).toBe(
+      'Catálogo, pedidos y control de stock',
+    );
+    expect(cards(dom)[1].querySelector('button')?.textContent).toContain('Cambiar a Emprende');
+    expect(cards(dom)[1].querySelector('button')?.textContent).not.toContain('Catálogo');
   });
 
   it('lo que el plan actual incluye se muestra como incluido, no como ausente', async () => {
