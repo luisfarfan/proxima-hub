@@ -1,0 +1,237 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500&family=Plus+Jakarta+Sans:wght@500;600;700&family=Inter:wght@400;500;600&display=swap">
+  <style>
+    body { margin: 0; font-family: 'Inter', system-ui, sans-serif; letter-spacing: -0.003em; }
+    a { color: #0009dc; text-decoration: none; } a:hover { color: #000678; text-decoration: underline; }
+    button { font: inherit; cursor: pointer; border: 0; background: none; color: inherit; text-align: left; }
+
+    .gauge { border: 1px solid rgba(27,26,23,0.11); border-radius: 16px; background: #fff; padding: 20px 22px; }
+    .gauge-h { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin-bottom: 14px; }
+    .gauge-k { font-size: 0.8125rem; color: #6c6a63; }
+    .gauge-v { font-family: 'Fraunces', Georgia, serif; font-size: 1.5rem; font-weight: 500; letter-spacing: -0.02em; }
+    .gauge-v small { font-size: 0.8125rem; font-family: 'Inter', sans-serif; font-weight: 400; color: #8a887f; }
+
+    .track { height: 10px; border-radius: 999px; background: rgba(27,26,23,0.08); overflow: hidden; position: relative; }
+    .fill { display: block; height: 100%; border-radius: 999px; background: #1b1a17; transition: width 620ms cubic-bezier(0.16,1,0.3,1), background 300ms ease; }
+    .fill.is-tight { background: #bb3a2c; }
+    .fill.is-loose { background: #0009dc; }
+
+    .gauge-note { margin: 11px 0 0; font-size: 0.75rem; line-height: 1.45; color: #8a887f; }
+    .gauge-note b { color: #1b1a17; font-weight: 600; }
+
+    .step { flex: 1; min-width: 0; border: 1px solid rgba(27,26,23,0.13); border-radius: 12px; background: #fff; padding: 13px 15px; transition: border-color .16s ease, background .16s ease, box-shadow .2s ease, transform .2s cubic-bezier(0.16,1,0.3,1); }
+    .step:hover { border-color: rgba(27,26,23,0.3); transform: translateY(-2px); }
+    .step.is-now { background: #f8f7f4; }
+    .step.on { border-color: #0009dc; background: #f7f7ff; box-shadow: 0 0 0 3px rgba(0,9,220,0.1); }
+    .step-n { display: block; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 0.9375rem; font-weight: 600; }
+    .step-p { display: block; margin-top: 2px; font-size: 0.75rem; color: #6c6a63; }
+    .step-tag { display: inline-block; margin-top: 7px; font-size: 0.625rem; font-weight: 600; letter-spacing: 0.07em; text-transform: uppercase; color: #8a887f; }
+    .step.on .step-tag { color: #0009dc; }
+
+    .extra { display: flex; align-items: flex-start; gap: 9px; font-size: 0.8125rem; line-height: 1.45; color: #1b1a17; }
+    .extra-i { width: 17px; height: 17px; border-radius: 5px; background: rgba(0,9,220,0.1); color: #0009dc; flex-shrink: 0; display: flex; align-items: center; justify-content: center; margin-top: 1px; }
+
+    .in { opacity: 0; animation: up 560ms cubic-bezier(0.16,1,0.3,1) forwards; }
+    @keyframes up { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+    @media (prefers-reduced-motion: reduce) { .in { animation-duration: 1ms; opacity: 1; transform: none; } .fill { transition: none; } .step:hover { transform: none; } }
+  </style>
+</helmet>
+
+<div style="width: 1180px; height: 1000px; box-sizing: border-box; background: #fbfaf8; color: #1b1a17; overflow: hidden;">
+
+  <nav style="display: flex; gap: 28px; padding: 0 40px; border-bottom: 1px solid rgba(27,26,23,0.07);">
+    <span style="padding: 14px 0; font-size: 0.875rem; font-weight: 500; color: #6c6a63;">Cuenta</span>
+    <span style="padding: 14px 0; font-size: 0.875rem; font-weight: 500; color: #1b1a17; border-bottom: 2px solid #1b1a17;">Plan</span>
+    <span style="padding: 14px 0; font-size: 0.875rem; font-weight: 500; color: #6c6a63;">Seguridad</span>
+    <span style="padding: 14px 0; font-size: 0.875rem; font-weight: 500; color: #6c6a63;">Equipo</span>
+  </nav>
+
+  <main style="max-width: 1060px; margin: 0 auto; padding: 34px 40px; display: flex; flex-direction: column; gap: 26px;">
+
+    <div class="in" style="display: flex; align-items: flex-end; justify-content: space-between; gap: 28px;">
+      <div>
+        <h1 style="margin: 0; font-family: 'Fraunces', Georgia, serif; font-weight: 500; font-size: 1.875rem; letter-spacing: -0.02em;">Tu capacidad</h1>
+        <p style="margin: 8px 0 0; font-size: 0.9375rem; line-height: 1.5; color: #6c6a63; max-width: 30rem;">{{ headline }}</p>
+      </div>
+      <span style="flex-shrink: 0; text-align: right;">
+        <span style="display: block; font-size: 0.6875rem; font-weight: 600; letter-spacing: 0.11em; text-transform: uppercase; color: #6c6a63;">{{ priceLabel }}</span>
+        <span style="display: block; margin-top: 4px; font-family: 'Fraunces', Georgia, serif; font-size: 1.875rem; font-weight: 500; letter-spacing: -0.02em;">S/ {{ price }}</span>
+      </span>
+    </div>
+
+    <!-- Los medidores: el sujeto de la pantalla -->
+    <div class="in" style="animation-delay: 60ms; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px;">
+      <sc-for list="{{ gauges }}" as="g" hint-placeholder-count="3">
+        <div class="gauge">
+          <div class="gauge-h">
+            <span class="gauge-k">{{ g.label }}</span>
+            <span class="gauge-v">{{ g.current }} <small>de {{ g.limit }}</small></span>
+          </div>
+          <div class="track">
+            <span class="fill {{ g.cls }}" style="width: {{ g.width }}%"></span>
+          </div>
+          <p class="gauge-note">{{ g.note }}</p>
+        </div>
+      </sc-for>
+    </div>
+
+    <!-- El selector: pasar por un plan destensa los medidores -->
+    <div class="in" style="animation-delay: 140ms;">
+      <div style="display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 12px;">
+        <h2 style="margin: 0; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 1rem; font-weight: 600;">Cuánto techo quieres</h2>
+        <span style="font-size: 0.75rem; color: #8a887f;">Toca un plan y mira cómo se destensan los medidores</span>
+      </div>
+      <div style="display: flex; gap: 10px;">
+        <button type="button" class="step {{ s.free }}" onClick="{{ pickFree }}">
+          <span class="step-n">Gratis</span><span class="step-p">S/ 0 al mes</span>
+          <span class="step-tag">{{ tagFree }}</span>
+        </button>
+        <button type="button" class="step {{ s.emprende }}" onClick="{{ pickEmprende }}">
+          <span class="step-n">Emprende</span><span class="step-p">S/ 50 al mes</span>
+          <span class="step-tag">50× tu catálogo</span>
+        </button>
+        <button type="button" class="step {{ s.crece }}" onClick="{{ pickCrece }}">
+          <span class="step-n">Crece</span><span class="step-p">S/ 99 al mes</span>
+          <span class="step-tag">500× tu catálogo</span>
+        </button>
+        <button type="button" class="step {{ s.despega }}" onClick="{{ pickDespega }}">
+          <span class="step-n">Despega</span><span class="step-p">S/ 149 al mes</span>
+          <span class="step-tag">Con acompañamiento</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Lo que no es cuota, dicho aparte y sin esconderlo -->
+    <div class="in" style="animation-delay: 220ms; display: grid; grid-template-columns: 1.15fr 1fr; gap: 14px;">
+
+      <section style="border: 1px solid rgba(27,26,23,0.11); border-radius: 16px; background: #fff; padding: 22px;">
+        <span style="display: block; font-size: 0.6875rem; font-weight: 600; letter-spacing: 0.11em; text-transform: uppercase; color: #0009dc; margin-bottom: 14px;">{{ extrasTitle }}</span>
+        <div style="display: flex; flex-direction: column; gap: 11px;">
+          <sc-for list="{{ extras }}" as="e" hint-placeholder-count="3">
+            <span class="extra">
+              <span class="extra-i" aria-hidden="true">
+                <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
+              </span>
+              {{ e.text }}
+            </span>
+          </sc-for>
+        </div>
+      </section>
+
+      <section style="border: 1px solid rgba(27,26,23,0.11); border-radius: 16px; background: #fff; padding: 22px; display: flex; flex-direction: column;">
+        <span style="display: block; font-size: 0.6875rem; font-weight: 600; letter-spacing: 0.11em; text-transform: uppercase; color: #6c6a63; margin-bottom: 12px;">Add-ons</span>
+        <p style="margin: 0 0 16px; font-size: 0.8125rem; line-height: 1.5; color: #6c6a63;">La <b style="color:#1b1a17;font-weight:500;">Tienda Web</b> (S/ 50) se suma sobre cualquier plan desde Emprende. <b style="color:#1b1a17;font-weight:500;">Intelligence</b> (S/ 100) lo activamos contigo.</p>
+        <div style="margin-top: auto;">
+          <span style="height: 46px; border-radius: 11px; background: {{ ctaBg }}; color: {{ ctaColor }}; font-weight: 600; font-size: 0.9375rem; display: flex; align-items: center; justify-content: center;">{{ ctaLabel }}</span>
+          <p style="margin: 10px 0 0; font-size: 0.75rem; line-height: 1.5; color: #8a887f; text-align: center;">{{ ctaNote }}</p>
+        </div>
+      </section>
+
+    </div>
+
+  </main>
+
+</div>
+</x-dc>
+<script data-dc-script data-props='{"$preview":{"width":1180,"height":1000}}'>
+class Component extends DCLogic {
+  state = { plan: 'free' };
+
+  renderVals() {
+    const st = this.state || {};
+    const TIGHT = 80;
+    const USE = { productos: 9, usuarios: 1, pedidos: 18 };
+    const PLANS = {
+      free:     { name: 'Gratis',   price: 0,   rank: 0, q: { productos: 10,    usuarios: 1,  pedidos: 30 },   extras: [] },
+      emprende: { name: 'Emprende', price: 50,  rank: 1, q: { productos: 500,   usuarios: 3,  pedidos: 300 },  extras: ['Pedidos por WhatsApp', 'Analítica de tus ventas', 'Re-enriquecimiento de productos con IA'] },
+      crece:    { name: 'Crece',    price: 99,  rank: 2, q: { productos: 5000,  usuarios: 10, pedidos: 2000 }, extras: ['Pedidos por WhatsApp', 'Analítica de tus ventas', 'CRM de clientes', 'Facturación electrónica SUNAT · 500 comprobantes al mes'] },
+      despega:  { name: 'Despega',  price: 149, rank: 3, q: { productos: 15000, usuarios: 25, pedidos: 5000 }, extras: ['Todo lo de Crece', 'Venta de mostrador', 'Operación multicanal'] },
+    };
+
+    const current = PLANS.free;
+    const chosen = PLANS[st.plan] || current;
+    const simulating = chosen.rank !== current.rank;
+    const fmt = (n) => n.toLocaleString('es-PE');
+
+    const build = (label, key) => {
+      const used = USE[key];
+      const limit = chosen.q[key];
+      const pct = Math.min(100, Math.round((used / limit) * 100));
+      const left = limit - used;
+      let note;
+      if (!simulating) {
+        note = left === 0
+          ? 'Llegaste al tope.'
+          : 'Te ' + (left === 1 ? 'queda ' : 'quedan ') + left + ' de ' + fmt(limit) + '.';
+      } else {
+        note = 'Con ' + chosen.name + ' pasas de ' + fmt(current.q[key]) + ' a ' + fmt(limit) + '.';
+      }
+      return {
+        label: label,
+        current: fmt(used),
+        limit: fmt(limit),
+        // El dato es `pct`; el ancho nunca baja de una astilla visible.
+        width: String(Math.max(pct, 1.5)),
+        cls: pct >= TIGHT ? 'is-tight' : (simulating ? 'is-loose' : ''),
+        note: note,
+      };
+    };
+
+    // Un solo umbral para el color y para la frase: decían cosas distintas.
+    const tightList = Object.keys(current.q).filter((k) => (USE[k] / current.q[k]) * 100 >= TIGHT);
+    const tight = tightList.length;
+
+    return {
+      gauges: [
+        build('Productos', 'productos'),
+        build('Usuarios admin', 'usuarios'),
+        build('Pedidos del mes', 'pedidos'),
+      ],
+      headline: simulating
+        ? 'Así quedarían tus medidores con ' + chosen.name + '. Los mismos datos, otro techo.'
+        : (tight === 1
+            ? 'Tienes una cuota al límite. Toca un plan abajo para ver cuánto aire te da.'
+            : 'Tienes ' + tight + ' cuotas al límite. Toca un plan abajo para ver cuánto aire te da.'),
+      priceLabel: simulating ? 'Pasarías a pagar' : 'Hoy pagas',
+      price: fmt(chosen.price),
+      extrasTitle: simulating ? 'Además, con ' + chosen.name + ' se abre' : 'Lo que hoy no tienes',
+      extras: (chosen.extras.length ? chosen.extras : [
+        'Pedidos por WhatsApp',
+        'Analítica de tus ventas',
+        'Facturación electrónica SUNAT',
+      ]).map((t) => ({ text: t })),
+      tagFree: 'Tu plan de hoy',
+      s: {
+        free: (st.plan === 'free' ? 'on ' : '') + 'is-now',
+        emprende: st.plan === 'emprende' ? 'on' : '',
+        crece: st.plan === 'crece' ? 'on' : '',
+        despega: st.plan === 'despega' ? 'on' : '',
+      },
+      ctaLabel: !simulating
+        ? 'Elige un plan arriba'
+        : (chosen.rank >= 3 ? 'Hablar con el equipo' : 'Cambiar a ' + chosen.name),
+      ctaNote: !simulating
+        ? 'Los medidores se mueven mientras eliges. Nada se cobra todavía.'
+        : (chosen.rank >= 3
+            ? 'Despega se activa con acompañamiento, no desde acá.'
+            : 'S/ ' + fmt(chosen.price - current.price) + ' más al mes. Puedes volver atrás cuando quieras.'),
+      ctaBg: simulating ? '#0009dc' : '#f1f0ec',
+      ctaColor: simulating ? '#ffffff' : '#8a887f',
+      pickFree: () => this.setState({ plan: 'free' }),
+      pickEmprende: () => this.setState({ plan: 'emprende' }),
+      pickCrece: () => this.setState({ plan: 'crece' }),
+      pickDespega: () => this.setState({ plan: 'despega' }),
+    };
+  }
+}
+</script>
+</body>
+</html>

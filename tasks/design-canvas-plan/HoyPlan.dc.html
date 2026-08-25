@@ -1,0 +1,145 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500&family=Plus+Jakarta+Sans:wght@500;600&family=Inter:wght@400;500;600&display=swap">
+  <style>
+    body { margin: 0; font-family: 'Inter', system-ui, sans-serif; letter-spacing: -0.003em; }
+    .card { border: 1px solid rgba(27,26,23,0.11); border-radius: 14px; background: #fff; padding: 24px; }
+    .pcard { position: relative; display: flex; flex-direction: column; border: 1px solid rgba(27,26,23,0.11); border-radius: 16px; background: #fff; padding: 20px; }
+    .pcard.now { background: #f8f7f4; }
+    .pcard.target { border-color: #0009dc; box-shadow: 0 0 0 3px rgba(0,9,220,0.1); }
+    .tag { position: absolute; top: -11px; left: 20px; height: 24px; padding: 0 11px; border-radius: 999px; background: #0009dc; color: #fff; font-size: 0.6875rem; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; display: inline-flex; align-items: center; }
+    .tag.mute { background: #e7e5e0; color: #6c6a63; }
+    .gain { display: flex; align-items: flex-start; gap: 9px; font-size: 0.8125rem; line-height: 1.4; }
+    .gi { width: 17px; height: 17px; border-radius: 5px; background: rgba(0,9,220,0.1); color: #0009dc; flex-shrink: 0; display: flex; align-items: center; justify-content: center; margin-top: 1px; }
+    .gi.have { background: rgba(27,26,23,0.07); color: #6c6a63; }
+  </style>
+</helmet>
+
+<div style="width: 1180px; height: 1000px; box-sizing: border-box; background: #fbfaf8; color: #1b1a17; overflow: hidden;">
+
+  <nav style="display: flex; gap: 28px; padding: 0 40px; border-bottom: 1px solid rgba(27,26,23,0.07);">
+    <span style="padding: 14px 0; font-size: 0.875rem; font-weight: 500; color: #6c6a63;">Cuenta</span>
+    <span style="padding: 14px 0; font-size: 0.875rem; font-weight: 500; color: #1b1a17; border-bottom: 2px solid #1b1a17;">Plan</span>
+    <span style="padding: 14px 0; font-size: 0.875rem; font-weight: 500; color: #6c6a63;">Seguridad</span>
+    <span style="padding: 14px 0; font-size: 0.875rem; font-weight: 500; color: #6c6a63;">Equipo</span>
+  </nav>
+
+  <main style="max-width: 830px; margin: 0 auto; padding: 34px 40px; display: flex; flex-direction: column; gap: 22px;">
+
+    <h1 style="margin: 0; font-family: 'Fraunces', Georgia, serif; font-weight: 500; font-size: 1.875rem; letter-spacing: -0.02em;">Plan</h1>
+
+    <section style="display: flex; align-items: center; gap: 28px; border: 1px solid rgba(0,9,220,0.2); border-radius: 16px; background: #f7f7ff; padding: 20px 24px;">
+      <div style="flex-shrink: 0; max-width: 19rem;">
+        <span style="display: block; font-size: 0.6875rem; font-weight: 600; letter-spacing: 0.11em; text-transform: uppercase; color: #0009dc; margin-bottom: 7px;">Lo que dice tu uso</span>
+        <p style="margin: 0; font-size: 0.9375rem; line-height: 1.45;">Te queda <b style="font-weight: 600;">1 de 10</b> en productos · Llegaste al tope de <b style="font-weight: 600;">usuarios</b></p>
+        <p style="margin: 6px 0 0; font-size: 0.8125rem; color: #6c6a63;">El plan <b style="color: #1b1a17; font-weight: 600;">Emprende</b> es el más barato que lo resuelve.</p>
+      </div>
+      <div style="flex: 1; display: grid; grid-template-columns: repeat(auto-fit, minmax(9.5rem, 1fr)); gap: 1rem 1.5rem;">
+        <div>
+          <div style="display: flex; justify-content: space-between; gap: 0.75rem; font-size: 0.75rem; color: #6c6a63; margin-bottom: 7px;"><span>Productos</span><b style="color: #1b1a17;">9 / 10</b></div>
+          <div style="height: 6px; border-radius: 999px; background: rgba(27,26,23,0.09); overflow: hidden;"><span style="display: block; height: 100%; width: 90%; background: #bb3a2c; border-radius: 999px;"></span></div>
+        </div>
+        <div>
+          <div style="display: flex; justify-content: space-between; gap: 0.75rem; font-size: 0.75rem; color: #6c6a63; margin-bottom: 7px;"><span>Usuarios admin</span><b style="color: #1b1a17;">1 / 1</b></div>
+          <div style="height: 6px; border-radius: 999px; background: rgba(27,26,23,0.09); overflow: hidden;"><span style="display: block; height: 100%; width: 100%; background: #bb3a2c; border-radius: 999px;"></span></div>
+        </div>
+        <div>
+          <div style="display: flex; justify-content: space-between; gap: 0.75rem; font-size: 0.75rem; color: #6c6a63; margin-bottom: 7px;"><span>Pedidos / mes</span><b style="color: #1b1a17;">18 / 30</b></div>
+          <div style="height: 6px; border-radius: 999px; background: rgba(27,26,23,0.09); overflow: hidden;"><span style="display: block; height: 100%; width: 60%; background: #0009dc; border-radius: 999px;"></span></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="card">
+      <div style="display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 18px;">
+        <h2 style="margin: 0; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 0.9375rem; font-weight: 600;">Planes</h2>
+        <span style="font-size: 0.75rem; color: #73716a;">Todo se puede cambiar después</span>
+      </div>
+      <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px;">
+
+        <div class="pcard now">
+          <span class="tag mute">En prueba</span>
+          <span style="font-family: 'Plus Jakarta Sans', sans-serif; font-size: 1.0625rem; font-weight: 600;">Gratis</span>
+          <span style="display: block; font-size: 0.75rem; line-height: 1.45; color: #6c6a63; margin: -0.1rem 0 0.75rem;">Catálogo y control de stock</span>
+          <span style="display: flex; align-items: baseline; gap: 5px; margin-bottom: 16px;"><b style="font-family: 'Fraunces', Georgia, serif; font-size: 2rem; font-weight: 500;">Gratis</b></span>
+          <span style="display: block; font-size: 0.6875rem; font-weight: 600; letter-spacing: 0.09em; text-transform: uppercase; color: #6c6a63; margin-bottom: 10px;">Lo que ya tienes</span>
+          <div style="display: flex; flex-direction: column; gap: 9px; margin-bottom: 16px;">
+            <span class="gain"><span class="gi have"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg></span>Catálogo de productos</span>
+            <span class="gain"><span class="gi have"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg></span>Control de stock</span>
+            <span class="gain"><span class="gi have"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg></span>Ventas manuales</span>
+          </div>
+          <span style="margin-top: auto; font-size: 0.75rem; line-height: 1.5; color: #73716a;">Sin vencimiento mientras lo necesites.</span>
+        </div>
+
+        <div class="pcard target">
+          <span class="tag">Te calza por tu uso</span>
+          <span style="font-family: 'Plus Jakarta Sans', sans-serif; font-size: 1.0625rem; font-weight: 600;">Emprende</span>
+          <span style="display: block; font-size: 0.75rem; line-height: 1.45; color: #6c6a63; margin: -0.1rem 0 0.75rem;">Catálogo, pedidos y control de stock</span>
+          <span style="display: flex; align-items: baseline; gap: 5px; margin-bottom: 16px;"><b style="font-family: 'Fraunces', Georgia, serif; font-size: 2rem; font-weight: 500;">S/ 50</b><span style="font-size: 0.75rem; color: #73716a;">/ mes</span></span>
+          <span style="display: block; font-size: 0.6875rem; font-weight: 600; letter-spacing: 0.09em; text-transform: uppercase; color: #0009dc; margin-bottom: 10px;">Lo que se te abre</span>
+          <div style="display: flex; flex-direction: column; gap: 9px; margin-bottom: 14px;">
+            <span class="gain"><span class="gi"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></span>Pedidos por WhatsApp</span>
+            <span class="gain"><span class="gi"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></span>Analítica de tus ventas</span>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 7px; padding-top: 14px; border-top: 1px solid rgba(27,26,23,0.07); margin-bottom: 16px;">
+            <span style="display: inline-flex; align-items: center; gap: 6px; font-size: 0.75rem; color: #6c6a63;">Productos <b style="color: #1b1a17;">10</b><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#0009dc" stroke-width="2.4" stroke-linecap="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg><b style="color: #1b1a17;">500</b></span>
+            <span style="display: inline-flex; align-items: center; gap: 6px; font-size: 0.75rem; color: #6c6a63;">Usuarios <b style="color: #1b1a17;">1</b><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#0009dc" stroke-width="2.4" stroke-linecap="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg><b style="color: #1b1a17;">3</b></span>
+          </div>
+          <span style="margin-top: auto; height: 42px; border-radius: 10px; background: #0009dc; color: #fff; font-weight: 600; font-size: 0.8125rem; display: flex; align-items: center; justify-content: center;">Cambiar a Emprende</span>
+        </div>
+
+        <div class="pcard">
+          <span class="tag mute">Cuando factures</span>
+          <span style="font-family: 'Plus Jakarta Sans', sans-serif; font-size: 1.0625rem; font-weight: 600;">Crece</span>
+          <span style="display: block; font-size: 0.75rem; line-height: 1.45; color: #6c6a63; margin: -0.1rem 0 0.75rem;">CRM y facturación electrónica</span>
+          <span style="display: flex; align-items: baseline; gap: 5px; margin-bottom: 16px;"><b style="font-family: 'Fraunces', Georgia, serif; font-size: 2rem; font-weight: 500;">S/ 99</b><span style="font-size: 0.75rem; color: #73716a;">/ mes</span></span>
+          <span style="display: block; font-size: 0.6875rem; font-weight: 600; letter-spacing: 0.09em; text-transform: uppercase; color: #0009dc; margin-bottom: 10px;">Lo que se te abre</span>
+          <div style="display: flex; flex-direction: column; gap: 9px; margin-bottom: 14px;">
+            <span class="gain"><span class="gi"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></span>Facturación electrónica SUNAT</span>
+            <span class="gain"><span class="gi"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></span>CRM de clientes</span>
+          </div>
+          <span style="margin-top: auto; height: 42px; border-radius: 10px; background: #0009dc; color: #fff; font-weight: 600; font-size: 0.8125rem; display: flex; align-items: center; justify-content: center;">Cambiar a Crece</span>
+        </div>
+
+      </div>
+    </section>
+
+    <section class="card">
+      <div style="display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 16px;">
+        <h2 style="margin: 0; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 0.9375rem; font-weight: 600;">Add-ons</h2>
+        <span style="font-size: 0.75rem; color: #73716a;">Se suman a tu plan</span>
+      </div>
+      <div style="display: flex; align-items: center; gap: 16px; border: 1px solid rgba(27,26,23,0.11); border-radius: 14px; background: #faf9f7; padding: 16px 18px;">
+        <span style="flex: 1;">
+          <span style="display: block; font-size: 0.9375rem; font-weight: 600;">Tienda Web <span style="font-weight: 400; color: #6c6a63;">· S/ 50 / mes</span></span>
+          <span style="display: block; margin-top: 3px; font-size: 0.8125rem; color: #6c6a63;">Tu sitio con carrito, checkout y subdominio propio</span>
+        </span>
+        <span style="display: inline-flex; align-items: center; gap: 6px; height: 28px; padding: 0 11px; border-radius: 999px; background: rgba(27,26,23,0.06); color: #6c6a63; font-size: 0.75rem; font-weight: 600;">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
+          Necesita el plan Emprende o superior
+        </span>
+      </div>
+      <div style="display: flex; align-items: center; justify-content: space-between; gap: 24px; margin-top: 20px; padding-top: 18px; border-top: 1px solid rgba(27,26,23,0.07);">
+        <span style="font-size: 0.8125rem; color: #6c6a63;">Plan Gratis S/ 0, sin add-ons</span>
+        <span style="display: flex; align-items: baseline; gap: 10px; font-size: 0.8125rem; color: #6c6a63;">Tu total mensual <b style="font-family: 'Fraunces', Georgia, serif; font-size: 1.625rem; font-weight: 500; color: #1b1a17;">S/ 0</b></span>
+      </div>
+    </section>
+
+  </main>
+
+</div>
+</x-dc>
+<script data-dc-script data-props='{"$preview":{"width":1180,"height":1000}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

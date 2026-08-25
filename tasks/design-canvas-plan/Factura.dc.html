@@ -1,0 +1,266 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500&family=Plus+Jakarta+Sans:wght@500;600;700&family=Inter:wght@400;500;600&display=swap">
+  <style>
+    body { margin: 0; font-family: 'Inter', system-ui, sans-serif; letter-spacing: -0.003em; }
+    a { color: #0009dc; text-decoration: none; } a:hover { color: #000678; text-decoration: underline; }
+    button { font: inherit; cursor: pointer; border: 0; background: none; color: inherit; text-align: left; }
+
+    .rule { display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; padding: 14px 0; border-bottom: 1px solid rgba(27,26,23,0.07); }
+    .rule:last-child { border-bottom: none; }
+    .rule-k { font-size: 0.875rem; color: #1b1a17; }
+    .rule-k small { display: block; font-size: 0.75rem; color: #8a887f; margin-top: 2px; }
+    .rule-v { font-family: 'Fraunces', Georgia, serif; font-size: 1.125rem; font-weight: 500; flex-shrink: 0; }
+    .rule.is-new .rule-k { color: #0009dc; font-weight: 500; }
+    .rule.is-new .rule-v { color: #0009dc; }
+
+    .pick { flex: 1; min-width: 0; border: 1px solid rgba(27,26,23,0.13); border-radius: 12px; background: #fff; padding: 14px 16px; transition: border-color .16s ease, background .16s ease, box-shadow .2s ease; }
+    .pick:hover { border-color: rgba(27,26,23,0.3); }
+    .pick.on { border-color: #0009dc; background: #f7f7ff; box-shadow: 0 0 0 3px rgba(0,9,220,0.1); }
+    .pick-n { display: block; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 0.9375rem; font-weight: 600; }
+    .pick-p { display: block; margin-top: 3px; font-size: 0.75rem; color: #6c6a63; }
+
+    .sw { display: flex; align-items: center; gap: 13px; width: 100%; box-sizing: border-box; border: 1px solid rgba(27,26,23,0.13); border-radius: 12px; background: #fff; padding: 13px 15px; transition: border-color .16s ease, background .16s ease; }
+    .sw:hover { border-color: rgba(27,26,23,0.3); }
+    .sw.on { border-color: #0009dc; background: #f7f7ff; }
+    .sw.off-limits { opacity: .55; }
+    .sw-box { width: 38px; height: 22px; border-radius: 999px; background: rgba(27,26,23,0.14); flex-shrink: 0; position: relative; transition: background .2s ease; }
+    .sw-box::after { content: ''; position: absolute; top: 3px; left: 3px; width: 16px; height: 16px; border-radius: 50%; background: #fff; transition: transform .2s cubic-bezier(0.16,1,0.3,1); }
+    .sw.on .sw-box { background: #0009dc; }
+    .sw.on .sw-box::after { transform: translateX(16px); }
+    .sw-n { font-size: 0.875rem; font-weight: 500; }
+    .sw-d { display: block; font-size: 0.75rem; color: #8a887f; margin-top: 2px; }
+    .sw-p { margin-left: auto; flex-shrink: 0; font-size: 0.8125rem; color: #6c6a63; }
+
+    .gain { display: flex; align-items: flex-start; gap: 9px; font-size: 0.8125rem; line-height: 1.45; color: #1b1a17; }
+    .gain-i { width: 17px; height: 17px; border-radius: 5px; background: rgba(0,9,220,0.1); color: #0009dc; flex-shrink: 0; display: flex; align-items: center; justify-content: center; margin-top: 1px; }
+
+    .in { opacity: 0; animation: up 560ms cubic-bezier(0.16,1,0.3,1) forwards; }
+    @keyframes up { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+    @media (prefers-reduced-motion: reduce) { .in { animation-duration: 1ms; opacity: 1; transform: none; } .sw-box::after { transition: none; } }
+  </style>
+</helmet>
+
+<div style="width: 1180px; height: 1000px; box-sizing: border-box; background: #fbfaf8; color: #1b1a17; overflow: hidden;">
+
+  <nav style="display: flex; gap: 28px; padding: 0 40px; border-bottom: 1px solid rgba(27,26,23,0.07);">
+    <span style="padding: 14px 0; font-size: 0.875rem; font-weight: 500; color: #6c6a63;">Cuenta</span>
+    <span style="padding: 14px 0; font-size: 0.875rem; font-weight: 500; color: #1b1a17; border-bottom: 2px solid #1b1a17;">Plan</span>
+    <span style="padding: 14px 0; font-size: 0.875rem; font-weight: 500; color: #6c6a63;">Seguridad</span>
+    <span style="padding: 14px 0; font-size: 0.875rem; font-weight: 500; color: #6c6a63;">Equipo</span>
+  </nav>
+
+  <main style="max-width: 1060px; margin: 0 auto; padding: 34px 40px; display: flex; gap: 26px;">
+
+    <!-- La factura -->
+    <section class="in" style="width: 430px; flex-shrink: 0;">
+      <h1 style="margin: 0 0 4px; font-family: 'Fraunces', Georgia, serif; font-weight: 500; font-size: 1.875rem; letter-spacing: -0.02em;">Tu recibo</h1>
+      <p style="margin: 0 0 22px; font-size: 0.8125rem; color: #6c6a63;">LuchoEcommerce · se cobra el 24 de cada mes</p>
+
+      <div style="border: 1px solid rgba(27,26,23,0.11); border-radius: 18px; background: #fff; overflow: hidden;">
+        <div style="padding: 26px 24px 22px; border-bottom: 1px solid rgba(27,26,23,0.07);">
+          <span style="display: block; font-size: 0.6875rem; font-weight: 600; letter-spacing: 0.11em; text-transform: uppercase; color: #6c6a63; margin-bottom: 10px;">{{ totalLabel }}</span>
+          <span style="display: flex; align-items: baseline; gap: 10px;">
+            <span style="font-family: 'Fraunces', Georgia, serif; font-size: 3.5rem; font-weight: 500; letter-spacing: -0.03em; line-height: 1;">S/ {{ total }}</span>
+            <span style="font-size: 0.875rem; color: #8a887f;">al mes</span>
+          </span>
+          <sc-if value="{{ hasDelta }}" hint-placeholder-val="{{ true }}">
+            <span style="display: inline-flex; align-items: center; gap: 8px; margin-top: 14px; padding: 6px 12px; border-radius: 999px; background: #f3f4ff; color: #0009dc; font-size: 0.8125rem; font-weight: 500;">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+              {{ deltaText }}
+            </span>
+          </sc-if>
+        </div>
+
+        <div style="padding: 6px 24px 18px;">
+          <div class="rule">
+            <span class="rule-k">{{ planName }}<small>{{ planNote }}</small></span>
+            <span class="rule-v">S/ {{ planPrice }}</span>
+          </div>
+          <sc-for list="{{ addonLines }}" as="line" hint-placeholder-count="1">
+            <div class="rule is-new">
+              <span class="rule-k">{{ line.name }}<small>{{ line.note }}</small></span>
+              <span class="rule-v">S/ {{ line.price }}</span>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+
+      <div style="margin-top: 18px; display: flex; flex-direction: column; gap: 10px;">
+        <span style="height: 48px; border-radius: 11px; background: {{ ctaBg }}; color: {{ ctaColor }}; font-weight: 600; font-size: 0.9375rem; display: flex; align-items: center; justify-content: center;">{{ ctaLabel }}</span>
+        <p style="margin: 0; font-size: 0.75rem; line-height: 1.5; color: #8a887f; text-align: center;">{{ ctaNote }}</p>
+      </div>
+
+      <p style="margin: 22px 0 0; font-size: 0.75rem; color: #8a887f;">
+        <a href="#">Ver los 3 pagos anteriores</a>
+      </p>
+    </section>
+
+    <!-- El cambiador -->
+    <section class="in" style="animation-delay: 100ms; flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 22px;">
+
+      <div>
+        <h2 style="margin: 0 0 4px; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 1rem; font-weight: 600;">Arma tu recibo</h2>
+        <p style="margin: 0 0 14px; font-size: 0.8125rem; color: #6c6a63;">Toca y mira el número de la izquierda. Nada se cobra hasta que confirmes.</p>
+        <div style="display: flex; gap: 10px;">
+          <button type="button" class="pick {{ p.free }}" onClick="{{ pickFree }}">
+            <span class="pick-n">Gratis</span><span class="pick-p">S/ 0 · 10 productos</span>
+          </button>
+          <button type="button" class="pick {{ p.emprende }}" onClick="{{ pickEmprende }}">
+            <span class="pick-n">Emprende</span><span class="pick-p">S/ 50 · 500 productos</span>
+          </button>
+          <button type="button" class="pick {{ p.crece }}" onClick="{{ pickCrece }}">
+            <span class="pick-n">Crece</span><span class="pick-p">S/ 99 · 5.000 productos</span>
+          </button>
+        </div>
+      </div>
+
+      <div>
+        <span style="display: block; font-size: 0.6875rem; font-weight: 600; letter-spacing: 0.11em; text-transform: uppercase; color: #6c6a63; margin-bottom: 10px;">Add-ons</span>
+        <div style="display: flex; flex-direction: column; gap: 9px;">
+          <button type="button" class="sw {{ a.tienda }}" onClick="{{ toggleTienda }}">
+            <span class="sw-box" aria-hidden="true"></span>
+            <span><span class="sw-n">Tienda Web</span><span class="sw-d">{{ tiendaNote }}</span></span>
+            <span class="sw-p">S/ 50</span>
+          </button>
+          <div class="sw" style="cursor: default;">
+            <span style="width: 38px; flex-shrink: 0; display: flex; justify-content: center; color: #a5a39b;" aria-hidden="true">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
+            </span>
+            <span><span class="sw-n">Intelligence</span><span class="sw-d">S/ 100 al mes · se activa con el equipo, no desde acá</span></span>
+            <a href="#" class="sw-p" style="font-weight: 500;">Hablar</a>
+          </div>
+        </div>
+      </div>
+
+      <div style="border-top: 1px solid rgba(27,26,23,0.07); padding-top: 20px;">
+        <span style="display: block; font-size: 0.6875rem; font-weight: 600; letter-spacing: 0.11em; text-transform: uppercase; color: #6c6a63; margin-bottom: 12px;">{{ consequenceTitle }}</span>
+        <div style="display: flex; flex-direction: column; gap: 10px;">
+          <sc-for list="{{ gains }}" as="g" hint-placeholder-count="3">
+            <span class="gain">
+              <span class="gain-i" aria-hidden="true">
+                <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
+              </span>
+              {{ g.text }}
+            </span>
+          </sc-for>
+        </div>
+
+        <div style="margin-top: 18px; display: flex; flex-wrap: wrap; gap: 8px;">
+          <sc-for list="{{ jumps }}" as="j" hint-placeholder-count="3">
+            <span style="display: inline-flex; align-items: center; gap: 7px; padding: 6px 11px; border-radius: 999px; background: rgba(27,26,23,0.05); font-size: 0.75rem; color: #6c6a63;">
+              {{ j.label }} <b style="font-weight: 600; color: #1b1a17;">{{ j.from }}</b>
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#0009dc" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+              <b style="font-weight: 600; color: #1b1a17;">{{ j.to }}</b>
+            </span>
+          </sc-for>
+        </div>
+      </div>
+
+    </section>
+
+  </main>
+
+</div>
+</x-dc>
+<script data-dc-script data-props='{"$preview":{"width":1180,"height":1000}}'>
+class Component extends DCLogic {
+  state = { plan: 'free', tienda: false };
+
+  renderVals() {
+    const st = this.state || {};
+    const PLANS = {
+      free: { name: 'Gratis', price: 0, note: 'Catálogo, stock y ventas manuales', rank: 0,
+        quotas: { Productos: 10, Usuarios: 1, 'Pedidos al mes': 30 },
+        features: ['catalog', 'stock', 'manual_sales', 'orders'] },
+      emprende: { name: 'Emprende', price: 50, note: 'Pedidos por WhatsApp y analítica', rank: 1,
+        quotas: { Productos: 500, Usuarios: 3, 'Pedidos al mes': 300 },
+        features: ['catalog', 'stock', 'manual_sales', 'orders', 'whatsapp_checkout', 'analytics', 'product_reenrichment'] },
+      crece: { name: 'Crece', price: 99, note: 'CRM y facturación electrónica SUNAT', rank: 2,
+        quotas: { Productos: 5000, Usuarios: 10, 'Pedidos al mes': 2000 },
+        features: ['catalog', 'stock', 'manual_sales', 'orders', 'whatsapp_checkout', 'analytics', 'product_reenrichment', 'crm', 'electronic_invoicing'] },
+    };
+    const LABELS = {
+      whatsapp_checkout: 'Pedidos por WhatsApp',
+      analytics: 'Analítica de tus ventas',
+      product_reenrichment: 'Re-enriquecimiento de productos con IA',
+      crm: 'CRM de clientes',
+      electronic_invoicing: 'Facturación electrónica SUNAT',
+    };
+
+    const current = PLANS.free;               // el plan vigente hoy
+    const chosen = PLANS[st.plan] || current;
+    const tiendaAllowed = chosen.rank >= 1;   // el add-on pide al menos Emprende
+    const tiendaOn = tiendaAllowed && st.tienda;
+
+    const total = chosen.price + (tiendaOn ? 50 : 0);
+    const currentTotal = current.price;
+    const changed = total !== currentTotal || chosen.rank !== current.rank;
+
+    const fmt = (n) => n.toLocaleString('es-PE');
+
+    const addonLines = [];
+    if (tiendaOn) addonLines.push({ name: 'Tienda Web', note: 'Sitio, carrito y subdominio propio', price: '50' });
+
+    const gains = chosen.features
+      .filter((f) => current.features.indexOf(f) === -1 && LABELS[f])
+      .map((f) => ({ text: LABELS[f] }));
+    if (tiendaOn) gains.push({ text: 'Tu tienda en línea con carrito y checkout' });
+
+    const jumps = Object.keys(chosen.quotas)
+      .filter((k) => chosen.quotas[k] > current.quotas[k])
+      .map((k) => ({ label: k, from: fmt(current.quotas[k]), to: fmt(chosen.quotas[k]) }));
+
+    return {
+      total: fmt(total),
+      totalLabel: changed ? 'Pagarías' : 'Hoy pagas',
+      hasDelta: changed && total !== currentTotal,
+      deltaText: 'S/ ' + fmt(total - currentTotal) + ' más al mes, desde el próximo cobro',
+      planName: chosen.name,
+      planNote: chosen.note,
+      planPrice: fmt(chosen.price),
+      addonLines: addonLines,
+      gains: gains.length ? gains : [
+        { text: 'Catálogo de productos' },
+        { text: 'Control de stock' },
+        { text: 'Ventas manuales y sus pedidos' },
+      ],
+      jumps: jumps,
+      consequenceTitle: changed ? 'Lo que cambia en tu cuenta' : 'Lo que incluye hoy',
+      tiendaNote: tiendaAllowed
+        ? 'Sitio, carrito y subdominio propio'
+        : 'Necesita al menos el plan Emprende',
+      ctaLabel: changed ? 'Confirmar cambio' : 'Todo igual por ahora',
+      ctaNote: changed
+        ? 'Se cobra al confirmar, prorrateado. Puedes volver atrás cuando quieras.'
+        : 'Toca un plan o un add-on arriba para ver cómo queda tu recibo.',
+      ctaBg: changed ? '#0009dc' : '#f1f0ec',
+      ctaColor: changed ? '#ffffff' : '#8a887f',
+      p: {
+        free: st.plan === 'free' ? 'on' : '',
+        emprende: st.plan === 'emprende' ? 'on' : '',
+        crece: st.plan === 'crece' ? 'on' : '',
+      },
+      a: {
+        tienda: (tiendaOn ? 'on' : '') + (tiendaAllowed ? '' : ' off-limits'),
+      },
+      pickFree: () => this.setState({ plan: 'free' }),
+      pickEmprende: () => this.setState({ plan: 'emprende' }),
+      pickCrece: () => this.setState({ plan: 'crece' }),
+      // Bloqueado no es «apagado»: si el plan no lo admite, el clic no guarda
+      // nada. Antes flipeaba el estado sin verse, y al subir de plan el add-on
+      // aparecía encendido sin que nadie lo hubiera encendido.
+      toggleTienda: () => { if (tiendaAllowed) this.setState({ tienda: !st.tienda }); },
+    };
+  }
+}
+</script>
+</body>
+</html>

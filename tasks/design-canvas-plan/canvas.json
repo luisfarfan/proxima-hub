@@ -1,0 +1,30 @@
+{
+  "pages": [
+    { "id": "page-1", "name": "Plan" },
+    { "id": "page-2", "name": "Navegación" }
+  ],
+  "artboards": [
+    { "file": "Main.dc.html", "x": 0, "y": 0, "w": 720, "h": 1040, "title": "Portada · qué tiene que resolver", "page": "page-1" },
+    { "file": "HoyPlan.dc.html", "x": 780, "y": 20, "w": 1180, "h": 1000, "title": "Hoy · /plan", "page": "page-1" },
+    { "file": "Factura.dc.html", "x": 2020, "y": 20, "w": 1180, "h": 1000, "title": "A · La factura viva", "page": "page-1" },
+    { "file": "Medidor.dc.html", "x": 3260, "y": 20, "w": 1180, "h": 1000, "title": "B · El medidor", "page": "page-1" },
+    { "file": "Camino.dc.html", "x": 4500, "y": 20, "w": 1180, "h": 1000, "title": "C · El camino", "page": "page-1" },
+
+    { "file": "NavHoy.dc.html", "x": 0, "y": 0, "w": 1180, "h": 820, "title": "Hoy · los cuatro tabs", "page": "page-2" },
+    { "file": "NavA.dc.html", "x": 1240, "y": 0, "w": 1180, "h": 820, "title": "N1 · Dos grupos con dueño", "page": "page-2" },
+    { "file": "NavB.dc.html", "x": 2480, "y": 0, "w": 1180, "h": 820, "title": "N2 · Dos puertas", "page": "page-2" },
+    { "file": "NavC.dc.html", "x": 3720, "y": 0, "w": 1180, "h": 820, "title": "N3 · Sin barra: todo en el encabezado", "page": "page-2" }
+  ],
+  "annotations": [
+    { "id": "nota-hoy", "x": 780, "y": -130, "w": 560, "text": "ESTADO ACTUAL — la pantalla tal como quedó hoy.\nContesta las tres preguntas a la vez y con el mismo peso: uso, planes y add-ons apilados." , "page": "page-1" },
+    { "id": "nota-a", "x": 2020, "y": -130, "w": 560, "text": "A · LA FACTURA VIVA — primero la plata.\nToca los planes y el interruptor de Tienda Web: el recibo de la izquierda se rearma, con la diferencia y desde cuándo.", "page": "page-1" },
+    { "id": "nota-b", "x": 3260, "y": -130, "w": 560, "text": "B · EL MEDIDOR — primero el techo.\nToca un plan: los mismos 9 productos dejan de ser 9 de 10 y pasan a ser 9 de 500. Las barras se destensan a la vista.", "page": "page-1" },
+    { "id": "nota-c", "x": 4500, "y": -130, "w": 560, "text": "C · EL CAMINO — primero el mapa. ELEGIDA.\nCinco peldaños reales, incluidos Despega y Lidera que hoy la pantalla ni menciona. Toca cualquiera para ver qué acumulas desde donde estás.", "page": "page-1" },
+
+    { "id": "nav-hoy", "x": 0, "y": -150, "w": 560, "text": "ESTADO ACTUAL — los cuatro tabs, y el menú del avatar abierto al lado.\nSon los mismos cuatro destinos, dos veces en la misma pantalla. Y mezclan dos sujetos: Cuenta y Seguridad son sobre ti; Plan y Equipo, sobre el negocio.", "page": "page-2" },
+    { "id": "nav-a", "x": 1240, "y": -150, "w": 560, "text": "N1 · DOS GRUPOS CON DUEÑO\nSiguen siendo cuatro destinos, pero agrupados y con la cara de quién manda en cada grupo. El más barato de construir.\nA cambio: el rail se come 244 px de ancho.", "page": "page-2" },
+    { "id": "nav-b", "x": 2480, "y": -150, "w": 560, "text": "N2 · DOS PUERTAS\nCuatro destinos se vuelven dos páginas: el negocio y tú. La barra lateral pasa a ser el índice de la página, no otra navegación.\nA cambio: dos páginas largas en vez de cuatro cortas.", "page": "page-2" },
+    { "id": "nav-c", "x": 3720, "y": -150, "w": 560, "text": "N3 · SIN BARRA\nNo hay fila de pestañas: cada menú del encabezado lista solo lo suyo. La página se queda con todo el ancho — que es justo lo que la escalera de la dirección C necesita.\nA cambio: lo que no se ve, no se descubre.", "page": "page-2" }
+  ],
+  "launch": { "view": "canvas", "page": "page-2" }
+}

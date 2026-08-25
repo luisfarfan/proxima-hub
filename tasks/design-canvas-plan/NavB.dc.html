@@ -1,0 +1,89 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500&family=Plus+Jakarta+Sans:wght@500;600;700&family=Inter:wght@400;500;600&display=swap">
+  <style>
+    body { margin: 0; font-family: 'Inter', system-ui, sans-serif; letter-spacing: -0.003em; }
+    a { color: #0009dc; text-decoration: none; } a:hover { color: #000678; }
+    button { font: inherit; cursor: pointer; border: 0; background: none; color: inherit; text-align: left; }
+
+    .door { display: flex; align-items: center; gap: 9px; height: 38px; padding: 0 15px; border-radius: 999px; font-size: 0.875rem; font-weight: 500; color: #6c6a63; transition: background .14s ease, color .14s ease; }
+    .door:hover { background: rgba(27,26,23,0.05); color: #1b1a17; }
+    .door.on { background: #1b1a17; color: #fff; }
+    .door.on svg { color: #fff; }
+    .door svg { color: #8a887f; flex-shrink: 0; }
+
+    .anchor { display: flex; align-items: center; gap: 8px; padding: 7px 0; font-size: 0.8125rem; color: #6c6a63; border-left: 2px solid transparent; padding-left: 13px; transition: color .14s ease, border-color .14s ease; }
+    .anchor:hover { color: #1b1a17; }
+    .anchor.on { color: #0009dc; font-weight: 600; border-left-color: #0009dc; }
+  </style>
+</helmet>
+
+<div style="width: 1180px; height: 820px; box-sizing: border-box; background: #fbfaf8; color: #1b1a17; overflow: hidden;">
+
+  <header style="display: flex; align-items: center; gap: 26px; padding: 14px 40px; border-bottom: 1px solid rgba(27,26,23,0.07);">
+    <span style="font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 600; font-size: 1.1875rem; letter-spacing: -0.02em; flex-shrink: 0;">Próxima</span>
+
+    <!-- Dos puertas, no cuatro pestañas -->
+    <div style="display: flex; gap: 4px;">
+      <button type="button" class="door on">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9v10a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1V9M3 9l1.5-5h15L21 9M3 9h18"/></svg>
+        LuchoEcommerce
+      </button>
+      <button type="button" class="door">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-6 8-6s8 2 8 6"/></svg>
+        Luis Farfán
+      </button>
+    </div>
+
+    <span style="margin-left: auto; display: flex; align-items: center; gap: 12px;">
+      <a href="#" style="font-size: 0.8125rem; color: #6c6a63;">Cambiar de negocio</a>
+      <span style="width: 32px; height: 32px; border-radius: 50%; background: #0009dc; color: #fff; font-weight: 600; font-size: 0.8125rem; display: flex; align-items: center; justify-content: center;">L</span>
+    </span>
+  </header>
+
+  <main style="max-width: 1060px; margin: 0 auto; padding: 32px 40px; display: flex; gap: 40px;">
+
+    <!-- Índice de la página, no otra navegación -->
+    <aside style="width: 168px; flex-shrink: 0;">
+      <span style="display: block; font-size: 0.6875rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #8a887f; margin-bottom: 12px;">En esta página</span>
+      <div style="display: flex; flex-direction: column;">
+        <a href="#" class="anchor on">Plan</a>
+        <a href="#" class="anchor">Add-ons</a>
+        <a href="#" class="anchor">Pagos</a>
+        <a href="#" class="anchor">Equipo</a>
+      </div>
+      <p style="margin: 22px 0 0; padding-top: 16px; border-top: 1px solid rgba(27,26,23,0.07); font-size: 0.75rem; line-height: 1.55; color: #8a887f;">Todo lo del negocio en una sola página. Tu perfil vive en la otra puerta.</p>
+    </aside>
+
+    <div style="flex: 1; min-width: 0;">
+      <h1 style="margin: 0 0 6px; font-family: 'Fraunces', Georgia, serif; font-weight: 500; font-size: 1.875rem; letter-spacing: -0.02em;">LuchoEcommerce</h1>
+      <p style="margin: 0 0 26px; font-size: 0.875rem; color: #6c6a63;">Plan Gratis · 1 persona · se cobra el 24 de cada mes</p>
+
+      <span style="display: block; font-size: 0.6875rem; font-weight: 600; letter-spacing: 0.11em; text-transform: uppercase; color: #0009dc; margin-bottom: 12px;">Plan</span>
+      <div style="height: 140px; border: 1px solid rgba(27,26,23,0.11); border-radius: 16px; background: #fff; margin-bottom: 30px;"></div>
+
+      <span style="display: block; font-size: 0.6875rem; font-weight: 600; letter-spacing: 0.11em; text-transform: uppercase; color: #8a887f; margin-bottom: 12px;">Add-ons</span>
+      <div style="height: 96px; border: 1px solid rgba(27,26,23,0.11); border-radius: 16px; background: #fff; margin-bottom: 30px;"></div>
+
+      <span style="display: block; font-size: 0.6875rem; font-weight: 600; letter-spacing: 0.11em; text-transform: uppercase; color: #8a887f; margin-bottom: 12px;">Equipo</span>
+      <div style="height: 110px; border: 1px solid rgba(27,26,23,0.11); border-radius: 16px; background: #fff;"></div>
+    </div>
+
+  </main>
+
+</div>
+</x-dc>
+<script data-dc-script data-props='{"$preview":{"width":1180,"height":820}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

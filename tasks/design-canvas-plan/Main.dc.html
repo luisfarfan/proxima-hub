@@ -1,0 +1,87 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500&family=Plus+Jakarta+Sans:wght@500;600;700&family=Inter:wght@400;500;600&display=swap">
+  <style>
+    body { margin: 0; font-family: 'Inter', system-ui, sans-serif; letter-spacing: -0.003em; }
+    a { color: #0009dc; } a:hover { color: #000678; }
+    .in { opacity: 0; animation: up 620ms cubic-bezier(0.16,1,0.3,1) forwards; }
+    @keyframes up { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+    code { font-size: 0.8125rem; background: rgba(27,26,23,0.05); padding: 1px 5px; border-radius: 4px; }
+    @media (prefers-reduced-motion: reduce) { .in { animation-duration: 1ms; opacity: 1; transform: none; } }
+  </style>
+</helmet>
+<div style="width: 720px; height: 1040px; box-sizing: border-box; background: #fbfaf8; color: #1b1a17; padding: 54px 56px 44px; display: flex; flex-direction: column; gap: 24px; overflow: hidden;">
+
+  <div style="display: flex; align-items: baseline; justify-content: space-between;">
+    <span style="font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 600; font-size: 1.1875rem; letter-spacing: -0.02em;">Próxima</span>
+    <span style="font-size: 0.6875rem; font-weight: 600; letter-spacing: 0.11em; text-transform: uppercase; color: #0009dc;">Rediseño total</span>
+  </div>
+
+  <div class="in">
+    <h1 style="margin: 0; font-family: 'Fraunces', Georgia, serif; font-weight: 500; font-size: 3rem; line-height: 1.02; letter-spacing: -0.02em;">Plan</h1>
+    <p style="margin: 16px 0 0; font-size: 1rem; line-height: 1.55; color: #6c6a63; max-width: 31rem;">Tres direcciones que no son variaciones de la misma: cada una decide algo distinto sobre qué es esta pantalla. Elige una y la construyo.</p>
+  </div>
+
+  <span style="display: block; height: 1px; background: rgba(27,26,23,0.11);"></span>
+
+  <div class="in" style="animation-delay: 100ms;">
+    <span style="display: block; font-size: 0.6875rem; font-weight: 600; letter-spacing: 0.11em; text-transform: uppercase; color: #6c6a63; margin-bottom: 14px;">Las tres preguntas que llegan a esta pantalla</span>
+    <div style="display: flex; flex-direction: column; gap: 11px;">
+      <p style="margin: 0; font-size: 0.875rem; line-height: 1.55; color: #6c6a63;"><b style="color: #1b1a17; font-weight: 600;">«¿Cuánto voy a pagar?»</b> — llega del correo de cobro o de una duda de plata. Quiere un número, no un catálogo.</p>
+      <p style="margin: 0; font-size: 0.875rem; line-height: 1.55; color: #6c6a63;"><b style="color: #1b1a17; font-weight: 600;">«Ya no me entra nada»</b> — chocó con un tope: 10 productos, 1 usuario. Quiere techo, y saber cuánto techo.</p>
+      <p style="margin: 0; font-size: 0.875rem; line-height: 1.55; color: #6c6a63;"><b style="color: #1b1a17; font-weight: 600;">«¿Hasta dónde llega esto?»</b> — está evaluando. Quiere ver el mapa completo, incluidos <code>Despega</code> y <code>Lidera</code>, que hoy la pantalla ni menciona.</p>
+    </div>
+    <p style="margin: 14px 0 0; font-size: 0.8125rem; line-height: 1.55; color: #8a887f;">La pantalla de hoy contesta las tres a medias, en el mismo orden y con el mismo peso. Cada dirección elige una y ordena el resto detrás.</p>
+  </div>
+
+  <span style="display: block; height: 1px; background: rgba(27,26,23,0.11);"></span>
+
+  <div class="in" style="animation-delay: 200ms; display: flex; flex-direction: column; gap: 12px;">
+
+    <div style="border: 1px solid rgba(27,26,23,0.11); border-radius: 14px; background: #fff; padding: 18px 20px;">
+      <div style="display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 7px;">
+        <h2 style="margin: 0; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 1rem; font-weight: 600; letter-spacing: -0.015em;">A · La factura viva</h2>
+        <span style="font-size: 0.625rem; font-weight: 600; letter-spacing: 0.09em; text-transform: uppercase; color: #0009dc;">Primero la plata</span>
+      </div>
+      <p style="margin: 0 0 10px; font-size: 0.8125rem; line-height: 1.55; color: #6c6a63;">La pantalla <b style="color:#1b1a17;font-weight:500;">es</b> tu recibo mensual. Tocas un plan o un add-on y el recibo se rearma delante de ti, con la diferencia y desde cuándo.</p>
+      <p style="margin: 0; font-size: 0.75rem; line-height: 1.5; color: #8a887f;"><b style="color:#6c6a63;">A cambio:</b> quien todavía no sabe qué le conviene tiene que leer la letra chica de cada plan. No es una pantalla para descubrir, es para decidir.</p>
+    </div>
+
+    <div style="border: 1px solid rgba(27,26,23,0.11); border-radius: 14px; background: #fff; padding: 18px 20px;">
+      <div style="display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 7px;">
+        <h2 style="margin: 0; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 1rem; font-weight: 600; letter-spacing: -0.015em;">B · El medidor</h2>
+        <span style="font-size: 0.625rem; font-weight: 600; letter-spacing: 0.09em; text-transform: uppercase; color: #0009dc;">Primero el techo</span>
+      </div>
+      <p style="margin: 0 0 10px; font-size: 0.8125rem; line-height: 1.55; color: #6c6a63;">Tus cuotas son el sujeto. Pasas por un plan y los medidores <b style="color:#1b1a17;font-weight:500;">se destensan</b>: los mismos 9 productos dejan de ser 9 de 10 y pasan a ser 9 de 500.</p>
+      <p style="margin: 0; font-size: 0.75rem; line-height: 1.5; color: #8a887f;"><b style="color:#6c6a63;">A cambio:</b> lo que no es cuota —facturación SUNAT, CRM— queda en segundo plano, y es justo lo que lleva a Crece.</p>
+    </div>
+
+    <div style="border: 1px solid rgba(27,26,23,0.11); border-radius: 14px; background: #fff; padding: 18px 20px;">
+      <div style="display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 7px;">
+        <h2 style="margin: 0; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 1rem; font-weight: 600; letter-spacing: -0.015em;">C · El camino</h2>
+        <span style="font-size: 0.625rem; font-weight: 600; letter-spacing: 0.09em; text-transform: uppercase; color: #0009dc;">Primero el mapa</span>
+      </div>
+      <p style="margin: 0 0 10px; font-size: 0.8125rem; line-height: 1.55; color: #6c6a63;">Los cinco planes reales como una escalera, con tu peldaño marcado. Cada escalón dice la <b style="color:#1b1a17;font-weight:500;">una cosa</b> que agrega. Despega y Lidera dejan de ser invisibles.</p>
+      <p style="margin: 0; font-size: 0.75rem; line-height: 1.5; color: #8a887f;"><b style="color:#6c6a63;">A cambio:</b> es la más pesada de las tres y deja los add-ons en un segundo tiempo.</p>
+    </div>
+
+  </div>
+
+  <p style="margin: auto 0 0; font-size: 0.75rem; line-height: 1.5; color: #8a887f;">Los precios, cuotas y features salen de <code>PLAN_LADDER</code> y <code>ADDON_LADDER</code>. El comercio de ejemplo está a tope: 9 de 10 productos, 1 de 1 usuario.</p>
+
+</div>
+</x-dc>
+<script data-dc-script data-props='{"$preview":{"width":720,"height":1040}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>
