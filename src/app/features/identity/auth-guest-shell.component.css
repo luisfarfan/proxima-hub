@@ -26,3 +26,26 @@
 :host ::ng-deep .p-password .p-password-toggle-icon:hover {
   color: var(--p-primary-color);
 }
+
+/*
+ * Objetivos táctiles en las pantallas de invitado.
+ *
+ * Las clases compartidas fijan `h-9` (36 px) para campos y botones, y los
+ * enlaces quedan en 15-18 px de alto. En un teléfono eso se falla con el
+ * pulgar — y son justo las pantallas donde un comercio entra por primera vez,
+ * sin sesión y sin paciencia. 44 px es el mínimo.
+ */
+@media (max-width: 640px) {
+  :host ::ng-deep input,
+  :host ::ng-deep .p-inputtext,
+  :host ::ng-deep .p-password .p-inputtext,
+  :host ::ng-deep button {
+    min-height: 44px;
+  }
+
+  :host ::ng-deep a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+  }
+}
