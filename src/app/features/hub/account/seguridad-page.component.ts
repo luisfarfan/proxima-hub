@@ -10,6 +10,7 @@ import { HttpClient } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
 import { AuthService } from '@luisfarfan/auth';
 
+import { RuntimeConfigService } from '../../../core/config/runtime-config.service';
 import { GoogleLinkSectionComponent } from '../../identity/google-link-section.component';
 
 interface Session {
@@ -140,11 +141,15 @@ function formatDate(iso: string): string {
     </button>
   </section>
 
-  <!-- Conexiones: quién más puede entrar con tu identidad. -->
-  <section class="page-card" aria-labelledby="google-h">
-    <h2 class="card-h2" id="google-h">Conexiones</h2>
-    <app-google-link-section />
-  </section>
+  <!-- Conexiones: quién más puede entrar con tu identidad. Sin googleClientId
+       configurado el componente no pinta nada y la tarjeta quedaba como una caja
+       vacía con un título. -->
+  @if (googleClientId()) {
+    <section class="page-card" aria-labelledby="google-h">
+      <h2 class="card-h2" id="google-h">Conexiones</h2>
+      <app-google-link-section />
+    </section>
+  }
 
   <section class="page-card" aria-labelledby="sessions-h">
     <div class="card-head">
@@ -346,6 +351,8 @@ function formatDate(iso: string): string {
 export class SeguridadPageComponent {
   private readonly http = inject(HttpClient);
   protected readonly auth = inject(AuthService);
+  private readonly runtimeConfig = inject(RuntimeConfigService);
+  protected readonly googleClientId = this.runtimeConfig.googleClientId;
 
   protected readonly currentPwd = signal('');
   protected readonly newPwd = signal('');

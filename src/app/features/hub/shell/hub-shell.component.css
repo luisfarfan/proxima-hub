@@ -145,5 +145,5 @@
   /* Objetivos táctiles: 29 y 36 px se fallan con el pulgar. */
   .hub-mark { min-height: 44px; display: inline-flex; align-items: center; }
   .hub-biz { min-height: 44px; }
-  .hub-avatar { width: 40px; height: 40px; }
+  .hub-avatar { width: 44px; height: 44px; }
 }

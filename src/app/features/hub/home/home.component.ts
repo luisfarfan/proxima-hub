@@ -28,6 +28,14 @@ const ADD_ON_CATALOG: Record<string, { name: string; monthlyPrice: number; minPl
   pricing_intelligence: { name: 'Intelligence', monthlyPrice: 100 },
 };
 
+/**
+ * `PlanSummary.name` viene como «Lidera — Inventario, almacenes, despacho y
+ * POS»: sirve para un listado, no para una etiqueta de tarjeta.
+ */
+function shortPlanName(name: string): string {
+  return name.split('—')[0].trim() || name;
+}
+
 /** Cómo se abre una app bloqueada: comprando un add-on, o subiendo de plan. */
 interface UnlockPath {
   kind: 'addon' | 'plan' | 'unknown';
@@ -171,24 +179,31 @@ export class HomeComponent {
    * —«Caja» sale recién en Lidera, no es un add-on— y solo si ninguno lo hace
    * se la trata como compra suelta.
    */
+  /** Expuesto a la plantilla: el saludo y la tarjeta de plan no quieren la cola. */
+  protected shortPlanName(name: string): string {
+    return shortPlanName(name);
+  }
+
   protected unlockFor(entitlement: string | undefined): UnlockPath {
     if (!entitlement) return { kind: 'unknown', detail: '', amount: '', amountNote: '' };
 
     const plan = this.plansByPrice().find((p) => p.features?.[entitlement] === true);
     if (plan) {
+      const label = shortPlanName(plan.name);
       return {
         kind: 'plan',
-        detail: `Viene incluida desde el plan ${plan.name} — no se compra suelta`,
-        amount: plan.name,
+        detail: `Viene incluida desde el plan ${label} — no se compra suelta`,
+        amount: label,
         amountNote: `S/ ${plan.monthly_price} al mes`,
       };
     }
 
     const addon = ADD_ON_CATALOG[entitlement];
     if (addon) {
-      const floor = addon.minPlan
-        ? this.plansByPrice().find((p) => p.id === addon.minPlan)?.name ?? addon.minPlan
-        : null;
+      const floorPlan = addon.minPlan
+        ? this.plansByPrice().find((p) => p.id === addon.minPlan)
+        : undefined;
+      const floor = floorPlan ? shortPlanName(floorPlan.name) : addon.minPlan ?? null;
       return {
         kind: 'addon',
         detail: floor

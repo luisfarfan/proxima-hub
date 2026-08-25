@@ -254,3 +254,25 @@
   background: var(--accent);
   border-radius: 999px;
 }
+
+/* ── Objetivos táctiles ────────────────────────────────────────────────────
+   En un teléfono estos botones medían entre 24 y 42 px de alto. 44 es el
+   mínimo con el que un pulgar acierta; debajo de eso se falla el toque y el
+   usuario cree que la app no responde.
+   ──────────────────────────────────────────────────────────────────────── */
+@media (max-width: 640px) {
+  .hub-account .btn-primary,
+  .hub-account .btn-outline,
+  .hub-account .btn-danger-sm,
+  .hub-account .btn-revoke,
+  .hub-account .pwd-toggle {
+    min-height: 44px;
+  }
+
+  .hub-account .pwd-toggle {
+    min-width: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+}

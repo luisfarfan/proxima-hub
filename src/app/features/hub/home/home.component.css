@@ -621,7 +621,31 @@
 .hub-compare:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 
 @media (max-width: 720px) {
-  .hub-open { flex-wrap: wrap; }
-  .hub-open-cta { margin-left: 0; width: 100%; justify-content: center; }
-  .hub-lock-price { margin-left: 0; text-align: left; width: 100%; }
+  /*
+   * Con `flex-wrap` el texto seguía compitiendo por el ancho contra el precio y
+   * quedaba «Viene / incluida / desde / el / plan» — una palabra por línea. En
+   * columna cada bloque tiene el ancho entero.
+   */
+  .hub-open,
+  .hub-lock { flex-direction: column; align-items: stretch; gap: 0.875rem; }
+
+  .hub-open-icon,
+  .hub-lock-icon { align-self: flex-start; }
+
+  .hub-open-cta { margin-left: 0; width: 100%; justify-content: center; min-height: 44px; }
+
+  .hub-lock-price {
+    margin-left: 0;
+    text-align: left;
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+  }
+
+  .hub-lock { min-height: 44px; }
+  .hub-check { min-height: 44px; }
+
+  /* Un enlace de 18 px de alto no se acierta con el pulgar. */
+  .hub-section-link { padding: 13px 0; display: inline-flex; align-items: center; min-height: 44px; }
+  .hub-section-head { flex-wrap: wrap; gap: 0.25rem 1rem; }
 }

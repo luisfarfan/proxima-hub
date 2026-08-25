@@ -6,7 +6,7 @@
       <p class="hub-sub">
         {{ activeBusinessName() }}
         @if (subscription(); as sub) {
-          · <span class="hub-plan-tag">{{ sub.plan_name }}</span>
+          · <span class="hub-plan-tag">Plan {{ shortPlanName(sub.plan_name) }}</span>
         } @else if (!subscriptionLoading()) {
           · <span class="hub-plan-tag">Plan Gratis</span>
         }
@@ -182,7 +182,7 @@
       @if (subscriptionLoading()) {
         <div class="hub-skeleton hub-skeleton-plan" role="status" aria-label="Cargando plan"></div>
       } @else {
-        <h2 class="hub-plan-name" id="plan-heading">{{ subscription()?.plan_name ?? 'Gratis' }}</h2>
+        <h2 class="hub-plan-name" id="plan-heading">{{ shortPlanName(subscription()?.plan_name ?? 'Gratis') }}</h2>
 
         @if (usageItems().length > 0) {
           <div class="hub-usage" aria-label="Uso del plan">
