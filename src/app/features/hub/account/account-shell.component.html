@@ -1,14 +1,68 @@
 <div class="hub-account">
-  <nav class="account-nav" aria-label="Configuración de cuenta">
-    <a
-      routerLink="/cuenta"
-      routerLinkActive="active"
-      [routerLinkActiveOptions]="{ exact: true }"
-    >Cuenta</a>
-    <a routerLink="/plan" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Plan</a>
-    <a routerLink="/seguridad" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Seguridad</a>
-    <a routerLink="/equipo" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Equipo</a>
+  <nav class="account-rail" aria-label="Configuración">
+
+    <!-- Lo que cambia al cambiar de negocio -->
+    <div class="rail-group">
+      <span class="rail-group-h" id="rail-biz">Este negocio</span>
+      <div class="rail-who">
+        <span class="rail-avatar is-biz" aria-hidden="true">{{ businessInitial() }}</span>
+        <span class="rail-who-body">
+          <span class="rail-who-name">{{ businessName() }}</span>
+          @if (planName(); as plan) {
+            <span class="rail-who-sub">{{ plan }}</span>
+          }
+        </span>
+      </div>
+      <ul class="rail-links" role="list" aria-labelledby="rail-biz">
+        <li>
+          <a routerLink="/plan" routerLinkActive="is-on" [routerLinkActiveOptions]="{ exact: true }">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="6" width="20" height="13" rx="2"/><path d="M2 11h20"/></svg>
+            Plan y facturación
+          </a>
+        </li>
+        <li>
+          <a routerLink="/equipo" routerLinkActive="is-on" [routerLinkActiveOptions]="{ exact: true }">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3.5"/><path d="M2 20c0-3.3 3.1-5 7-5s7 1.7 7 5M17 11a3 3 0 1 0 0-6M18 20c0-2.2-.8-3.6-2-4.4"/></svg>
+            Equipo
+          </a>
+        </li>
+      </ul>
+    </div>
+
+    <!-- Lo que es tuyo en todos los negocios -->
+    <div class="rail-group">
+      <span class="rail-group-h" id="rail-you">Tu cuenta</span>
+      <div class="rail-who">
+        <span class="rail-avatar is-you" aria-hidden="true">{{ userInitial() }}</span>
+        <span class="rail-who-body">
+          <span class="rail-who-name">{{ userName() }}</span>
+          @if (userEmail(); as mail) {
+            <span class="rail-who-sub">{{ mail }}</span>
+          }
+        </span>
+      </div>
+      <ul class="rail-links" role="list" aria-labelledby="rail-you">
+        <li>
+          <a routerLink="/cuenta" routerLinkActive="is-on" [routerLinkActiveOptions]="{ exact: true }">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-6 8-6s8 2 8 6"/></svg>
+            Perfil
+          </a>
+        </li>
+        <li>
+          <a routerLink="/seguridad" routerLinkActive="is-on" [routerLinkActiveOptions]="{ exact: true }">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
+            Acceso y seguridad
+          </a>
+        </li>
+      </ul>
+    </div>
+
+    <p class="rail-note">
+      Cambiar de negocio arriba cambia solo lo del primer grupo. Tu perfil es el mismo en todos.
+    </p>
+
   </nav>
+
   <main class="account-main" id="main-content">
     <router-outlet />
   </main>

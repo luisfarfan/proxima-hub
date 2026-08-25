@@ -48,26 +48,16 @@ export class HubShellComponent {
     () => this.activeBusinessName()[0]?.toUpperCase() ?? 'B',
   );
 
+  /**
+   * El menú del avatar dejó de repetir los cuatro destinos del rail de la
+   * cuenta: eran los mismos cuatro, dos veces en la misma pantalla. Acá queda
+   * la puerta de entrada y la salida; adentro manda el rail.
+   */
   protected readonly accountMenuItems: MenuItem[] = [
     {
-      label: 'Mi cuenta',
-      icon: 'pi pi-user',
-      command: () => this.router.navigate(['/cuenta']),
-    },
-    {
-      label: 'Plan',
-      icon: 'pi pi-credit-card',
+      label: 'Cuenta y plan',
+      icon: 'pi pi-cog',
       command: () => this.router.navigate(['/plan']),
-    },
-    {
-      label: 'Seguridad',
-      icon: 'pi pi-lock',
-      command: () => this.router.navigate(['/seguridad']),
-    },
-    {
-      label: 'Equipo',
-      icon: 'pi pi-users',
-      command: () => this.router.navigate(['/equipo']),
     },
     { separator: true },
     {
