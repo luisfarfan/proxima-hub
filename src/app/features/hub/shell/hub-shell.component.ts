@@ -10,11 +10,12 @@ import { Menu } from 'primeng/menu';
 import type { MenuItem } from 'primeng/api';
 import { AuthService, BusinessContextService } from '@luisfarfan/auth';
 import { RuntimeConfigService } from '../../../core/config/runtime-config.service';
+import { ProximaLogoComponent } from '../../../shared/ui/proxima-logo.component';
 
 @Component({
   selector: 'app-hub-shell',
   standalone: true,
-  imports: [RouterLink, RouterOutlet, Menu],
+  imports: [RouterLink, RouterOutlet, Menu, ProximaLogoComponent],
   templateUrl: './hub-shell.component.html',
   styleUrl: './hub-shell.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,

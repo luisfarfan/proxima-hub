@@ -2,7 +2,9 @@
 
 <div class="hub-shell">
   <header class="hub-top">
-    <a routerLink="/" class="hub-mark" aria-label="Próxima — ir al inicio">Próxima</a>
+    <a routerLink="/" class="hub-mark" aria-label="Próxima — ir al inicio">
+      <proxima-logo size="md" />
+    </a>
     @if (appVersion(); as version) {
       <span class="hub-version" title="v{{ version }}">v{{ version }}</span>
     }

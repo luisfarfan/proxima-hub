@@ -25,6 +25,7 @@ import { RegistroApiService, RubroOption, type RucLookupResponse } from './regis
 import { RegistroLivePanelComponent } from './registro-live-panel.component';
 import { RegistroCodeInputComponent } from './registro-code-input.component';
 import { businessSlug } from './registro-identity.util';
+import { ProximaLogoComponent } from '../../../shared/ui/proxima-logo.component';
 
 interface TurnstileApi {
   render(el: HTMLElement, opts: Record<string, unknown>): string;
@@ -37,6 +38,7 @@ type Step = 1 | 2 | 3;
   selector: 'app-registro-page',
   standalone: true,
   imports: [
+    ProximaLogoComponent,
     ReactiveFormsModule,
     RouterLink,
     InputTextModule,

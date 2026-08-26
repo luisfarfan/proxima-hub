@@ -1,0 +1,77 @@
+{
+  "artboards": [
+    {
+      "file": "Main.dc.html",
+      "x": 0,
+      "y": 0,
+      "w": 760,
+      "h": 1000,
+      "title": "Portada · el estado de la marca"
+    },
+    {
+      "file": "Marca.dc.html",
+      "x": 820,
+      "y": 70,
+      "w": 1180,
+      "h": 860,
+      "title": "El bloque de marca"
+    },
+    {
+      "file": "LoginHoy.dc.html",
+      "x": 2060,
+      "y": 120,
+      "w": 1180,
+      "h": 760,
+      "title": "Hoy · el login"
+    },
+    {
+      "file": "LoginA.dc.html",
+      "x": 3300,
+      "y": 120,
+      "w": 1180,
+      "h": 760,
+      "title": "A · La fachada"
+    },
+    {
+      "file": "LoginB.dc.html",
+      "x": 4540,
+      "y": 120,
+      "w": 1180,
+      "h": 760,
+      "title": "B · La puerta"
+    }
+  ],
+  "annotations": [
+    {
+      "id": "nota-marca",
+      "x": 820,
+      "y": -70,
+      "w": 560,
+      "text": "EL BLOQUE DE MARCA — implementado en los dos apps.\n`proxima-logo` en proxima-hub y proxima-admin: figura de 14x22 con clip-path, 8 px de separación, Bricolage Grotesque 800 con el ancho a 86. Todo en CSS: se fueron los dos .webp de media.proxima.pe.\nOJO: el favicon del sitio marca esta figura como provisional (TODO Lucho, bloqueo 6). Si aparece el logo definitivo, se cambia sólo aquí."
+    },
+    {
+      "id": "nota-hoy",
+      "x": 2060,
+      "y": -20,
+      "w": 560,
+      "text": "ESTADO ACTUAL — recreado del código.\nUn segundo .webp remoto forzado a blanco con un filtro, un azul (#1a6cf6) que no es el de la marca, copy que serviría para cualquier SaaS, y «© 2025» cuando estamos en 2026."
+    },
+    {
+      "id": "nota-a",
+      "x": 3300,
+      "y": -20,
+      "w": 560,
+      "text": "A · LA FACHADA — ELEGIDA, YA IMPLEMENTADA.\nEl amarillo es superficie, no acento. En escritorio es la pared de la izquierda; en teléfono se convierte en la franja de arriba, así que la marca ya no desaparece — que era el punto flojo de esta dirección.\nEn teléfono bajo (360x640) la franja encoge y suelta la bajada para que el botón de entrar no quede en el filo."
+    },
+    {
+      "id": "nota-b",
+      "x": 4540,
+      "y": -20,
+      "w": 560,
+      "text": "B · LA PUERTA — no elegida.\nUna columna sobre papel, igual en teléfono que en escritorio. Se descartó por renunciar al golpe de marca; la fachada resolvió el móvil sin renunciar a él."
+    }
+  ],
+  "launch": {
+    "view": "canvas"
+  }
+}

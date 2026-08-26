@@ -17,7 +17,6 @@
 .reg-stage { width: 46%; max-width: 40rem; flex-shrink: 0; }
 
 .reg-top { display: flex; align-items: center; justify-content: space-between; padding: 1.75rem 2.5rem; }
-.reg-mark { font-family: var(--font-heading); font-weight: 600; font-size: 1.1875rem; letter-spacing: -0.02em; }
 .reg-top-r { font-size: 0.8125rem; color: var(--muted); }
 .reg-a { color: var(--accent); font-weight: 500; }
 .reg-a:hover { text-decoration: underline; }
@@ -172,6 +171,9 @@
   .reg-a,
   .reg-textbtn { display: inline-flex; align-items: center; min-height: 44px; white-space: nowrap; flex-shrink: 0; }
   .reg-top-r { line-height: 1.2; }
+  /* El bloque de marca es más ancho que el «Próxima» suelto de antes: sin esto
+     el nombre y «¿Ya tienes cuenta?» se tocaban en un teléfono de 375 px. */
+  .reg-top { padding: 1.25rem 1.25rem; gap: 14px; }
 }
 
 @media (max-width: 1024px) {

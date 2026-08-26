@@ -1,6 +1,6 @@
 <app-auth-guest-shell
-  title="Inicia sesión"
-  subtitle="Bienvenido de vuelta"
+  title="Entra a tu negocio"
+  subtitle="Una sola cuenta para el panel, la caja y tu tienda."
   testId="login-page"
   [split]="true"
 >
@@ -77,8 +77,8 @@
     <div #googleBtn class="flex justify-center" data-testid="google-signin-btn"></div>
   }
 
-  <p class="mt-5 text-center text-[0.75rem] leading-relaxed text-muted-color">
-    ¿No tienes cuenta?
-    <a routerLink="/registro" [class]="linkClass">Regístrate gratis</a>
+  <p class="mt-6 text-center text-[0.875rem] leading-relaxed text-muted-color">
+    ¿Todavía no tienes cuenta?
+    <a routerLink="/registro" class="font-semibold text-primary hover:underline">Crea tu negocio gratis</a>
   </p>
 </app-auth-guest-shell>
