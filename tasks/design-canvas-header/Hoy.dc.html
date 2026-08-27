@@ -1,0 +1,145 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap">
+  <style>
+    body { margin: 0; font-family: 'Inter', ui-sans-serif, system-ui, sans-serif; letter-spacing: -0.003em; }
+    a { color: #0009dc; text-decoration: none; } a:hover { color: #000678; }
+    .h { font-family: 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif; letter-spacing: -0.02em; }
+    .lbl { font-family: 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif; font-size: 0.625rem; font-weight: 700; letter-spacing: 0.09em; text-transform: uppercase; color: #8a8f98; }
+    .ico { width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; border-radius: 0.5rem; color: #6b6f76; }
+    .callout { position: relative; }
+    .pin {
+      position: absolute; display: flex; align-items: center; gap: 7px;
+      font-size: 0.6875rem; line-height: 1.35; color: #b45309; font-weight: 500; max-width: 216px;
+    }
+    .pin::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: #b45309; flex-shrink: 0; }
+  </style>
+</helmet>
+
+<div style="width: 1400px; height: 700px; box-sizing: border-box; padding: 44px 48px; background: #fbfbfc; color: #08090a; overflow: hidden;">
+
+  <p class="lbl" style="margin: 0 0 4px;">Hoy · lo que hay en producción</p>
+  <h2 class="h" style="margin: 0 0 26px; font-size: 1.5rem; font-weight: 800;">Recreado desde <code style="font-family: ui-monospace, monospace; font-size: 1.0625rem; font-weight: 500;">header.component.html</code></h2>
+
+  <!-- ══ Escritorio ══ -->
+  <p class="lbl" style="margin: 0 0 8px;">Escritorio · 1280 px · alto real 44 px</p>
+  <div class="callout" style="width: 1280px; border: 1px solid #e3e4e8; border-radius: 10px 10px 0 0; overflow: hidden;">
+    <div style="display: flex; align-items: center; height: 44px; padding: 0 12px; gap: 12px; background: #f4f5f7;">
+
+      <!-- Zona 1: contexto -->
+      <div style="display: flex; align-items: center; gap: 8px; flex-shrink: 0;">
+        <div style="display: flex; align-items: center; gap: 8px; max-width: 14rem; border: 1px solid #e3e4e8; background: #ffffff; border-radius: 0.5rem; padding: 4px 8px;">
+          <div class="h" style="width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; border-radius: 0.5rem; background: #dbeafe; color: #1e40af; font-size: 0.5625rem; font-weight: 600;">BS</div>
+          <span style="font-size: 0.8125rem; font-weight: 500; color: #08090a; white-space: nowrap;">Bodega San Martín</span>
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#6b6f76" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="opacity: 0.7;"><path d="M19.5 8.25l-7.5 7.5-7.5-7.5"/></svg>
+        </div>
+
+        <ol style="display: flex; align-items: center; gap: 6px; margin: 0; padding: 0; list-style: none; font-size: 0.8125rem;">
+          <li style="color: #6b6f76;">Gestionar</li>
+          <li style="color: #a0a4ab; font-size: 0.6875rem;">/</li>
+          <li class="h" style="font-weight: 600; color: #08090a;">Catálogo</li>
+        </ol>
+      </div>
+
+      <div style="flex: 1;"></div>
+
+      <!-- Zona 2: buscador -->
+      <div style="display: flex; align-items: center; gap: 8px; height: 36px; width: 22vw; min-width: 16rem; max-width: 28rem; padding: 0 12px; border: 1px solid #e3e4e8; background: #ffffff; border-radius: 0.5rem; flex-shrink: 0;">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#6b6f76" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="opacity: 0.6;"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+        <span style="flex: 1; font-size: 0.8125rem; color: #8a8f98;">Buscar o ejecutar…</span>
+        <kbd style="font-family: ui-monospace, monospace; font-size: 0.5625rem; font-weight: 500; color: #8a8f98; border: 1px solid #e3e4e8; background: #f4f5f7; border-radius: 4px; padding: 2px 6px;">⌘K</kbd>
+      </div>
+
+      <div style="flex: 1;"></div>
+
+      <!-- Zona 3: acciones -->
+      <div style="display: flex; align-items: center; gap: 6px; flex-shrink: 0;">
+        <span class="h" style="display: flex; align-items: center; gap: 6px; height: 32px; padding: 0 12px; border-radius: 0.5rem; background: #0009dc; color: #ffffff; font-size: 0.8125rem; font-weight: 600;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v16m8-8H4"/></svg>
+          Nueva venta
+        </span>
+        <span class="ico" style="position: relative;">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0"/></svg>
+          <span class="h" style="position: absolute; top: 1px; right: 1px; min-width: 16px; height: 16px; display: flex; align-items: center; justify-content: center; padding: 0 4px; border-radius: 999px; background: #0009dc; color: #fff; font-size: 0.625rem; font-weight: 600; box-shadow: 0 0 0 2px #f4f5f7;">3</span>
+        </span>
+        <span class="ico">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+        </span>
+        <span style="width: 1px; height: 20px; background: #e3e4e8;"></span>
+        <span style="display: flex; align-items: center; gap: 6px; padding: 2px;">
+          <span style="font-size: 0.75rem; font-weight: 500; color: #08090a;">Luis Farfán</span>
+          <span class="h" style="width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; border-radius: 999px; background: rgba(0,9,220,0.10); border: 1px solid #e3e4e8; color: #0009dc; font-size: 0.6875rem; font-weight: 700;">L</span>
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#6b6f76" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="opacity: 0.75;"><path d="M19.5 8.25l-7.5 7.5-7.5-7.5"/></svg>
+        </span>
+      </div>
+
+    </div>
+    <div style="height: 64px; background: #fbfbfc; border-top: 1px solid #e3e4e8; display: flex; align-items: center; padding: 0 24px;">
+      <span style="font-size: 0.75rem; color: #a0a4ab;">↑ la página empieza aquí — sin título propio, porque el título ya se gastó en la miga</span>
+    </div>
+  </div>
+
+  <!-- ══ Teléfono ══ -->
+  <div style="display: flex; align-items: flex-start; gap: 40px; margin-top: 40px;">
+
+    <div>
+      <p class="lbl" style="margin: 0 0 8px;">Teléfono · 390 px</p>
+      <div style="width: 390px; border: 1px solid #e3e4e8; border-radius: 10px; overflow: hidden;">
+        <div style="display: flex; align-items: center; height: 40px; padding: 0 8px; gap: 6px; background: #f4f5f7;">
+          <span class="ico" style="width: 32px; height: 32px;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+          </span>
+          <span style="display: flex; align-items: center; gap: 4px; border: 1px solid #e3e4e8; background: #fff; border-radius: 0.5rem; padding: 4px 6px;">
+            <span class="h" style="width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; border-radius: 0.5rem; background: #dbeafe; color: #1e40af; font-size: 0.5625rem; font-weight: 600;">BS</span>
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#6b6f76" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="opacity: 0.7;"><path d="M19.5 8.25l-7.5 7.5-7.5-7.5"/></svg>
+          </span>
+          <span class="h" style="font-size: 0.8125rem; font-weight: 600; color: #08090a; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">Catálogo</span>
+          <span style="flex: 1;"></span>
+          <span class="ico" style="width: 32px; height: 32px;">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+          </span>
+          <span class="h" style="width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; border-radius: 999px; background: rgba(0,9,220,0.10); border: 1px solid #e3e4e8; color: #0009dc; font-size: 0.6875rem; font-weight: 700;">L</span>
+        </div>
+        <div style="height: 44px; background: #fbfbfc; border-top: 1px solid #e3e4e8;"></div>
+      </div>
+    </div>
+
+    <div style="flex: 1; padding-top: 26px;">
+      <div style="display: flex; flex-direction: column; gap: 13px; max-width: 30rem;">
+        <div style="display: flex; gap: 10px;">
+          <span style="width: 7px; height: 7px; border-radius: 50%; background: #b45309; flex-shrink: 0; margin-top: 6px;"></span>
+          <p style="margin: 0; font-size: 0.8125rem; line-height: 1.55; color: #6b6f76;"><strong class="h" style="color: #08090a; font-weight: 700;">No hay campana.</strong> Bajo 640 px la campana y el engranaje son <code style="font-family: ui-monospace, monospace; font-size: 0.75rem;">hidden sm:flex</code>. Los avisos no existen en el teléfono.</p>
+        </div>
+        <div style="display: flex; gap: 10px;">
+          <span style="width: 7px; height: 7px; border-radius: 50%; background: #b45309; flex-shrink: 0; margin-top: 6px;"></span>
+          <p style="margin: 0; font-size: 0.8125rem; line-height: 1.55; color: #6b6f76;"><strong class="h" style="color: #08090a; font-weight: 700;">El negocio queda en dos letras.</strong> El nombre se oculta y sólo quedan las iniciales — en una cuenta con varios negocios, adivinas en cuál estás.</p>
+        </div>
+        <div style="display: flex; gap: 10px;">
+          <span style="width: 7px; height: 7px; border-radius: 50%; background: #b45309; flex-shrink: 0; margin-top: 6px;"></span>
+          <p style="margin: 0; font-size: 0.8125rem; line-height: 1.55; color: #6b6f76;"><strong class="h" style="color: #08090a; font-weight: 700;">Nada llega a 44 px.</strong> Los controles miden 32 y el avatar 28, dentro de una franja de 40. Es la pantalla que se usa de pie, detrás del mostrador.</p>
+        </div>
+        <div style="display: flex; gap: 10px;">
+          <span style="width: 7px; height: 7px; border-radius: 50%; background: #b45309; flex-shrink: 0; margin-top: 6px;"></span>
+          <p style="margin: 0; font-size: 0.8125rem; line-height: 1.55; color: #6b6f76;"><strong class="h" style="color: #08090a; font-weight: 700;">Tampoco hay Nueva venta.</strong> La acción principal del día es <code style="font-family: ui-monospace, monospace; font-size: 0.75rem;">hidden sm:flex</code> también.</p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+</div>
+</x-dc>
+<script data-dc-script data-props='{"$preview":{"width":1400,"height":700}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

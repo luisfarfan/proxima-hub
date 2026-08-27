@@ -1,0 +1,13 @@
+{
+  "artboards": [
+    { "file": "Main.dc.html", "x": 0, "y": 0, "w": 820, "h": 1320, "title": "La disposición · qué pasa con cada bloque" },
+    { "file": "Hoy.dc.html", "x": 900, "y": 60, "w": 1180, "h": 1000, "title": "Hoy, con el Panel absorbido" },
+    { "file": "Gratis.dc.html", "x": 2140, "y": 120, "w": 1180, "h": 880, "title": "Hoy en el plan Gratis" }
+  ],
+  "annotations": [
+    { "id": "nota-disp", "x": 0, "y": -110, "w": 620, "text": "REVISADO BLOQUE POR BLOQUE contra /home y /analytics, leyendo las plantillas y el es.json — no de memoria.\nAnalítica ya nombra 56 cosas y las escribe mejor: «Clientes que vuelven — Ya habían comprado antes» frente al «Clientes recurrentes» pelado del Panel." },
+    { "id": "nota-hoy", "x": 900, "y": -60, "w": 600, "text": "HOY — dos preguntas en orden: cómo va, qué hago.\nLa tira de dinero es lo único nuevo: Hoy no tiene un solo número hoy. Se compara contra el mismo día de la semana pasada, no contra ayer.\nLa lista de trabajo ya existe y gana el detalle que tenía el Panel: el monto de la caja y los nombres de los productos agotados." },
+    { "id": "nota-gratis", "x": 2140, "y": 0, "w": 600, "text": "GRATIS — el caso que hoy está peor y el más común.\nSe muestra la caja, que no lleva candado, y el muro de pago nombra lo que falta y cuánto cuesta en vez de tapar la pantalla entera.\nAquí hay una decisión de producto que no me toca: si «cuánto vendí hoy» debe seguir siendo de pago." }
+  ],
+  "launch": { "view": "canvas" }
+}

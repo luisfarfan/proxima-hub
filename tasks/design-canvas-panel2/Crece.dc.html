@@ -1,0 +1,113 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap">
+  <style>
+    body { margin: 0; font-family: 'Inter', ui-sans-serif, system-ui, sans-serif; letter-spacing: -0.003em; }
+    a { color: #0009dc; text-decoration: none; } a:hover { color: #000678; }
+    .h { font-family: 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif; letter-spacing: -0.02em; }
+    .lbl { font-family: 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif; font-size: 0.625rem; font-weight: 700; letter-spacing: 0.09em; text-transform: uppercase; color: #8a8f98; }
+    .num { font-family: 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif; font-weight: 800; font-variant-numeric: tabular-nums; letter-spacing: -0.03em; line-height: 1; }
+    .card { border: 1px solid #e3e4e8; border-radius: 12px; background: #fff; }
+    .ghost { display: inline-flex; align-items: center; gap: 7px; height: 34px; padding: 0 13px; border-radius: 8px; border: 1px solid #e3e4e8; background: #fff; font-size: 0.8125rem; font-weight: 500; color: #08090a; cursor: pointer; transition: background 140ms ease; }
+    .ghost:hover { background: #f4f5f7; }
+    .seg { display: inline-flex; padding: 3px; border-radius: 9px; background: #eceef2; gap: 2px; }
+    .seg button { border: 0; background: none; font: inherit; cursor: pointer; height: 28px; padding: 0 12px; border-radius: 7px; font-size: 0.75rem; font-weight: 500; color: #6b6f76; transition: background 140ms ease, color 140ms ease; }
+    .seg button.on { background: #fff; color: #08090a; font-weight: 600; box-shadow: 0 1px 2px rgba(8,9,10,0.06); }
+    .lock { border: 1px dashed #d0d3da; border-radius: 12px; padding: 16px 18px; background: #fbfbfc; }
+    .in { opacity: 0; animation: rise 500ms cubic-bezier(0.16,1,0.3,1) forwards; }
+    .in2 { animation-delay: 100ms; }
+    @keyframes rise { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+    @media (prefers-reduced-motion: reduce) { .in { animation-duration: 1ms; } }
+  </style>
+</helmet>
+
+<div style="width: 1180px; height: 920px; box-sizing: border-box; padding: 40px 44px; background: #fbfbfc; color: #08090a; overflow: hidden;">
+
+  <p class="lbl" style="margin: 0 0 4px; color: #0009dc;">Dirección C · la pantalla crece contigo</p>
+  <h2 class="h" style="margin: 0 0 6px; font-size: 1.625rem; font-weight: 800;">Sólo aparece lo que ya tiene algo que decir</h2>
+  <p style="margin: 0 0 24px; font-size: 0.875rem; line-height: 1.6; color: #6b6f76; max-width: 44rem;">El Panel se queda, pero un bloque sin datos <strong style="color: #08090a; font-weight: 600;">no se dibuja</strong> — ni en cero, ni con un guion, ni con la barra llena. En su lugar, una línea que dice qué falta para que aparezca. Con dos pedidos ves tres cosas; con dos mil, la pantalla completa.</p>
+
+  <div class="in" style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px;">
+    <div class="seg">
+      <button type="button" class="on" onClick="{{ noop }}">Hoy</button>
+      <button type="button" onClick="{{ noop }}">Esta semana</button>
+      <button type="button" onClick="{{ noop }}">Este mes</button>
+    </div>
+    <span style="font-size: 0.75rem; color: #a0a4ab;">2 pedidos en el rango · pantalla reducida a lo que aplica</span>
+  </div>
+
+  <div class="in" style="display: grid; grid-template-columns: 1.5fr 1fr 1fr; gap: 14px; margin-bottom: 14px;">
+    <div class="card" style="padding: 22px 24px;">
+      <p class="lbl" style="margin: 0 0 8px;">Vendido hoy</p>
+      <p class="num" style="margin: 0; font-size: 2.25rem;">S/ 1,221<span style="font-size: 1.25rem; color: #a0a4ab;">.34</span></p>
+      <p style="margin: 9px 0 0; font-size: 0.8125rem; color: #6b6f76;">1 venta</p>
+    </div>
+    <div class="card" style="padding: 22px 24px;">
+      <p class="lbl" style="margin: 0 0 8px;">Pedidos pendientes</p>
+      <p class="num" style="margin: 0; font-size: 2.25rem; color: #b45309;">2</p>
+      <a href="#" style="display: inline-block; margin-top: 9px; font-size: 0.8125rem; font-weight: 500;">Gestionar →</a>
+    </div>
+    <div class="card" style="padding: 22px 24px;">
+      <p class="lbl" style="margin: 0 0 8px;">Stock bajo</p>
+      <p class="num" style="margin: 0; font-size: 2.25rem; color: #b45309;">5</p>
+      <a href="#" style="display: inline-block; margin-top: 9px; font-size: 0.8125rem; font-weight: 500;">Ver inventario →</a>
+    </div>
+  </div>
+
+  <div class="in in2" style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px;">
+    <div class="card" style="padding: 20px 22px;">
+      <p class="lbl" style="margin: 0 0 12px;">Lo que se vendió</p>
+      <div style="display: flex; align-items: center; gap: 12px; padding: 9px 0; border-bottom: 1px solid #eceef2; font-size: 0.875rem;">
+        <span style="flex: 1;">ASUS TUF Gaming VG259QM</span><span style="color: #6b6f76;">1 ud.</span>
+        <span class="num" style="font-size: 0.9375rem; min-width: 86px; text-align: right;">S/ 1,221.34</span>
+      </div>
+      <div style="display: flex; align-items: center; gap: 12px; padding: 9px 0; font-size: 0.875rem;">
+        <span style="flex: 1;">NZXT H510</span><span style="color: #6b6f76;">3 uds.</span>
+        <span class="num" style="font-size: 0.9375rem; min-width: 86px; text-align: right;">S/ 243.57</span>
+      </div>
+    </div>
+    <div class="card" style="padding: 20px 22px;">
+      <p class="lbl" style="margin: 0 0 12px;">Reponer pronto</p>
+      <div style="display: flex; flex-direction: column; gap: 8px; font-size: 0.875rem;">
+        <div style="display: flex; align-items: center; gap: 9px;"><span style="width: 6px; height: 6px; border-radius: 50%; background: #b45309;"></span>ASRock B550 Phantom Gaming 4</div>
+        <div style="display: flex; align-items: center; gap: 9px;"><span style="width: 6px; height: 6px; border-radius: 50%; background: #b45309;"></span>Intel Core i3-13100F</div>
+        <div style="display: flex; align-items: center; gap: 9px;"><span style="width: 6px; height: 6px; border-radius: 50%; background: #b45309;"></span>ZOTAC GAMING GeForce GTX 1650 OC</div>
+        <a href="#" style="margin-top: 4px; font-size: 0.8125rem; font-weight: 500;">y 2 más →</a>
+      </div>
+    </div>
+  </div>
+
+  <p class="lbl" style="margin: 26px 0 10px;">Todavía no aparece</p>
+  <div class="in in2" style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px;">
+    <div class="lock">
+      <p class="h" style="margin: 0 0 3px; font-size: 0.875rem; font-weight: 700; color: #6b6f76;">Tendencia de ventas</p>
+      <p style="margin: 0; font-size: 0.8125rem; line-height: 1.5; color: #8a8f98;">Aparece con ventas en al menos 3 semanas distintas. Llevas 1.</p>
+    </div>
+    <div class="lock">
+      <p class="h" style="margin: 0 0 3px; font-size: 0.875rem; font-weight: 700; color: #6b6f76;">Embudo de la tienda</p>
+      <p style="margin: 0; font-size: 0.8125rem; line-height: 1.5; color: #8a8f98;">Aparece cuando la tienda web reciba visitas. Hoy tiene 0 sesiones.</p>
+    </div>
+    <div class="lock">
+      <p class="h" style="margin: 0 0 3px; font-size: 0.875rem; font-weight: 700; color: #6b6f76;">Clientes que vuelven</p>
+      <p style="margin: 0; font-size: 0.8125rem; line-height: 1.5; color: #8a8f98;">Aparece cuando alguien te compre por segunda vez.</p>
+    </div>
+  </div>
+
+  <p style="margin: 22px 0 0; font-size: 0.8125rem; line-height: 1.6; color: #b45309;"><strong class="h" style="font-weight: 700;">A cambio:</strong> es la más cara de las tres. Cada bloque necesita su regla de «cuándo tengo algo que decir», y esas reglas hay que acordarlas una por una. Y sigue habiendo tres pantallas.</p>
+
+</div>
+</x-dc>
+<script data-dc-script data-props='{"$preview":{"width":1180,"height":920}}'>
+class Component extends DCLogic {
+  renderVals() { return { noop: () => {} }; }
+}
+</script>
+</body>
+</html>

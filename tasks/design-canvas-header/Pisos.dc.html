@@ -1,0 +1,165 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap">
+  <style>
+    body { margin: 0; font-family: 'Inter', ui-sans-serif, system-ui, sans-serif; letter-spacing: -0.003em; }
+    a { color: #0009dc; text-decoration: none; } a:hover { color: #000678; }
+    .h { font-family: 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif; letter-spacing: -0.02em; }
+    .lbl { font-family: 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif; font-size: 0.625rem; font-weight: 700; letter-spacing: 0.09em; text-transform: uppercase; color: #8a8f98; }
+    .btn { border: 0; background: none; font: inherit; color: inherit; cursor: pointer; }
+
+    .tap { width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; border-radius: 0.5rem; color: #6b6f76; position: relative; transition: background 140ms ease, color 140ms ease; }
+    .tap:hover { background: rgba(8,9,10,0.06); color: #08090a; }
+
+    .thin { display: flex; align-items: center; height: 40px; padding: 0 12px; gap: 10px; background: #eceef2; border-bottom: 1px solid #e3e4e8; }
+    .deck { display: flex; align-items: center; height: 60px; padding: 0 20px; gap: 16px; background: #fbfbfc; }
+
+    .ghost { display: flex; align-items: center; gap: 7px; height: 36px; padding: 0 12px; border: 1px solid #e3e4e8; background: #ffffff; border-radius: 0.5rem; font-size: 0.8125rem; font-weight: 500; color: #08090a; transition: background 140ms ease, border-color 140ms ease; }
+    .ghost:hover { background: #f4f5f7; border-color: #d0d3da; }
+
+    .cta { display: flex; align-items: center; gap: 7px; height: 36px; padding: 0 14px; border-radius: 0.5rem; background: #0009dc; color: #fff; font-size: 0.8125rem; font-weight: 600; font-family: 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif; transition: background 140ms ease; }
+    .cta:hover { background: #1a24e6; }
+
+    .mini { display: flex; align-items: center; gap: 8px; height: 28px; padding: 0 8px; border-radius: 7px; transition: background 140ms ease; }
+    .mini:hover { background: rgba(8,9,10,0.06); }
+
+    .sbox { display: flex; align-items: center; gap: 8px; height: 28px; padding: 0 10px; border: 1px solid #d0d3da; background: #fbfbfc; border-radius: 7px; transition: border-color 160ms ease, box-shadow 160ms ease; }
+    .sbox:hover { border-color: #a0a4ab; }
+    .sbox.on { border-color: #0009dc; box-shadow: 0 0 0 3px rgba(0,9,220,0.13); }
+  </style>
+</helmet>
+
+<div style="width: 1400px; height: 790px; box-sizing: border-box; padding: 44px 48px; background: #fbfbfc; color: #08090a; overflow: hidden;">
+
+  <p class="lbl" style="margin: 0 0 4px; color: #0009dc;">Dirección B</p>
+  <h2 class="h" style="margin: 0 0 6px; font-size: 1.75rem; font-weight: 800;">Dos pisos</h2>
+  <p style="margin: 0 0 26px; font-size: 0.875rem; line-height: 1.6; color: #6b6f76; max-width: 42rem;">Arriba una tira fina de contexto — en qué negocio estás, buscar, avisos, tu cuenta — y debajo la barra de <em>esta</em> página: su título de verdad y sus propias acciones. El cromo global deja de competir con la pantalla.</p>
+
+  <p class="lbl" style="margin: 0 0 8px;">Escritorio · 1280 px · 40 + 60</p>
+  <div style="width: 1280px; border: 1px solid #e3e4e8; border-radius: 10px 10px 0 0; overflow: hidden;">
+
+    <div class="thin">
+      <button type="button" class="btn mini" onClick="{{ noop }}">
+        <span class="h" style="width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; border-radius: 6px; background: #dbeafe; color: #1e40af; font-size: 0.5625rem; font-weight: 700;">BS</span>
+        <span style="font-size: 0.75rem; font-weight: 500;">Bodega San Martín</span>
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#8a8f98" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19.5 8.25l-7.5 7.5-7.5-7.5"/></svg>
+      </button>
+
+      <span style="width: 1px; height: 16px; background: #d0d3da;"></span>
+      <span class="h" style="font-size: 0.5625rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #6b6f76; border: 1px solid #d0d3da; border-radius: 5px; padding: 3px 7px;">Plan Crece</span>
+
+      <span style="flex: 1;"></span>
+
+      <button type="button" class="btn sbox {{ searchClass }}" style="width: 300px;" onClick="{{ toggleSearch }}">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#8a8f98" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+        <span style="flex: 1; text-align: left; font-size: 0.75rem; color: #8a8f98;">Buscar en todo el negocio</span>
+        <kbd style="font-family: ui-monospace, monospace; font-size: 0.5625rem; color: #6b6f76;">⌘K</kbd>
+      </button>
+
+      <button type="button" class="btn tap" style="width: 28px; height: 28px;" onClick="{{ noop }}" aria-label="Avisos">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0"/></svg>
+        <span style="position: absolute; top: 3px; right: 4px; width: 7px; height: 7px; border-radius: 999px; background: #0009dc; box-shadow: 0 0 0 2px #eceef2;"></span>
+      </button>
+      <button type="button" class="btn tap" style="width: 28px; height: 28px;" onClick="{{ noop }}" aria-label="Configuración">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+      </button>
+      <button type="button" class="btn mini" onClick="{{ noop }}">
+        <span class="h" style="width: 22px; height: 22px; display: flex; align-items: center; justify-content: center; border-radius: 999px; background: rgba(0,9,220,0.10); color: #0009dc; font-size: 0.625rem; font-weight: 700;">L</span>
+        <span style="font-size: 0.75rem; font-weight: 500;">Luis</span>
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#8a8f98" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19.5 8.25l-7.5 7.5-7.5-7.5"/></svg>
+      </button>
+    </div>
+
+    <div class="deck">
+      <div style="min-width: 0;">
+        <p style="margin: 0 0 1px; font-size: 0.6875rem; font-weight: 500; color: #8a8f98;">Gestionar</p>
+        <h1 class="h" style="margin: 0; font-size: 1.25rem; font-weight: 800; line-height: 1.1;">Catálogo</h1>
+      </div>
+      <span style="flex: 1;"></span>
+      <button type="button" class="btn ghost" onClick="{{ noop }}">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#6b6f76" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M7 10l5 5 5-5M12 15V3"/></svg>
+        Importar
+      </button>
+      <button type="button" class="btn cta" onClick="{{ noop }}">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v16m8-8H4"/></svg>
+        Nuevo producto
+      </button>
+    </div>
+
+    <div style="height: 46px; background: #ffffff; border-top: 1px solid #e3e4e8;"></div>
+  </div>
+
+  <div style="display: flex; align-items: flex-start; gap: 40px; margin-top: 34px;">
+
+    <div>
+      <p class="lbl" style="margin: 0 0 8px;">Teléfono · 390 px</p>
+      <div style="width: 390px; border: 1px solid #e3e4e8; border-radius: 10px; overflow: hidden;">
+        <div style="display: flex; align-items: center; height: 44px; padding: 0 6px; gap: 4px; background: #eceef2; border-bottom: 1px solid #e3e4e8;">
+          <span class="tap" style="width: 40px; height: 40px;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+          </span>
+          <span class="mini" style="height: 40px; min-width: 0; flex: 1;">
+            <span class="h" style="width: 22px; height: 22px; display: flex; align-items: center; justify-content: center; border-radius: 6px; background: #dbeafe; color: #1e40af; font-size: 0.5625rem; font-weight: 700; flex-shrink: 0;">BS</span>
+            <span style="font-size: 0.75rem; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">Bodega San Martín</span>
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#8a8f98" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink: 0;"><path d="M19.5 8.25l-7.5 7.5-7.5-7.5"/></svg>
+          </span>
+          <span class="tap" style="width: 40px; height: 40px;">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+          </span>
+          <span class="tap" style="width: 40px; height: 40px;">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0"/></svg>
+            <span style="position: absolute; top: 8px; right: 9px; width: 7px; height: 7px; border-radius: 999px; background: #0009dc; box-shadow: 0 0 0 2px #eceef2;"></span>
+          </span>
+          <span class="tap" style="width: 40px; height: 40px;">
+            <span class="h" style="width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; border-radius: 999px; background: rgba(0,9,220,0.10); color: #0009dc; font-size: 0.6875rem; font-weight: 700;">L</span>
+          </span>
+        </div>
+        <div style="display: flex; align-items: center; gap: 12px; padding: 12px 14px; background: #fbfbfc;">
+          <div style="min-width: 0; flex: 1;">
+            <p style="margin: 0 0 1px; font-size: 0.6875rem; font-weight: 500; color: #8a8f98;">Gestionar</p>
+            <h1 class="h" style="margin: 0; font-size: 1.25rem; font-weight: 800; line-height: 1.1;">Catálogo</h1>
+          </div>
+          <span class="cta" style="height: 44px;">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v16m8-8H4"/></svg>
+            Nuevo
+          </span>
+        </div>
+        <div style="height: 30px; background: #ffffff; border-top: 1px solid #e3e4e8;"></div>
+      </div>
+    </div>
+
+    <div style="flex: 1; padding-top: 26px; max-width: 32rem;">
+      <p class="lbl" style="margin: 0 0 12px;">Qué cambia</p>
+      <div style="display: flex; flex-direction: column; gap: 13px;">
+        <p style="margin: 0; font-size: 0.8125rem; line-height: 1.6; color: #6b6f76;"><strong class="h" style="color: #08090a; font-weight: 700;">La página recupera su título.</strong> «Catálogo» pasa a ser un encabezado de verdad, no la última miga. La sección queda encima, chiquita, como pista.</p>
+        <p style="margin: 0; font-size: 0.8125rem; line-height: 1.6; color: #6b6f76;"><strong class="h" style="color: #08090a; font-weight: 700;">Las acciones dejan de ser globales.</strong> «Nueva venta» aparece en Ventas; en Catálogo aparecen «Nuevo producto» e «Importar». La barra se adapta a dónde estás en vez de llevar siempre lo mismo.</p>
+        <p style="margin: 0; font-size: 0.8125rem; line-height: 1.6; color: #6b6f76;"><strong class="h" style="color: #08090a; font-weight: 700;">El cromo global se calla.</strong> Negocio, plan, buscar, avisos y cuenta bajan a 12 px en una tira gris: están, no gritan.</p>
+        <p style="margin: 0; font-size: 0.8125rem; line-height: 1.6; color: #6b6f76;"><strong class="h" style="color: #08090a; font-weight: 700;">El teléfono hereda la misma estructura.</strong> Nada se esconde: los dos pisos existen igual, sólo se aprietan.</p>
+      </div>
+      <p style="margin: 20px 0 0; font-size: 0.8125rem; line-height: 1.6; color: #b45309;"><strong class="h" style="font-weight: 700;">A cambio:</strong> 100 px de cromo en vez de 44, y cada pantalla tiene que declarar su título y sus acciones. Es el más caro de implementar.</p>
+    </div>
+
+  </div>
+
+</div>
+</x-dc>
+<script data-dc-script data-props='{"$preview":{"width":1400,"height":790}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {
+      searchClass: this.state?.searchOn ? 'on' : '',
+      toggleSearch: () => this.setState({ searchOn: !this.state?.searchOn }),
+      noop: () => {},
+    };
+  }
+}
+</script>
+</body>
+</html>

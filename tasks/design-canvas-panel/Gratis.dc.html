@@ -1,0 +1,95 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap">
+  <style>
+    body { margin: 0; font-family: 'Inter', ui-sans-serif, system-ui, sans-serif; letter-spacing: -0.003em; }
+    a { color: #0009dc; text-decoration: none; } a:hover { color: #000678; }
+    .h { font-family: 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif; letter-spacing: -0.02em; }
+    .lbl { font-family: 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif; font-size: 0.625rem; font-weight: 700; letter-spacing: 0.09em; text-transform: uppercase; color: #8a8f98; }
+    .num { font-family: 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif; font-weight: 800; font-variant-numeric: tabular-nums; letter-spacing: -0.03em; line-height: 1; }
+    .card { border: 1px solid #e3e4e8; border-radius: 12px; background: #fff; }
+    .ghost { display: inline-flex; align-items: center; gap: 7px; height: 36px; padding: 0 13px; border-radius: 8px; border: 1px solid #e3e4e8; background: #fff; font-size: 0.8125rem; font-weight: 500; color: #08090a; transition: background 140ms ease, border-color 140ms ease; }
+    .ghost:hover { background: #f4f5f7; border-color: #d0d3da; }
+    .cta { display: inline-flex; align-items: center; gap: 7px; height: 38px; padding: 0 16px; border-radius: 8px; background: #0009dc; color: #fff; font-family: 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif; font-size: 0.8125rem; font-weight: 600; transition: background 140ms ease; }
+    .cta:hover { background: #1a24e6; }
+    .work { display: flex; gap: 13px; padding: 15px 16px; border: 1px solid #e3e4e8; border-radius: 12px; background: #fff; }
+    .pip { width: 30px; height: 30px; border-radius: 9px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  </style>
+</helmet>
+
+<div style="width: 1180px; height: 880px; box-sizing: border-box; padding: 40px 44px; background: #fbfbfc; color: #08090a; overflow: hidden;">
+
+  <p class="lbl" style="margin: 0 0 4px; color: #b45309;">/home en el plan Gratis · el caso mayoritario</p>
+  <h2 class="h" style="margin: 0 0 4px; font-size: 1.625rem; font-weight: 800;">Hoy, sin el add-on</h2>
+  <p style="margin: 0 0 26px; font-size: 0.875rem; line-height: 1.6; color: #6b6f76; max-width: 44rem;">Hoy este comercio abre el Panel y ve un muro de pago genérico sobre una pantalla vacía. Puede vender, pero el producto no le dice cuánto vendió. Esta es la versión honesta.</p>
+
+  <div style="display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 10px;">
+    <p class="lbl" style="margin: 0;">Hoy · martes 26</p>
+  </div>
+
+  <!-- Lo que SÍ se puede saber sin candado: la caja -->
+  <div class="card" style="display: flex; align-items: stretch; overflow: hidden;">
+    <div style="flex: 1.4; padding: 22px 24px; border-right: 1px solid #eceef2;">
+      <p class="lbl" style="margin: 0 0 8px;">En caja ahora</p>
+      <p class="num" style="margin: 0; font-size: 2.5rem;">S/ 890<span style="font-size: 1.375rem; color: #a0a4ab;">.00</span></p>
+      <p style="margin: 10px 0 0; font-size: 0.8125rem; color: #6b6f76;">Abierta desde las 8:15 · 4 h 20 min</p>
+    </div>
+    <div style="flex: 1; padding: 22px 24px; border-right: 1px solid #eceef2;">
+      <p class="lbl" style="margin: 0 0 8px;">Ventas en esta caja</p>
+      <p class="num" style="margin: 0; font-size: 1.625rem;">21</p>
+      <p style="margin: 8px 0 0; font-size: 0.8125rem; color: #6b6f76;">Desde que abriste</p>
+    </div>
+    <div style="flex: 1.5; padding: 20px 24px; background: #fbfbfc; display: flex; flex-direction: column; justify-content: center; gap: 10px;">
+      <div>
+        <p class="h" style="margin: 0 0 3px; font-size: 0.875rem; font-weight: 700;">¿Y los días que no abriste caja?</p>
+        <p style="margin: 0; font-size: 0.8125rem; line-height: 1.5; color: #6b6f76;">El total del día, la comparación con la semana pasada y el ticket promedio llegan con <strong style="color: #08090a; font-weight: 600;">Emprende</strong>.</p>
+      </div>
+      <a href="#" class="cta" style="align-self: flex-start;">Ver Emprende · S/ 50</a>
+    </div>
+  </div>
+
+  <p style="margin: 9px 0 0; font-size: 0.75rem; color: #a0a4ab;">La caja no lleva candado de add-on, así que se muestra de verdad en vez de taparla. El muro de pago nombra lo que falta y su precio; no esconde la pantalla entera.</p>
+
+  <div style="margin-top: 32px;">
+    <div style="display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 10px;">
+      <p class="lbl" style="margin: 0;">Pendiente · 1 cosa</p>
+    </div>
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+      <div class="work">
+        <span class="pip" style="background: #f0f4ff; color: #0009dc;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 7h-9m9 5h-9m9 5h-9M5 7h.01M5 12h.01M5 17h.01"/></svg>
+        </span>
+        <div style="min-width: 0; flex: 1;">
+          <p class="h" style="margin: 0 0 2px; font-size: 0.9375rem; font-weight: 700;">2 pedidos sin atender</p>
+          <p style="margin: 0 0 9px; font-size: 0.8125rem; line-height: 1.5; color: #6b6f76;">Entraron por WhatsApp esta mañana.</p>
+          <a href="#" class="ghost" style="height: 32px;">Ver pedidos</a>
+        </div>
+      </div>
+      <div style="border: 1px dashed #d0d3da; border-radius: 12px; padding: 15px 16px; display: flex; flex-direction: column; justify-content: center;">
+        <p style="margin: 0 0 3px; font-size: 0.8125rem; font-weight: 600; color: #6b6f76;">Facturación, inventario y logística</p>
+        <p style="margin: 0; font-size: 0.8125rem; line-height: 1.5; color: #8a8f98;">Vigilan cosas que tu plan todavía no incluye. Cuando las actives, aparecen aquí solas.</p>
+      </div>
+    </div>
+  </div>
+
+  <div style="margin-top: 30px; border: 1px solid #f0c9a0; border-radius: 12px; background: #fffaf3; padding: 16px 20px;">
+    <p class="h" style="margin: 0 0 5px; font-size: 0.9375rem; font-weight: 800; color: #7c3d06;">Esto pide una decisión tuya, no de diseño</p>
+    <p style="margin: 0; font-size: 0.8125rem; line-height: 1.6; color: #6b4423;">«Cuánto vendí hoy» hoy es una función de pago: <code style="font-family: ui-monospace, monospace; font-size: 0.75rem;">admin/kpis</code> exige el add-on <code style="font-family: ui-monospace, monospace; font-size: 0.75rem;">analytics</code>. Se puede dejar así —y el muro de arriba es la versión honesta— o abrir un endpoint mínimo de totales del día sin candado y dejar en Analítica lo que de verdad es análisis. Lo segundo cambia el paquete comercial; por eso no lo decido yo.</p>
+  </div>
+
+</div>
+</x-dc>
+<script data-dc-script data-props='{"$preview":{"width":1180,"height":880}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,106 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap">
+  <style>
+    body { margin: 0; font-family: 'Inter', ui-sans-serif, system-ui, sans-serif; letter-spacing: -0.003em; }
+    a { color: #0009dc; text-decoration: none; } a:hover { color: #000678; }
+    .h { font-family: 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif; letter-spacing: -0.02em; }
+    .lbl { font-family: 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif; font-size: 0.625rem; font-weight: 700; letter-spacing: 0.09em; text-transform: uppercase; color: #8a8f98; }
+    .num { font-family: 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif; font-weight: 800; font-variant-numeric: tabular-nums; letter-spacing: -0.03em; line-height: 1; }
+    .card { border: 1px solid #e3e4e8; border-radius: 12px; background: #fff; }
+    .seg { display: inline-flex; padding: 3px; border-radius: 9px; background: #eceef2; gap: 2px; }
+    .seg button { border: 0; background: none; font: inherit; cursor: pointer; height: 30px; padding: 0 13px; border-radius: 7px; font-size: 0.8125rem; font-weight: 500; color: #6b6f76; transition: background 140ms ease, color 140ms ease; }
+    .seg button:hover { color: #08090a; }
+    .seg button.on { background: #fff; color: #08090a; font-weight: 600; box-shadow: 0 1px 2px rgba(8,9,10,0.06); }
+    .rowp { display: flex; align-items: center; gap: 12px; padding: 11px 0; border-bottom: 1px solid #eceef2; font-size: 0.875rem; }
+    .ghost { display: inline-flex; align-items: center; gap: 7px; height: 34px; padding: 0 13px; border-radius: 8px; border: 1px solid #e3e4e8; background: #fff; font-size: 0.8125rem; font-weight: 500; color: #08090a; cursor: pointer; transition: background 140ms ease; }
+    .ghost:hover { background: #f4f5f7; }
+    .in { opacity: 0; animation: rise 500ms cubic-bezier(0.16,1,0.3,1) forwards; }
+    .in2 { animation-delay: 90ms; }
+    @keyframes rise { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+    @media (prefers-reduced-motion: reduce) { .in { animation-duration: 1ms; } }
+  </style>
+</helmet>
+
+<div style="width: 1180px; height: 880px; box-sizing: border-box; padding: 40px 44px; background: #fbfbfc; color: #08090a; overflow: hidden;">
+
+  <p class="lbl" style="margin: 0 0 4px; color: #0009dc;">Dirección B · el Panel sigue, con un solo trabajo</p>
+  <h2 class="h" style="margin: 0 0 6px; font-size: 1.625rem; font-weight: 800;">¿Cómo va el dinero?</h2>
+  <p style="margin: 0 0 24px; font-size: 0.875rem; line-height: 1.6; color: #6b6f76; max-width: 42rem;">Se quedan las tres pantallas, pero el Panel deja de ser un cajón: contesta una pregunta y cabe sin hacer scroll. Todo lo demás enlaza a Analítica.</p>
+
+  <div class="in" style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+    <div class="seg">
+      <button type="button" class="on" onClick="{{ noop }}">Hoy</button>
+      <button type="button" onClick="{{ noop }}">Ayer</button>
+      <button type="button" onClick="{{ noop }}">Esta semana</button>
+      <button type="button" onClick="{{ noop }}">Este mes</button>
+    </div>
+    <span style="font-size: 0.75rem; color: #a0a4ab;">miércoles 26 de agosto</span>
+  </div>
+
+  <div class="in card" style="padding: 30px 32px; margin-bottom: 14px;">
+    <p class="lbl" style="margin: 0 0 10px;">Vendido hoy</p>
+    <div style="display: flex; align-items: flex-end; gap: 26px; flex-wrap: wrap;">
+      <p class="num" style="margin: 0; font-size: 3.5rem;">S/ 1,221<span style="font-size: 1.75rem; color: #a0a4ab;">.34</span></p>
+      <p style="margin: 0 0 8px; font-size: 0.9375rem; color: #6b6f76;">en <strong style="color: #08090a; font-weight: 600;">1 venta</strong> · el miércoles pasado no vendiste nada</p>
+    </div>
+  </div>
+
+  <div class="in in2" style="display: grid; grid-template-columns: 1.3fr 1fr; gap: 14px;">
+
+    <div class="card" style="padding: 20px 22px;">
+      <p class="lbl" style="margin: 0 0 4px;">Lo que se vendió hoy</p>
+      <div class="rowp">
+        <span style="flex: 1;">ASUS TUF Gaming VG259QM</span>
+        <span style="color: #6b6f76;">1 ud.</span>
+        <span class="num" style="font-size: 0.9375rem; min-width: 88px; text-align: right;">S/ 1,221.34</span>
+      </div>
+      <div class="rowp" style="border-bottom: 0; color: #a0a4ab;">
+        <span style="flex: 1; font-size: 0.8125rem;">Nada más por ahora.</span>
+      </div>
+      <a href="#" style="display: inline-block; margin-top: 10px; font-size: 0.8125rem; font-weight: 500;">Ver todas las ventas →</a>
+    </div>
+
+    <div style="display: flex; flex-direction: column; gap: 14px;">
+      <div class="card" style="padding: 18px 20px;">
+        <p class="lbl" style="margin: 0 0 8px;">Esta semana</p>
+        <p class="num" style="margin: 0 0 4px; font-size: 1.5rem;">S/ 1,464.91</p>
+        <p style="margin: 0; font-size: 0.8125rem; color: #6b6f76;">2 ventas · la semana pasada, ninguna</p>
+      </div>
+      <div class="card" style="padding: 18px 20px;">
+        <p class="lbl" style="margin: 0 0 8px;">En caja</p>
+        <p class="num" style="margin: 0 0 4px; font-size: 1.5rem; color: #8a8f98;">Cerrada</p>
+        <a href="#" style="font-size: 0.8125rem; font-weight: 500;">Abrir caja para vender →</a>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="in in2" style="margin-top: 22px; display: flex; align-items: center; justify-content: space-between; gap: 20px; padding: 16px 20px; border: 1px dashed #d0d3da; border-radius: 12px;">
+    <div>
+      <p class="h" style="margin: 0 0 2px; font-size: 0.9375rem; font-weight: 700;">Clientes, embudo, catálogo, canales y búsquedas</p>
+      <p style="margin: 0; font-size: 0.8125rem; color: #6b6f76;">Todo eso ya vive en Analítica, en pestañas y con su propio selector de periodo. El Panel deja de repetirlo.</p>
+    </div>
+    <a href="#" class="ghost" style="flex-shrink: 0;">Abrir Analítica
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+    </a>
+  </div>
+
+  <p style="margin: 22px 0 0; font-size: 0.8125rem; line-height: 1.6; color: #b45309;"><strong class="h" style="font-weight: 700;">A cambio:</strong> siguen siendo tres pantallas en INICIO y sigue habiendo que explicar cuándo usar cuál. Se borra el 90 % del Panel, pero no el ítem del menú.</p>
+
+</div>
+</x-dc>
+<script data-dc-script data-props='{"$preview":{"width":1180,"height":880}}'>
+class Component extends DCLogic {
+  renderVals() { return { noop: () => {} }; }
+}
+</script>
+</body>
+</html>

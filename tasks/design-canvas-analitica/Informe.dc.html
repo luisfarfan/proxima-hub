@@ -1,0 +1,123 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap">
+  <style>
+    body { margin: 0; font-family: 'Inter', ui-sans-serif, system-ui, sans-serif; letter-spacing: -0.003em; }
+    a { color: #0009dc; text-decoration: none; } a:hover { color: #000678; }
+    .h { font-family: 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif; letter-spacing: -0.02em; }
+    .lbl { font-family: 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif; font-size: 0.625rem; font-weight: 700; letter-spacing: 0.09em; text-transform: uppercase; color: #8a8f98; }
+    .num { font-family: 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif; font-weight: 800; font-variant-numeric: tabular-nums; letter-spacing: -0.03em; line-height: 1; }
+    .btn { border: 0; background: none; font: inherit; cursor: pointer; color: inherit; }
+    .row { border: 1px solid #e3e4e8; border-radius: 12px; background: #fff; overflow: hidden; transition: border-color 140ms ease; }
+    .row:hover { border-color: #d0d3da; }
+    .rowhead { display: flex; align-items: center; gap: 14px; width: 100%; padding: 15px 20px; text-align: left; }
+    .chev { transition: transform 200ms cubic-bezier(.16,1,.3,1); flex-shrink: 0; }
+    .chev.open { transform: rotate(90deg); }
+    .body { padding: 0 20px 18px 54px; animation: open 240ms cubic-bezier(.16,1,.3,1) both; }
+    @keyframes open { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: none; } }
+    .ghost { display: inline-flex; align-items: center; gap: 7px; height: 34px; padding: 0 13px; border-radius: 8px; border: 1px solid #e3e4e8; background: #fff; font-size: 0.8125rem; font-weight: 500; }
+    .ghost:hover { background: #f4f5f7; }
+    .seg { display: inline-flex; padding: 3px; border-radius: 10px; background: #eceef2; gap: 2px; }
+    .seg button { height: 30px; padding: 0 11px; border-radius: 7px; font-size: 0.8125rem; font-weight: 500; color: #6b6f76; }
+    .seg button.on { background: #fff; color: #08090a; font-weight: 600; box-shadow: 0 1px 2px rgba(8,9,10,.06); }
+    @media (prefers-reduced-motion: reduce) { .body { animation-duration: 1ms; } .chev { transition-duration: 1ms; } }
+  </style>
+</helmet>
+
+<div style="width: 1180px; height: 900px; box-sizing: border-box; padding: 36px 40px; background: #fbfbfc; color: #08090a; overflow: hidden;">
+
+  <p class="lbl" style="margin: 0 0 4px; color: #0009dc;">Dirección C · el informe del periodo</p>
+  <h2 class="h" style="margin: 0 0 6px; font-size: 1.5rem; font-weight: 800;">Primero el titular. El detalle, si lo pides.</h2>
+  <p style="margin: 0 0 22px; font-size: 0.875rem; line-height: 1.6; color: #6b6f76; max-width: 46rem;">Analítica deja de ser un tablero y pasa a ser algo que se <em>lee</em>: arriba, lo que pasó en el periodo escrito en una frase; debajo, cada dato plegado con su titular. <strong style="color: #08090a; font-weight: 600;">Abre y cierra las filas.</strong></p>
+
+  <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+    <div class="seg">
+      <button type="button" class="btn" onClick="{{ noop }}">Hoy</button>
+      <button type="button" class="btn" onClick="{{ noop }}">7 días</button>
+      <button type="button" class="btn on" onClick="{{ noop }}">30 días</button>
+      <button type="button" class="btn" onClick="{{ noop }}">Este mes</button>
+    </div>
+    <button type="button" class="btn ghost" onClick="{{ noop }}">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M7 10l5 5 5-5M12 15V3"/></svg>
+      Descargar el informe
+    </button>
+  </div>
+
+  <!-- El titular -->
+  <div style="border: 1px solid #e3e4e8; border-radius: 14px; background: #fff; padding: 26px 28px; margin-bottom: 16px;">
+    <p class="lbl" style="margin: 0 0 10px;">Del 28 de julio al 26 de agosto</p>
+    <p class="h" style="margin: 0; font-size: 1.5rem; font-weight: 800; line-height: 1.35; text-wrap: pretty;">Vendiste <span style="color: #0009dc;">S/ 1,464.91</span> en 2 pedidos, y un solo monitor fue el 83 % de eso. Nadie ha vuelto a comprar todavía, y tu tienda web no recibió ni una visita.</p>
+    <p style="margin: 14px 0 0; font-size: 0.875rem; line-height: 1.55; color: #6b6f76;">Con dos ventas no hay promedio ni tendencia que sostener. Lo que sí se puede decir está arriba; lo que hace falta para el resto, en cada fila.</p>
+  </div>
+
+  <div style="display: flex; flex-direction: column; gap: 10px;">
+    <sc-for list="{{ rows }}" as="r" hint-placeholder-count="4">
+      <div class="row">
+        <button type="button" class="btn rowhead" onClick="{{ r.toggle }}">
+          <svg class="chev {{ r.cls }}" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#8a8f98" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>
+          <span style="min-width: 0; flex: 1;">
+            <span class="h" style="display: block; font-size: 0.9375rem; font-weight: 700;">{{ r.title }}</span>
+            <span style="display: block; margin-top: 2px; font-size: 0.8125rem; color: #6b6f76;">{{ r.lead }}</span>
+          </span>
+          <span class="num" style="font-size: 1.125rem; color: {{ r.color }}; flex-shrink: 0;">{{ r.figure }}</span>
+        </button>
+        <sc-if value="{{ r.open }}" hint-placeholder-val="{{ false }}">
+          <div class="body">
+            <p style="margin: 0; font-size: 0.875rem; line-height: 1.6; color: #6b6f76;">{{ r.detail }}</p>
+          </div>
+        </sc-if>
+      </div>
+    </sc-for>
+  </div>
+
+  <p style="margin: 18px 0 0; font-size: 0.8125rem; line-height: 1.6; color: #b45309;"><strong class="h" style="font-weight: 700;">A cambio:</strong> el titular hay que redactarlo con reglas, y una frase mal escrita es peor que una tabla. Además esconde el detalle tras un clic, que a quien mira sus números todos los días le va a estorbar.</p>
+
+</div>
+</x-dc>
+<script data-dc-script data-props='{"$preview":{"width":1180,"height":900}}'>
+const ROWS = [
+  {
+    id: 'ventas', title: 'Lo que se vendió', figure: 'S/ 1,464.91', color: '#08090a',
+    lead: 'El ASUS TUF fue 4 de cada 5 soles que entraron',
+    detail: 'ASUS TUF Gaming VG259QM — S/ 1,221.34 en 1 unidad. NZXT H510 — S/ 243.57 en 3 unidades. Dos pedidos, ambos por la tienda y ambos entregados por delivery: sin un segundo canal con el que compararse, el reparto no dice nada todavía.',
+  },
+  {
+    id: 'clientes', title: 'Quién compró', figure: '2', color: '#08090a',
+    lead: 'Los dos, por primera vez',
+    detail: 'Ninguno había comprado antes, así que la retención sigue en cero — no porque se estén yendo, sino porque aún no ha habido una segunda compra que contar. El indicador empieza a tener sentido cuando alguien repita.',
+  },
+  {
+    id: 'tienda', title: 'La tienda web', figure: '0', color: '#b45309',
+    lead: 'Cero visitas en 30 días',
+    detail: 'Sin visitas no hay embudo, ni tasa de rebote, ni búsquedas, ni carritos abandonados: los cuatro miden lo que hace la gente dentro de la tienda, y no se registró ninguna. Tus dos pedidos sí están marcados como canal «tienda» — el canal es un campo del pedido y las visitas se cuentan de los eventos, así que son dos fuentes distintas y aquí no se deduce una de la otra.',
+  },
+  {
+    id: 'catalogo', title: 'El catálogo', figure: '30', color: '#08090a',
+    lead: '30 productos activos · 5 por reponer',
+    detail: 'Ningún producto frío por ahora: un producto frío es el que recibe visitas y no se vende, y sin visitas no puede haberlos. Los cinco por reponer están en Inventario.',
+  },
+];
+class Component extends DCLogic {
+  renderVals() {
+    const open = this.state?.open ?? 'ventas';
+    return {
+      rows: ROWS.map((r) => ({
+        ...r,
+        open: r.id === open,
+        cls: r.id === open ? 'open' : '',
+        toggle: () => this.setState({ open: open === r.id ? null : r.id }),
+      })),
+      noop: () => {},
+    };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,15 @@
+{
+  "artboards": [
+    { "file": "Main.dc.html", "x": 0, "y": 0, "w": 840, "h": 1360, "title": "Lo que vi en Analítica" },
+    { "file": "Pestanas.dc.html", "x": 920, "y": 220, "w": 1180, "h": 820, "title": "A · Pestañas de verdad" },
+    { "file": "Preguntas.dc.html", "x": 2160, "y": 150, "w": 1180, "h": 980, "title": "B · Ordenada por pregunta" },
+    { "file": "Informe.dc.html", "x": 3400, "y": 190, "w": 1180, "h": 900, "title": "C · El informe del periodo" }
+  ],
+  "annotations": [
+    { "id": "nota-vi", "x": 0, "y": -120, "w": 620, "text": "ABIERTO EN TU NAVEGADOR con tu sesión, no leído del código.\nEl hallazgo de fondo: la barra de arriba tiene subrayado de activo y aspecto de pestaña, pero las seis secciones están apiladas a la vez — el botón sólo te desplaza. 3.044 px, 45 ceros." },
+    { "id": "nota-a", "x": 920, "y": 100, "w": 560, "text": "A · PESTAÑAS DE VERDAD — lo más barato.\nLa barra ya parecía pestaña: que lo sea. Una sección por vista, de 3.044 px a una pantalla. Cambia de pestaña para verlo.\nA cambio: sigue ordenada por fuente de dato, no por lo que el comercio pregunta." },
+    { "id": "nota-b", "x": 2160, "y": 30, "w": 560, "text": "B · POR PREGUNTA — reagrupa las seis secciones en las tres preguntas que un comercio sí se hace, y cada una empieza con la respuesta escrita.\nA cambio: hay datos que caben en dos preguntas, y las frases hay que redactarlas." },
+    { "id": "nota-c", "x": 3400, "y": 70, "w": 560, "text": "C · EL INFORME — el más distinto y el de más impacto.\nArriba el titular en prosa; debajo cada dato plegado con su propio titular y su cifra. Abre y cierra las filas.\nA cambio: una frase mal redactada es peor que una tabla, y esconder el detalle estorba a quien mira sus números a diario." }
+  ],
+  "launch": { "view": "canvas" }
+}

@@ -1,0 +1,98 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap">
+  <style>
+    body { margin: 0; font-family: 'Inter', ui-sans-serif, system-ui, sans-serif; letter-spacing: -0.003em; }
+    a { color: #0009dc; text-decoration: none; } a:hover { color: #000678; text-decoration: underline; }
+    .h { font-family: 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif; letter-spacing: -0.02em; }
+    .num { font-variant-numeric: tabular-nums; }
+  </style>
+</helmet>
+
+<div style="width: 760px; height: 1040px; box-sizing: border-box; padding: 56px 56px 48px; background: #fbfbfc; color: #08090a; overflow: hidden;">
+
+  <p class="h" style="margin: 0 0 10px; font-size: 0.6875rem; font-weight: 700; letter-spacing: 0.09em; text-transform: uppercase; color: #0009dc;">proxima-admin · la barra de arriba</p>
+  <h1 class="h" style="margin: 0 0 14px; font-size: 2.5rem; font-weight: 800; line-height: 1.04;">44 píxeles<br>para siete trabajos</h1>
+  <p style="margin: 0 0 34px; font-size: 0.9375rem; line-height: 1.6; color: #6b6f76; max-width: 34rem;">El header carga identidad del negocio, migas, título de página, buscador, acción principal, notificaciones, configuración y cuenta — en una franja de 44 px con controles de 32. En teléfono pierde la mitad, incluida la campana.</p>
+
+  <div style="display: flex; flex-direction: column; gap: 0; border-top: 1px solid #e3e4e8;">
+
+    <div style="display: grid; grid-template-columns: 30px 1fr; gap: 16px; padding: 17px 0; border-bottom: 1px solid #e3e4e8;">
+      <span class="h num" style="font-size: 0.8125rem; font-weight: 700; color: #a0a4ab;">01</span>
+      <div>
+        <p class="h" style="margin: 0 0 3px; font-size: 0.9375rem; font-weight: 700;">El título de la página vive en las migas</p>
+        <p style="margin: 0; font-size: 0.8125rem; line-height: 1.55; color: #6b6f76;">La última miga <em>es</em> el nombre de la pantalla, a 13 px dentro del cromo. Entras a Catálogo y lo más grande que ves es el nombre del negocio.</p>
+      </div>
+    </div>
+
+    <div style="display: grid; grid-template-columns: 30px 1fr; gap: 16px; padding: 17px 0; border-bottom: 1px solid #e3e4e8;">
+      <span class="h num" style="font-size: 0.8125rem; font-weight: 700; color: #a0a4ab;">02</span>
+      <div>
+        <p class="h" style="margin: 0 0 3px; font-size: 0.9375rem; font-weight: 700;">La derecha es una bolsa de iconos</p>
+        <p style="margin: 0; font-size: 0.8125rem; line-height: 1.55; color: #6b6f76;">Nueva venta, campana, engranaje, separador y cuenta: cinco cosas distintas, todas de 32 px, sin jerarquía entre «la acción del día» y «ajustes que abres una vez al mes».</p>
+      </div>
+    </div>
+
+    <div style="display: grid; grid-template-columns: 30px 1fr; gap: 16px; padding: 17px 0; border-bottom: 1px solid #e3e4e8;">
+      <span class="h num" style="font-size: 0.8125rem; font-weight: 700; color: #a0a4ab;">03</span>
+      <div>
+        <p class="h" style="margin: 0 0 3px; font-size: 0.9375rem; font-weight: 700;">En teléfono desaparece la campana</p>
+        <p style="margin: 0; font-size: 0.8125rem; line-height: 1.55; color: #6b6f76;">Es <code style="font-family: ui-monospace, monospace; font-size: 0.75rem; background: #eceef2; padding: 1px 5px; border-radius: 4px;">hidden sm:flex</code>. Bajo 640 px no hay avisos, no hay engranaje, y el nombre del negocio se apaga: queda un cuadrito de iniciales sin explicar.</p>
+      </div>
+    </div>
+
+    <div style="display: grid; grid-template-columns: 30px 1fr; gap: 16px; padding: 17px 0; border-bottom: 1px solid #e3e4e8;">
+      <span class="h num" style="font-size: 0.8125rem; font-weight: 700; color: #a0a4ab;">04</span>
+      <div>
+        <p class="h" style="margin: 0 0 3px; font-size: 0.9375rem; font-weight: 700;">El buscador se esconde justo donde más se usa</p>
+        <p style="margin: 0; font-size: 0.8125rem; line-height: 1.55; color: #6b6f76;">El campo con ⌘K sólo aparece desde 1024 px. En una laptop chica o una tableta se encoge a una lupa de 32 px, sin pista de que existe el atajo.</p>
+      </div>
+    </div>
+
+    <div style="display: grid; grid-template-columns: 30px 1fr; gap: 16px; padding: 17px 0; border-bottom: 1px solid #e3e4e8;">
+      <span class="h num" style="font-size: 0.8125rem; font-weight: 700; color: #a0a4ab;">05</span>
+      <div>
+        <p class="h" style="margin: 0 0 3px; font-size: 0.9375rem; font-weight: 700;">Dos banderas que se bajan de internet</p>
+        <p style="margin: 0; font-size: 0.8125rem; line-height: 1.55; color: #6b6f76;">El menú de cuenta trae ES/EN con PNG de <code style="font-family: ui-monospace, monospace; font-size: 0.75rem; background: #eceef2; padding: 1px 5px; border-radius: 4px;">flagcdn.com</code> — la misma dependencia remota que acabamos de sacar del logo.</p>
+      </div>
+    </div>
+
+  </div>
+
+  <p class="h" style="margin: 34px 0 14px; font-size: 0.6875rem; font-weight: 700; letter-spacing: 0.09em; text-transform: uppercase; color: #8a8f98;">Tres direcciones</p>
+
+  <div style="display: flex; flex-direction: column; gap: 12px;">
+
+    <div style="border: 1px solid #e3e4e8; border-radius: 12px; background: #ffffff; padding: 16px 18px;">
+      <p class="h" style="margin: 0 0 4px; font-size: 1rem; font-weight: 800;">A · Una sola fila, ordenada</p>
+      <p style="margin: 0; font-size: 0.8125rem; line-height: 1.55; color: #6b6f76;">Sigue siendo una franja, pero honesta: 52 px, el buscador crece hasta llenar el hueco, la acción del día lleva su nombre, y el teléfono conserva los avisos. <strong style="color: #08090a; font-weight: 600;">El cambio más barato.</strong></p>
+    </div>
+
+    <div style="border: 1px solid #e3e4e8; border-radius: 12px; background: #ffffff; padding: 16px 18px;">
+      <p class="h" style="margin: 0 0 4px; font-size: 1rem; font-weight: 800;">B · Dos pisos</p>
+      <p style="margin: 0; font-size: 0.8125rem; line-height: 1.55; color: #6b6f76;">Arriba una tira fina de contexto — negocio, entorno, cuenta — y debajo la barra de la página con su título de verdad y sus propias acciones. <strong style="color: #08090a; font-weight: 600;">Cuesta 40 px de alto y ordena todo lo demás.</strong></p>
+    </div>
+
+    <div style="border: 1px solid #e3e4e8; border-radius: 12px; background: #ffffff; padding: 16px 18px;">
+      <p class="h" style="margin: 0 0 4px; font-size: 1rem; font-weight: 800;">C · El buscador manda</p>
+      <p style="margin: 0; font-size: 0.8125rem; line-height: 1.55; color: #6b6f76;">Una sola barra al centro que dice dónde estás y desde la cual saltas a cualquier lado escribiendo. Las migas desaparecen dentro de ella. <strong style="color: #08090a; font-weight: 600;">Lo más distinto — y lo que más hay que enseñar.</strong></p>
+    </div>
+
+  </div>
+
+</div>
+</x-dc>
+<script data-dc-script data-props='{"$preview":{"width":760,"height":1040}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>
