@@ -11,6 +11,7 @@ import { RuntimeConfigService } from '../../../core/config/runtime-config.servic
 import { HubDataCacheService } from '../../../core/services/hub-data-cache.service';
 import { LowerCasePipe } from '@angular/common';
 import { QuotaLabelPipe } from '../../../shared/pipes/quota-label.pipe';
+import { resolveActiveBusinessName } from '../../../core/auth/active-business-name';
 
 // entitlement key for each add-on app (matches businessCtx.entitlements())
 const ADD_ON_FEATURE_KEY: Record<string, string> = {
@@ -150,7 +151,7 @@ export class HomeComponent {
 
   protected readonly activeBusinessName = computed(() => {
     const bizId = this.businessCtx.businessId();
-    return this.memberships().find((m) => m.id === bizId)?.name ?? 'Mi negocio';
+    return resolveActiveBusinessName(this.memberships(), this.user(), bizId);
   });
 
   // Effective permission codes the user holds in the ACTIVE business.
@@ -162,6 +163,28 @@ export class HomeComponent {
   private readonly userPermissions = computed((): ReadonlySet<string> | null => {
     const ab = this.user()?.active_business as { permissions?: string[] } | null | undefined;
     return ab?.permissions ? new Set(ab.permissions) : null;
+  });
+
+  /**
+   * PPR-112 — el centro del Hub era idéntico para el dueño y para un empleado.
+   *
+   * Un miembro con rol Sales (`orders:*`) veía "Termina de configurar" con las
+   * tareas del NEGOCIO —nombre de tienda, logo, contacto, WhatsApp, métodos de
+   * pago, facturación, guías de despacho— y la tarjeta "Tu plan" con el plan
+   * contratado, los asientos y el almacenamiento. Ninguna tarea era suya y
+   * ninguna podía hacer: todas esas pantallas lo mandan a /forbidden.
+   *
+   * El dato ya estaba: el mismo `userPermissions` que decide qué aplicaciones
+   * ofrecer. El checklist y el plan simplemente no pasaban por ese filtro.
+   *
+   * `settings:manage` es el permiso de quien administra el negocio, que es de
+   * quien son esas tareas. Falla ABIERTO cuando la API no manda permisos, igual
+   * que el gate de aplicaciones: nunca esconder por un campo que no llegó.
+   */
+  protected readonly canManageBusiness = computed(() => {
+    const perms = this.userPermissions();
+    if (perms === null) return true;
+    return perms.has('settings:manage');
   });
 
   // --- App switcher ---

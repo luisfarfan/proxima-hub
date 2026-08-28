@@ -3,6 +3,7 @@ import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { AuthService, BusinessContextService } from '@luisfarfan/auth';
 
 import { HubDataCacheService } from '../../../core/services/hub-data-cache.service';
+import { resolveActiveBusinessName } from '../../../core/auth/active-business-name';
 
 /**
  * El marco de la cuenta, en dos grupos con dueño.
@@ -36,7 +37,7 @@ export class AccountShellComponent {
 
   protected readonly businessName = computed(() => {
     const bizId = this.businessCtx.businessId();
-    return this.memberships().find((m) => m.id === bizId)?.name ?? 'Mi negocio';
+    return resolveActiveBusinessName(this.memberships(), this.auth.user(), bizId);
   });
 
   protected readonly businessInitial = computed(() =>

@@ -11,6 +11,7 @@ import type { MenuItem } from 'primeng/api';
 import { AuthService, BusinessContextService } from '@luisfarfan/auth';
 import { RuntimeConfigService } from '../../../core/config/runtime-config.service';
 import { ProximaLogoComponent } from '../../../shared/ui/proxima-logo.component';
+import { resolveActiveBusinessName } from '../../../core/auth/active-business-name';
 
 @Component({
   selector: 'app-hub-shell',
@@ -42,7 +43,7 @@ export class HubShellComponent {
 
   protected readonly activeBusinessName = computed(() => {
     const bizId = this.businessCtx.businessId();
-    return this.memberships().find((m) => m.id === bizId)?.name ?? 'Mi negocio';
+    return resolveActiveBusinessName(this.memberships(), this.user(), bizId);
   });
 
   protected readonly activeBusinessInitial = computed(
