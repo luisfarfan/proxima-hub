@@ -13,7 +13,7 @@
       </p>
     </div>
 
-    @if (!statusLoading() && nextStep(); as step) {
+    @if (canManageBusiness() && !statusLoading() && nextStep(); as step) {
       <p class="hub-pulse">
         <span class="hub-pulse-dot" aria-hidden="true"></span>
         Te falta un paso para empezar a vender: {{ step.cta_label | lowercase }}
@@ -125,7 +125,8 @@
     </section>
   }
 
-  <!-- Configuración + plan -->
+  <!-- Configuración + plan — sólo para quien administra el negocio (PPR-112) -->
+  @if (canManageBusiness()) {
   <div class="hub-grid2">
 
     <section class="hub-card" aria-labelledby="checklist-heading">
@@ -219,4 +220,5 @@
     </section>
 
   </div>
+  }
 </main>
