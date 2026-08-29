@@ -4,6 +4,7 @@ import { Message } from 'primeng/message';
 import { ButtonModule } from 'primeng/button';
 import { AuthService, AuthTokenStorage, BusinessContextService, validateNextUrl, type BusinessMembership } from '@luisfarfan/auth';
 import { RuntimeConfigService } from '../../../core/config/runtime-config.service';
+import { LogoutService } from '../../../core/auth/logout.service';
 
 @Component({
   selector: 'app-select-business-page',
@@ -164,7 +165,7 @@ import { RuntimeConfigService } from '../../../core/config/runtime-config.servic
                   <button
                     type="button"
                     class="mt-3 text-[0.75rem] font-medium text-primary transition-colors duration-200 hover:underline"
-                    (click)="auth.logout()"
+                    (click)="logout()"
                   >
                     Cerrar sesión
                   </button>
@@ -178,7 +179,7 @@ import { RuntimeConfigService } from '../../../core/config/runtime-config.servic
             <button
               type="button"
               data-testid="select-business-logout"
-              (click)="auth.logout()"
+              (click)="logout()"
               class="text-[0.75rem] font-medium text-muted-color transition-colors duration-200 hover:text-color"
             >
               Cerrar sesión
@@ -198,8 +199,13 @@ export class SelectBusinessPageComponent implements OnInit {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly runtimeConfig = inject(RuntimeConfigService);
+  private readonly logoutService = inject(LogoutService);
 
   readonly businesses = signal<BusinessMembership[]>([]);
+
+  protected logout(): void {
+    void this.logoutService.logout();
+  }
 
   /**
    * PPR-139 — el super admin caía en "Elige tu negocio" con TODOS los comercios

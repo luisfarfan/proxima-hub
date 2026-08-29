@@ -12,6 +12,7 @@ import { AuthService, BusinessContextService } from '@luisfarfan/auth';
 import { RuntimeConfigService } from '../../../core/config/runtime-config.service';
 import { ProximaLogoComponent } from '../../../shared/ui/proxima-logo.component';
 import { resolveActiveBusinessName } from '../../../core/auth/active-business-name';
+import { LogoutService } from '../../../core/auth/logout.service';
 
 @Component({
   selector: 'app-hub-shell',
@@ -26,6 +27,7 @@ export class HubShellComponent {
   protected readonly auth = inject(AuthService);
   private readonly businessCtx = inject(BusinessContextService);
   private readonly runtimeConfig = inject(RuntimeConfigService);
+  private readonly logoutService = inject(LogoutService);
 
   readonly appVersion = this.runtimeConfig.appVersion;
 
@@ -65,7 +67,7 @@ export class HubShellComponent {
     {
       label: 'Cerrar sesión',
       icon: 'pi pi-sign-out',
-      command: () => this.auth.logout(),
+      command: () => void this.logoutService.logout(),
     },
   ];
 
