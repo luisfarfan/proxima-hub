@@ -9,9 +9,40 @@ import { Router, RouterLink } from '@angular/router';
 import { AuthService, AuthTokenStorage, BusinessContextService } from '@luisfarfan/auth';
 import { RuntimeConfigService } from '../../../core/config/runtime-config.service';
 import { HubDataCacheService } from '../../../core/services/hub-data-cache.service';
-import { LowerCasePipe } from '@angular/common';
+import { NgTemplateOutlet } from '@angular/common';
 import { QuotaLabelPipe } from '../../../shared/pipes/quota-label.pipe';
 import { resolveActiveBusinessName } from '../../../core/auth/active-business-name';
+
+/**
+ * El color propio de cada app, y sólo en el chip del icono.
+ *
+ * PROXIMA es un sistema de un acento (#0009dc). Tres tarjetas con el MISMO
+ * cuadrado azul no se distinguían entre sí: el azul dejaba de significar
+ * «acción» y pasaba a ser decoración de app. Teñir el chip —y nada más que el
+ * chip— devuelve identidad sin repintar la página: el fondo sigue siendo papel,
+ * el texto sigue siendo tinta y el azul de marca sigue siendo el botón.
+ *
+ * Los tres derivados comparten luminosidad y croma en OKLCH y sólo cambian de
+ * tono, así ninguno pesa más que otro.
+ */
+const APP_TINT: Record<string, string> = {
+  panel: '#0009dc',
+  caja: 'oklch(0.52 0.13 205)',
+  tienda: 'oklch(0.53 0.15 28)',
+  intelligence: 'oklch(0.52 0.15 300)',
+  app: 'oklch(0.52 0.12 155)',
+};
+
+/** El readiness ya dice si el sitio está publicado; no hace falta preguntarlo aparte. */
+const WEBSITE_READINESS_ID = 'storefront.website';
+
+/** Tono de la línea de estado de una app. */
+export type AppStatusTone = 'ok' | 'warn';
+
+export interface AppStatus {
+  text: string;
+  tone: AppStatusTone;
+}
 
 // entitlement key for each add-on app (matches businessCtx.entitlements())
 const ADD_ON_FEATURE_KEY: Record<string, string> = {
@@ -127,7 +158,7 @@ const FALLBACK_CHECKLIST: ReadinessItem[] = [
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [QuotaLabelPipe, RouterLink, LowerCasePipe],
+  imports: [QuotaLabelPipe, RouterLink, NgTemplateOutlet],
   templateUrl: './home.component.html',
   styleUrl: './home.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -184,7 +215,10 @@ export class HomeComponent {
   protected readonly canManageBusiness = computed(() => {
     const perms = this.userPermissions();
     if (perms === null) return true;
-    return perms.has('settings:manage');
+    // '*' es el comodín del super admin — el mismo que `hasAnyPerm` ya respeta
+    // acá abajo. Sin esta línea, a quien puede todo se le escondía el checklist
+    // y la tarjeta de plan: la API le manda ['*'], no la lista de códigos.
+    return perms.has('*') || perms.has('settings:manage');
   });
 
   // --- App switcher ---
@@ -269,13 +303,13 @@ export class HomeComponent {
     };
 
     const candidates: Array<HubApp | null> = [
-      build({ key: 'panel', name: 'Panel', desc: 'Catálogo, pedidos, stock y clientes', icon: 'panel', url: this.runtimeConfig.adminUrl() ?? '' }),
-      build({ key: 'caja', name: 'Caja', desc: 'Vende en mostrador, sin fricción', icon: 'caja', url: this.runtimeConfig.posUrl() ?? '' }),
+      build({ key: 'panel', name: 'Panel', desc: 'Tu escritorio: catálogo, pedidos, stock y clientes', icon: 'panel', url: this.runtimeConfig.adminUrl() ?? '' }),
+      build({ key: 'caja', name: 'Caja', desc: 'Punto de venta: cobra en mostrador y emite boleta', icon: 'caja', url: this.runtimeConfig.posUrl() ?? '' }),
       this.runtimeConfig.builderUrl()
-        ? build({ key: 'tienda', name: 'Tienda Web', desc: 'Diseña y publica tu tienda online', icon: 'tienda', url: this.runtimeConfig.builderUrl()! })
+        ? build({ key: 'tienda', name: 'Tienda Web', desc: 'Arrastra bloques, arma tu tienda y publícala', icon: 'tienda', url: this.runtimeConfig.builderUrl()! })
         : null,
       this.runtimeConfig.intelligenceUrl()
-        ? build({ key: 'intelligence', name: 'Intelligence', desc: 'Precios y decisiones con IA', icon: 'intelligence', url: this.runtimeConfig.intelligenceUrl()! })
+        ? build({ key: 'intelligence', name: 'Intelligence', desc: 'Precios sugeridos y márgenes con IA', icon: 'intelligence', url: this.runtimeConfig.intelligenceUrl()! })
         : null,
       this.runtimeConfig.mobileUrl()
         ? build({ key: 'app', name: 'App', desc: 'Tu negocio en el celular', icon: 'app', url: this.runtimeConfig.mobileUrl()! })
@@ -299,7 +333,9 @@ export class HomeComponent {
   );
 
   protected usagePct(item: UsageSummary): number {
-    if (!item.limit) return 0;
+    // limit <= 0 es «sin tope» (-1) o «sin dato» (0): en ninguno de los dos
+    // casos hay una fracción que dibujar, y -1 daba una barra de -400%.
+    if (item.limit <= 0) return 0;
     return Math.min(100, Math.round((item.current / item.limit) * 100));
   }
 
@@ -356,6 +392,95 @@ export class HomeComponent {
     const total = this.totalCount();
     return total ? Math.round((this.doneCount() / total) * 100) : 0;
   });
+
+  // --- Señales de cada app ---------------------------------------------
+  /**
+   * No bloquea nada: la home se pinta entera sin esto y los números aparecen
+   * cuando llegan. Un launcher que espera a un contador para dejarte entrar a
+   * tu negocio es peor launcher que uno sin contador.
+   */
+  private readonly signalsRes = resource({
+    loader: async () => this.hubData.getAppSignals(this.businessCtx.businessId()),
+  });
+
+  private readonly moneyFormat = computed(() => {
+    const ab = this.user()?.active_business as { currency_code?: string } | null | undefined;
+    return new Intl.NumberFormat('es-PE', {
+      style: 'currency',
+      currency: ab?.currency_code || 'PEN',
+      maximumFractionDigits: 0,
+    });
+  });
+
+  /**
+   * Los números de Panel. Se omite el que no se pudo traer en vez de mostrar
+   * un cero: `null` es «no se sabe», y un empleado sin `fulfillment:manage`
+   * recibe 403, no un catálogo vacío.
+   */
+  protected readonly panelStats = computed(() => {
+    const s = this.signalsRes.value();
+    if (!s) return [];
+    const out: Array<{ key: string; value: string; label: string; alert: boolean }> = [];
+    if (s.pendingOrders !== null) {
+      out.push({
+        key: 'pending',
+        value: String(s.pendingOrders),
+        label: s.pendingOrders === 1 ? 'pedido sin atender' : 'pedidos sin atender',
+        alert: s.pendingOrders > 0,
+      });
+    }
+    if (s.revenueToday !== null) {
+      out.push({
+        key: 'revenue',
+        value: this.moneyFormat().format(s.revenueToday),
+        label: 'vendido hoy',
+        alert: false,
+      });
+    }
+    return out;
+  });
+
+  /** La app que se abre todos los días manda; el resto va en la grilla. */
+  protected readonly flagshipApp = computed(
+    () => this.ownedApps().find((a) => a.key === 'panel') ?? this.ownedApps()[0] ?? null,
+  );
+
+  protected readonly secondaryApps = computed(() => {
+    const lead = this.flagshipApp();
+    return this.ownedApps().filter((a) => a !== lead);
+  });
+
+  protected tintFor(app: HubApp): string {
+    return APP_TINT[app.key] ?? 'var(--accent)';
+  }
+
+  /**
+   * Por qué abrir esta app AHORA. Sólo se dice lo que se sabe de verdad: hoy
+   * eso es el estado de la tienda, que viene en el readiness que ya se pide.
+   * Caja no tiene línea porque el módulo POS no expone ninguna agregación —
+   * inventarle «caja abierta» sería adivinar.
+   */
+  protected statusFor(app: HubApp): AppStatus | null {
+    if (app.noAccess) return null;
+    if (app.key !== 'tienda') return null;
+    const item = this.checklistItems().find((i) => i.id === WEBSITE_READINESS_ID);
+    if (!item) return null;
+    return item.complete
+      ? { text: 'Publicada y en línea', tone: 'ok' }
+      : { text: 'Sin publicar', tone: 'warn' };
+  }
+
+  /**
+   * El API manda -1 por «sin tope» y la tarjeta lo imprimía tal cual:
+   * «Almacenamiento 0 / -1». Un límite negativo no es un límite.
+   */
+  protected quotaLimit(item: UsageSummary): string {
+    return item.limit < 0 ? 'Ilimitado' : String(item.limit);
+  }
+
+  protected isUnlimited(item: UsageSummary): boolean {
+    return item.limit < 0;
+  }
 
   // --- Actions ---
   protected openApp(app: HubApp): void {

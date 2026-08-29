@@ -1,5 +1,5 @@
 <main class="hub-main" id="main-content">
-  <!-- Saludo + el estado real del negocio -->
+  <!-- Saludo + el paso que falta, ahora accionable y no una píldora muerta -->
   <section class="hub-hero" aria-label="Bienvenida">
     <div class="hub-hero-lead">
       <h1 class="hub-h1">Hola, {{ firstName() }}</h1>
@@ -13,67 +13,125 @@
       </p>
     </div>
 
-    @if (canManageBusiness() && !statusLoading() && nextStep(); as step) {
-      <p class="hub-pulse">
-        <span class="hub-pulse-dot" aria-hidden="true"></span>
-        Te falta un paso para empezar a vender: {{ step.cta_label | lowercase }}
-      </p>
+    @if (canManageBusiness() && !statusLoading()) {
+      @if (nextStep(); as step) {
+        <div class="hub-next" role="status">
+          <span class="hub-next-dot" aria-hidden="true"></span>
+          <span class="hub-next-body">
+            <span class="hub-next-eyebrow">Lo que falta para vender</span>
+            <span class="hub-next-label">{{ step.cta_label }}</span>
+          </span>
+          <button class="hub-next-go" type="button" routerLink="/plan"
+                  [attr.aria-label]="'Empezar: ' + step.cta_label">
+            Empezar
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </button>
+        </div>
+      } @else {
+        <p class="hub-ready" role="status">
+          <span class="hub-ready-check" aria-hidden="true">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          </span>
+          Tu negocio está listo para vender
+        </p>
+      }
     }
   </section>
 
-  <!-- Lo que ya es suyo -->
+  <!-- Tus apps: la tarjeta entera es el destino, sin píldora adentro -->
   <section class="hub-section" aria-labelledby="owned-heading">
     <div class="hub-section-head">
-      <h2 class="hub-h2" id="owned-heading">Lo que ya puedes usar</h2>
-      <span class="hub-section-hint">Incluido en tu plan</span>
+      <h2 class="hub-h2" id="owned-heading">Tus apps</h2>
+      <span class="hub-section-hint">Incluidas en tu plan</span>
     </div>
-    <ul class="hub-owned" role="list">
-      @for (app of ownedApps(); track app.key) {
-        <li>
-          <button
-            class="hub-open"
-            type="button"
-            [class.no-access]="app.noAccess"
-            [disabled]="app.noAccess"
-            (click)="openApp(app)"
-            [attr.aria-label]="(app.noAccess ? 'Sin acceso: ' : 'Abrir ') + app.name"
-          >
-            <span class="hub-open-icon" aria-hidden="true">
-              @switch (app.icon) {
-                @case ('panel') {
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg>
+
+    @if (flagshipApp(); as lead) {
+      <button
+        class="hub-lead"
+        type="button"
+        [class.no-access]="lead.noAccess"
+        [disabled]="lead.noAccess"
+        (click)="openApp(lead)"
+        [attr.aria-label]="(lead.noAccess ? 'Sin acceso: ' : 'Abrir ') + lead.name"
+      >
+        <span class="hub-lead-top">
+          <span class="hub-app-chip" aria-hidden="true" [style.color]="tintFor(lead)">
+            <ng-container [ngTemplateOutlet]="appIcon" [ngTemplateOutletContext]="{ $implicit: lead.icon }"></ng-container>
+          </span>
+          <span class="hub-app-body">
+            <span class="hub-lead-name">{{ lead.name }}</span>
+            <span class="hub-app-desc">{{ lead.noAccess ? 'Tu rol no incluye este acceso — pídeselo a tu administrador.' : lead.desc }}</span>
+          </span>
+          <span class="hub-app-cta" aria-hidden="true">
+            @if (lead.noAccess) {
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
+              Sin acceso
+            } @else {
+              Abrir
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+            }
+          </span>
+        </span>
+
+        @if (!lead.noAccess && panelStats().length > 0) {
+          <span class="hub-stats">
+            @for (stat of panelStats(); track stat.key) {
+              <span class="hub-stat">
+                <b [class.is-alert]="stat.alert">{{ stat.value }}</b>
+                <span>{{ stat.label }}</span>
+              </span>
+            }
+          </span>
+        }
+      </button>
+    }
+
+    @if (secondaryApps().length > 0) {
+      <ul class="hub-apps" role="list">
+        @for (app of secondaryApps(); track app.key) {
+          <li>
+            <button
+              class="hub-app"
+              type="button"
+              [class.no-access]="app.noAccess"
+              [disabled]="app.noAccess"
+              (click)="openApp(app)"
+              [attr.aria-label]="(app.noAccess ? 'Sin acceso: ' : 'Abrir ') + app.name"
+            >
+              <span class="hub-app-top">
+                <span class="hub-app-chip" aria-hidden="true" [style.color]="tintFor(app)">
+                  <ng-container [ngTemplateOutlet]="appIcon" [ngTemplateOutletContext]="{ $implicit: app.icon }"></ng-container>
+                </span>
+                <span class="hub-app-body">
+                  <span class="hub-app-name">{{ app.name }}</span>
+                  <span class="hub-app-desc">{{ app.noAccess ? 'Tu rol no incluye este acceso — pídeselo a tu administrador.' : app.desc }}</span>
+                </span>
+              </span>
+
+              <span class="hub-app-foot">
+                @if (statusFor(app); as status) {
+                  <span class="hub-app-state">
+                    <span class="hub-dot" [class.is-ok]="status.tone === 'ok'" [class.is-warn]="status.tone === 'warn'" aria-hidden="true"></span>
+                    {{ status.text }}
+                  </span>
+                } @else {
+                  <span></span>
                 }
-                @case ('caja') {
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="8" width="18" height="13" rx="2"/><path d="M3 8l2-4h14l2 4M8 13h8M8 17h5"/></svg>
-                }
-                @case ('tienda') {
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M7 6.5h.01M10 6.5h.01"/></svg>
-                }
-                @case ('intelligence') {
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.8 4.3L18 9l-4.2 1.7L12 15l-1.8-4.3L6 9l4.2-1.7L12 3z"/></svg>
-                }
-                @case ('app') {
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="2" width="12" height="20" rx="3"/><path d="M11 18h2"/></svg>
-                }
-              }
-            </span>
-            <span class="hub-open-body">
-              <span class="hub-open-name">{{ app.name }}</span>
-              <span class="hub-open-desc">{{ app.noAccess ? 'Tu rol no incluye este acceso — pídeselo a tu administrador.' : app.desc }}</span>
-            </span>
-            <span class="hub-open-cta" aria-hidden="true">
-              @if (app.noAccess) {
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
-                Sin acceso
-              } @else {
-                Abrir
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
-              }
-            </span>
-          </button>
-        </li>
-      }
-    </ul>
+                <span class="hub-app-cta" aria-hidden="true">
+                  @if (app.noAccess) {
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
+                    Sin acceso
+                  } @else {
+                    Abrir
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+                  }
+                </span>
+              </span>
+            </button>
+          </li>
+        }
+      </ul>
+    }
   </section>
 
   <!-- Lo que cuesta abrir, con su precio de verdad -->
@@ -93,20 +151,7 @@
               [attr.aria-label]="'Ver cómo activar ' + app.name + ': ' + app.unlock.detail"
             >
               <span class="hub-lock-icon" aria-hidden="true">
-                @switch (app.icon) {
-                  @case ('caja') {
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="8" width="18" height="13" rx="2"/><path d="M3 8l2-4h14l2 4M8 13h8M8 17h5"/></svg>
-                  }
-                  @case ('tienda') {
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M7 6.5h.01M10 6.5h.01"/></svg>
-                  }
-                  @case ('intelligence') {
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.8 4.3L18 9l-4.2 1.7L12 15l-1.8-4.3L6 9l4.2-1.7L12 3z"/></svg>
-                  }
-                  @default {
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/></svg>
-                  }
-                }
+                <ng-container [ngTemplateOutlet]="appIcon" [ngTemplateOutletContext]="{ $implicit: app.icon }"></ng-container>
               </span>
               <span class="hub-lock-body">
                 <span class="hub-lock-name">{{ app.name }}</span>
@@ -190,7 +235,7 @@
             @for (item of usageItems(); track item.resource) {
               <div class="hub-usage-row">
                 <span>{{ item.resource | quotaLabel }}</span>
-                <b>{{ item.current }} / {{ item.limit }}</b>
+                <b>{{ item.current }} / {{ quotaLimit(item) }}</b>
               </div>
               <div
                 class="hub-usage-bar"
@@ -198,9 +243,13 @@
                 [attr.aria-valuenow]="usagePct(item)"
                 aria-valuemin="0"
                 aria-valuemax="100"
-                [attr.aria-label]="(item.resource | quotaLabel) + ': ' + item.current + ' de ' + item.limit"
+                [attr.aria-label]="(item.resource | quotaLabel) + ': ' + item.current + ' de ' + quotaLimit(item)"
               >
-                <span [class.is-full]="usagePct(item) >= 100" [style.width.%]="usagePct(item)"></span>
+                <span
+                  [class.is-full]="usagePct(item) >= 100"
+                  [class.is-unlimited]="isUnlimited(item)"
+                  [style.width.%]="isUnlimited(item) ? 100 : usagePct(item)"
+                ></span>
               </div>
             }
           </div>
@@ -222,3 +271,36 @@
   </div>
   }
 </main>
+
+<!--
+  Un icono por app, y que diga qué hace. Antes Panel era un mosaico abstracto,
+  Caja una caja de cartón —el otro sentido de la palabra— y Tienda Web una
+  ventana de navegador: ninguno distinguía una app de la otra.
+  Mismo trazo de 1.7 y grilla de 24 que el resto del sistema.
+-->
+<ng-template #appIcon let-icon>
+  @switch (icon) {
+    @case ('panel') {
+      <!-- Un panel de administración: barra lateral y filas. -->
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M8.5 4v16"/><path d="M5.75 8h.01M5.75 11.5h.01M5.75 15h.01"/><path d="M11.5 9h6M11.5 12.5h6M11.5 16h3.5"/></svg>
+    }
+    @case ('caja') {
+      <!-- La boleta que emite el punto de venta, con su borde dentado. -->
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M5 3.5h14v16.5l-3.5-1.8-3.5 1.8-3.5-1.8-3.5 1.8z"/><path d="M8.5 8h7M8.5 12h7M8.5 16h4"/></svg>
+    }
+    @case ('tienda') {
+      <!-- El lienzo del builder: un bloque puesto y otro esperando. -->
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 8h18"/><rect x="6" y="11" width="5.5" height="5.5" rx="1"/><rect x="13.5" y="11" width="5.5" height="5.5" rx="1" stroke-dasharray="2 2"/></svg>
+    }
+    @case ('intelligence') {
+      <!-- Una curva que sube con la chispa de la IA, no una estrellita suelta. -->
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 17l5-5.5 3.5 3L18 8"/><path d="M14.5 8H18v3.5"/><path d="M6.6 3.4l.75 1.95 1.95.75-1.95.75-.75 1.95-.75-1.95L3.9 6.1l1.95-.75.75-1.95z"/></svg>
+    }
+    @case ('app') {
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="2" width="12" height="20" rx="3"/><path d="M11 18h2"/></svg>
+    }
+    @default {
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/></svg>
+    }
+  }
+</ng-template>
