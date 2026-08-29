@@ -31,26 +31,31 @@ export interface PlanSummary {
 /**
  * Lo que cada app tiene que decir para justificar que la abras.
  *
- * `null` no es cero: es «no se pudo saber». Un empleado de mostrador no tiene
- * `fulfillment:manage` y la API le responde 403 — mostrarle «0 pedidos» sería
- * mentirle. La tarjeta se pinta sin la línea y ya.
+ * Todo viene de UNA llamada: `GET admin/hub/summary`. Antes esto eran dos —y el
+ * diseño pedía cuatro—, cada una con su permiso y por lo tanto con su propio
+ * 403 que el launcher tenía que saber interpretar. El endpoint agrega del lado
+ * del servidor, cachea por negocio y responde 200 con lo que este usuario puede
+ * ver.
  *
- * Sólo viven acá las señales que EXISTEN y no cuestan un add-on:
- *   - `pendingOrders`  → GET admin/fulfillment/stats  (una agregación GROUP BY)
- *   - `revenueToday`   → GET admin/sales-summary?days=1 (una agregación, con
- *                        índice ix_orders_business_created detrás)
- *
- * Quedaron fuera a propósito, y no por diseño sino porque el dato no está:
- *   - «vendido en caja hoy»: el módulo POS no tiene ni una sola agregación.
- *   - «productos agotados»: `depleted_count` de admin/inventory/alerts se
- *     calcula sobre la PÁGINA devuelta, no sobre el total, así que pedir
- *     `size=1` —lo que uno haría para no traer 50 filas al pedo— devuelve 0.
- *   - si la tienda está publicada NO se pide acá: ya viene en el readiness
- *     (`storefront.website`) que el Hub pide igual.
+ * `null` no es cero: es «no se sabe». Un cajero sin `fulfillment:manage` recibe
+ * el campo en null, no un 0 que le diría que no hay trabajo. La tarjeta se pinta
+ * sin esa línea.
  */
 export interface HubAppSignals {
   pendingOrders: number | null;
   revenueToday: number | null;
+  depletedVariants: number | null;
+  posOpenSessions: number | null;
+  posRevenueToday: number | null;
+}
+
+interface HubSummaryPayload {
+  pending_orders: number | null;
+  revenue_today: number | null;
+  orders_today: number | null;
+  depleted_variants: number | null;
+  pos_open_sessions: number | null;
+  pos_revenue_today: number | null;
 }
 
 export interface BusinessStatus {
@@ -77,6 +82,14 @@ export class HubDataCacheService {
    */
   private static readonly QUIET = {
     context: new HttpContext().set(SUPPRESS_ERROR_TOAST, true).set(SKIP_GLOBAL_LOADER, true),
+  };
+
+  private static readonly SIN_SENALES: HubAppSignals = {
+    pendingOrders: null,
+    revenueToday: null,
+    depletedVariants: null,
+    posOpenSessions: null,
+    posRevenueToday: null,
   };
 
   async getSubscriptionStatus(businessId: string | null): Promise<SubscriptionStatus | null> {
@@ -131,34 +144,26 @@ export class HubDataCacheService {
   }
 
   async getAppSignals(businessId: string | null): Promise<HubAppSignals> {
-    const unknown: HubAppSignals = { pendingOrders: null, revenueToday: null };
-    if (!businessId) return unknown;
+    if (!businessId) return HubDataCacheService.SIN_SENALES;
     if (this.signalsCache?.bizId === businessId && !isStale(this.signalsCache)) {
       return this.signalsCache.value;
     }
 
-    const [orders, sales] = await Promise.allSettled([
-      firstValueFrom(
-        this.http.get<{ pending_count: number }>('admin/fulfillment/stats', HubDataCacheService.QUIET),
-      ),
-      firstValueFrom(
-        this.http.get<{ revenue: number }>('admin/sales-summary', {
-          ...HubDataCacheService.QUIET,
-          params: { days: 1 },
-        }),
-      ),
-    ]);
-
-    const value: HubAppSignals = {
-      pendingOrders:
-        orders.status === 'fulfilled' && typeof orders.value?.pending_count === 'number'
-          ? orders.value.pending_count
-          : null,
-      revenueToday:
-        sales.status === 'fulfilled' && typeof sales.value?.revenue === 'number'
-          ? sales.value.revenue
-          : null,
-    };
+    let value = HubDataCacheService.SIN_SENALES;
+    try {
+      const raw = await firstValueFrom(
+        this.http.get<HubSummaryPayload>('admin/hub/summary', HubDataCacheService.QUIET),
+      );
+      value = {
+        pendingOrders: raw?.pending_orders ?? null,
+        revenueToday: raw?.revenue_today ?? null,
+        depletedVariants: raw?.depleted_variants ?? null,
+        posOpenSessions: raw?.pos_open_sessions ?? null,
+        posRevenueToday: raw?.pos_revenue_today ?? null,
+      };
+    } catch {
+      // Sin señales el Hub sigue siendo un launcher: se entra igual a las apps.
+    }
     this.signalsCache = { value, ts: Date.now(), bizId: businessId };
     return value;
   }

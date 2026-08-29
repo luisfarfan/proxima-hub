@@ -429,6 +429,15 @@ export class HomeComponent {
         alert: s.pendingOrders > 0,
       });
     }
+    if (s.depletedVariants !== null && s.depletedVariants > 0) {
+      // Cero agotados no es noticia: ocupa un mosaico para no decir nada.
+      out.push({
+        key: 'depleted',
+        value: String(s.depletedVariants),
+        label: s.depletedVariants === 1 ? 'producto agotado' : 'productos agotados',
+        alert: true,
+      });
+    }
     if (s.revenueToday !== null) {
       out.push({
         key: 'revenue',
@@ -462,12 +471,28 @@ export class HomeComponent {
    */
   protected statusFor(app: HubApp): AppStatus | null {
     if (app.noAccess) return null;
-    if (app.key !== 'tienda') return null;
-    const item = this.checklistItems().find((i) => i.id === WEBSITE_READINESS_ID);
-    if (!item) return null;
-    return item.complete
-      ? { text: 'Publicada y en línea', tone: 'ok' }
-      : { text: 'Sin publicar', tone: 'warn' };
+
+    if (app.key === 'tienda') {
+      const item = this.checklistItems().find((i) => i.id === WEBSITE_READINESS_ID);
+      if (!item) return null;
+      return item.complete
+        ? { text: 'Publicada y en línea', tone: 'ok' }
+        : { text: 'Sin publicar', tone: 'warn' };
+    }
+
+    if (app.key === 'caja') {
+      const s = this.signalsRes.value();
+      if (!s || s.posOpenSessions === null) return null;
+      if (s.posOpenSessions > 0) {
+        const cobrado = s.posRevenueToday !== null
+          ? ` · ${this.moneyFormat().format(s.posRevenueToday)} hoy`
+          : '';
+        return { text: `Turno abierto${cobrado}`, tone: 'ok' };
+      }
+      return { text: 'Sin turno abierto', tone: 'warn' };
+    }
+
+    return null;
   }
 
   /**

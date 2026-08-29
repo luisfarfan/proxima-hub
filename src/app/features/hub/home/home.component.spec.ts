@@ -29,7 +29,13 @@ const CHECKLIST = [
 interface Options {
   entitlements?: Record<string, boolean>;
   checklist?: typeof CHECKLIST;
-  signals?: { pendingOrders: number | null; revenueToday: number | null };
+  signals?: Partial<{
+    pendingOrders: number | null;
+    revenueToday: number | null;
+    depletedVariants: number | null;
+    posOpenSessions: number | null;
+    posRevenueToday: number | null;
+  }>;
   /** Códigos efectivos del usuario en el negocio activo; ausente = la API no los mandó. */
   permissions?: string[];
   usage?: Array<{ resource: string; limit: number; current: number; unit: string }>;
@@ -43,8 +49,14 @@ async function render(options: Options = {}) {
       status: 'active',
       usage: options.usage ?? [{ resource: 'max_products', limit: 10, current: 0, unit: 'u' }],
     }),
-    getAppSignals: async () =>
-      options.signals ?? { pendingOrders: null, revenueToday: null },
+    getAppSignals: async () => ({
+      pendingOrders: null,
+      revenueToday: null,
+      depletedVariants: null,
+      posOpenSessions: null,
+      posRevenueToday: null,
+      ...(options.signals ?? {}),
+    }),
     getBusinessStatus: async () => ({
       readiness: {
         sections: [{ items: options.checklist ?? CHECKLIST }],
@@ -294,5 +306,72 @@ describe('Hub home — quién ve la configuración del negocio', () => {
   it('si la API no manda permisos, no se esconde nada', async () => {
     const { dom } = await render();
     expect(dom.querySelector('.hub-grid2')).not.toBeNull();
+  });
+});
+
+/**
+ * Ahora que el API agrega, Panel recupera su tercer número y Caja tiene qué
+ * decir. Todo sigue viniendo de una sola llamada.
+ */
+describe('Hub home — lo que agrega el API', () => {
+  it('los agotados aparecen cuando los hay', async () => {
+    const { dom } = await render({ signals: { pendingOrders: 4, depletedVariants: 3 } });
+
+    const stats = Array.from(dom.querySelectorAll('.hub-stat')).map((s) => s.textContent);
+    expect(stats.length).toBe(2);
+    expect(stats[1]).toContain('3');
+    expect(stats[1]).toContain('productos agotados');
+  });
+
+  it('cero agotados no ocupa un mosaico para no decir nada', async () => {
+    const { dom } = await render({ signals: { pendingOrders: 4, depletedVariants: 0 } });
+
+    const stats = Array.from(dom.querySelectorAll('.hub-stat')).map((s) => s.textContent);
+    expect(stats.length).toBe(1);
+    expect(stats[0]).toContain('pedidos sin atender');
+  });
+
+  it('un solo agotado no se anuncia en plural', async () => {
+    const { dom } = await render({ signals: { depletedVariants: 1 } });
+    expect(dom.querySelector('.hub-stat')?.textContent).toContain('producto agotado');
+  });
+
+  it('con turno abierto Caja dice cuánto lleva cobrado', async () => {
+    const { dom } = await render({
+      entitlements: { catalog: true, pos: true, cms: true, pricing_intelligence: true },
+      signals: { posOpenSessions: 1, posRevenueToday: 1240 },
+    });
+
+    const caja = Array.from(dom.querySelectorAll('.hub-app')).find((el) =>
+      el.querySelector('.hub-app-name')?.textContent?.includes('Caja'),
+    )!;
+    const estado = caja.querySelector('.hub-app-state')?.textContent ?? '';
+    expect(estado).toContain('Turno abierto');
+    expect(estado).toContain('1,240');
+    expect(caja.querySelector('.hub-dot')?.classList).toContain('is-ok');
+  });
+
+  it('sin turno abierto lo dice, no se calla', async () => {
+    const { dom } = await render({
+      entitlements: { catalog: true, pos: true, cms: true, pricing_intelligence: true },
+      signals: { posOpenSessions: 0 },
+    });
+
+    const caja = Array.from(dom.querySelectorAll('.hub-app')).find((el) =>
+      el.querySelector('.hub-app-name')?.textContent?.includes('Caja'),
+    )!;
+    expect(caja.querySelector('.hub-app-state')?.textContent).toContain('Sin turno abierto');
+  });
+
+  it('sin permiso de caja no se dice nada de la caja', async () => {
+    const { dom } = await render({
+      entitlements: { catalog: true, pos: true, cms: true, pricing_intelligence: true },
+      signals: { posOpenSessions: null },
+    });
+
+    const caja = Array.from(dom.querySelectorAll('.hub-app')).find((el) =>
+      el.querySelector('.hub-app-name')?.textContent?.includes('Caja'),
+    )!;
+    expect(caja.querySelector('.hub-app-state')).toBeNull();
   });
 });
