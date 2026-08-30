@@ -58,6 +58,27 @@ interface HubSummaryPayload {
   pos_revenue_today: number | null;
 }
 
+/**
+ * Ficha por comercio para «elegir comercio».
+ *
+ * Sale de `GET platform/businesses/summary`, que la API ya servía para la
+ * consola de operadores: consultas en lote (nunca una por comercio) y caché
+ * Redis de 5 min. Va detrás de `platform:read`, así que sólo la ve quien opera
+ * la plataforma — un comerciante con dos negocios recibe 403 y la pantalla cae
+ * a la lista de siempre.
+ */
+export interface MerchantSummary {
+  id: string;
+  plan_name: string | null;
+  has_website: boolean;
+  website_domain: string | null;
+  website_published: boolean;
+  order_count_30d: number;
+  revenue_30d: number;
+  created_at: string | null;
+  is_active: boolean;
+}
+
 export interface BusinessStatus {
   readiness: {
     sections: Array<{ items: Array<{ id: string; complete: boolean; skipped: boolean; blocking: boolean; cta_label: string; status?: string }> }>;
@@ -73,6 +94,7 @@ export class HubDataCacheService {
   private statusCache: (CacheEntry<BusinessStatus | null> & { bizId: string }) | null = null;
   private plansCache: CacheEntry<PlanSummary[]> | null = null;
   private signalsCache: (CacheEntry<HubAppSignals> & { bizId: string }) | null = null;
+  private merchantsCache: CacheEntry<Map<string, MerchantSummary>> | null = null;
 
   /**
    * Estas dos no son de arranque: la home se pinta sin ellas y se rellenan
@@ -168,10 +190,34 @@ export class HubDataCacheService {
     return value;
   }
 
+  /**
+   * Devuelve un índice por id, no una lista: quien la pide ya tiene sus
+   * comercios y sólo quiere enriquecerlos. Un mapa vacío significa «sin ficha»
+   * —403, red caída, o el endpoint no disponible— y la pantalla se dibuja igual.
+   */
+  async getMerchantSummaries(): Promise<Map<string, MerchantSummary>> {
+    if (this.merchantsCache && !isStale(this.merchantsCache)) return this.merchantsCache.value;
+    const index = new Map<string, MerchantSummary>();
+    try {
+      const res = await firstValueFrom(
+        this.http.get<{ items: MerchantSummary[] }>('platform/businesses/summary', {
+          ...HubDataCacheService.QUIET,
+          params: { size: 100 },
+        }),
+      );
+      for (const item of res?.items ?? []) index.set(item.id, item);
+    } catch {
+      // Sin permiso de plataforma no hay ficha, y no hay nada que avisar.
+    }
+    this.merchantsCache = { value: index, ts: Date.now() };
+    return index;
+  }
+
   invalidate(): void {
     this.subscriptionCache = null;
     this.statusCache = null;
     this.plansCache = null;
     this.signalsCache = null;
+    this.merchantsCache = null;
   }
 }

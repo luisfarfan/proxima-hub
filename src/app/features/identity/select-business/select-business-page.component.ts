@@ -4,6 +4,8 @@ import { Message } from 'primeng/message';
 import { ButtonModule } from 'primeng/button';
 import { AuthService, AuthTokenStorage, BusinessContextService, validateNextUrl, type BusinessMembership } from '@luisfarfan/auth';
 import { RuntimeConfigService } from '../../../core/config/runtime-config.service';
+import { HubDataCacheService, type MerchantSummary } from '../../../core/services/hub-data-cache.service';
+import { shortPlanName } from '../../../core/billing/plan-name';
 import { LogoutService } from '../../../core/auth/logout.service';
 
 @Component({
@@ -11,7 +13,10 @@ import { LogoutService } from '../../../core/auth/logout.service';
   imports: [Message, ButtonModule],
   template: `
     <div class="flex min-h-screen items-center justify-center bg-canvas px-4 py-10 sm:px-6">
-      <div class="w-full max-w-[27.5rem] rounded-xl bg-surface-0 p-6 border border-hairline sm:p-8">
+      <div
+        class="w-full rounded-xl bg-surface-0 p-6 border border-hairline sm:p-8"
+        [style.max-width]="anchoDeOperador() ? '62.5rem' : '27.5rem'"
+      >
         <main id="select-business-main" tabindex="-1" aria-labelledby="select-business-title">
           <header class="mb-7 text-center">
             <div
@@ -94,12 +99,12 @@ import { LogoutService } from '../../../core/auth/logout.service';
                 <p class="mb-3 text-[0.75rem] text-muted-color">
                   Entrar a uno es un acceso de soporte, no un negocio tuyo.
                 </p>
-                @if (businesses().length > 6) {
+                @if (isSuperAdmin()) {
                   <input
                     type="search"
                     data-testid="select-business-filter"
                     class="mb-3 w-full rounded-md border border-hairline bg-surface-50 px-3 py-2 text-[0.8125rem] text-color"
-                    placeholder="Buscar comercio por nombre o slug…"
+                    placeholder="Buscar por nombre, slug o dominio…"
                     aria-label="Buscar comercio"
                     [value]="filter()"
                     (input)="filter.set($any($event.target).value)"
@@ -107,38 +112,137 @@ import { LogoutService } from '../../../core/auth/logout.service';
                 }
               }
 
-              <ul class="m-0 flex list-none flex-col gap-2 p-0" role="list" aria-label="Negocios">
-                @for (biz of visibleBusinesses(); track biz.id) {
-                  <li class="m-0 list-none p-0">
-                    <button
-                      type="button"
-                      [attr.data-testid]="'select-business-' + biz.slug"
-                      [attr.aria-label]="'Entrar a ' + biz.name"
-                      (click)="select(biz)"
-                      class="group flex w-full items-center gap-3.5 rounded-lg bg-surface-100 p-3.5 text-left border border-hairline transition-all duration-200 hover:bg-surface-100"
+              @if (anchoDeOperador()) {
+                <!-- Consola de operador: una fila por comercio, con lo que hace
+                     falta para decidir a cuál entrar. -->
+                <div class="overflow-hidden rounded-lg border border-hairline">
+                  <div class="grid grid-cols-[minmax(0,2.4fr)_6.25rem_minmax(0,1.6fr)_minmax(0,1.2fr)_6rem_1.25rem] items-center gap-4 border-b border-hairline bg-surface-50 px-4 py-2.5">
+                    <span class="text-[0.65625rem] font-semibold uppercase tracking-[0.09em] text-muted-color">Comercio</span>
+                    <span class="text-[0.65625rem] font-semibold uppercase tracking-[0.09em] text-muted-color">Plan</span>
+                    <span class="text-[0.65625rem] font-semibold uppercase tracking-[0.09em] text-muted-color">Tienda</span>
+                    <span class="text-[0.65625rem] font-semibold uppercase tracking-[0.09em] text-muted-color">Últimos 30 días</span>
+                    <span class="text-[0.65625rem] font-semibold uppercase tracking-[0.09em] text-muted-color">Alta</span>
+                    <span></span>
+                  </div>
+
+                  @for (biz of visibleBusinesses(); track biz.id; let first = $first) {
+                    <div
+                      class="group relative grid grid-cols-[minmax(0,2.4fr)_6.25rem_minmax(0,1.6fr)_minmax(0,1.2fr)_6rem_1.25rem] items-center gap-4 bg-surface-0 px-4 py-3 transition-colors duration-150 hover:bg-surface-100 focus-within:bg-surface-100"
+                      [class.border-t]="!first"
+                      [class.border-hairline]="!first"
                     >
-                      <div
-                        class="flex h-9 w-9 shrink-0 items-center justify-center rounded-md bg-primary/10 text-[0.8125rem] font-semibold text-primary transition-colors duration-200 group-hover:bg-primary group-hover:text-primary-contrast"
-                        aria-hidden="true"
-                      >
-                        {{ biz.name.charAt(0).toUpperCase() }}
-                      </div>
-                      <div class="flex min-w-0 flex-1 flex-col overflow-hidden">
+                      <!-- El botón estirado hace clicable toda la fila sin
+                           envolver el enlace de la tienda, que sería HTML
+                           inválido y dos clicks peleándose. -->
+                      <button
+                        type="button"
+                        [attr.data-testid]="'select-business-' + biz.slug"
+                        [attr.aria-label]="'Entrar a ' + biz.name"
+                        (click)="select(biz)"
+                        class="absolute inset-0 h-full w-full cursor-pointer border-0 bg-transparent p-0"
+                      ></button>
+
+                      <span class="pointer-events-none flex min-w-0 items-center gap-3">
                         <span
-                          class="truncate text-[0.8125rem] font-medium tracking-tight text-color transition-colors duration-200 group-hover:text-primary"
-                        >{{ biz.name }}</span>
-                        <span class="truncate text-[0.75rem] text-muted-color">&#64;{{ biz.slug }}</span>
-                      </div>
-                      <svg
-                        class="ml-auto h-3.5 w-3.5 shrink-0 text-muted-color opacity-0 transition-all duration-200 group-hover:opacity-100"
-                        fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true"
+                          class="flex h-[2.125rem] w-[2.125rem] shrink-0 items-center justify-center rounded-md bg-primary/10 text-[0.8125rem] font-semibold text-primary"
+                          aria-hidden="true"
+                        >{{ biz.name.charAt(0).toUpperCase() }}</span>
+                        <span class="flex min-w-0 flex-col gap-px">
+                          <span class="truncate text-[0.84375rem] font-medium tracking-tight text-color">{{ biz.name }}</span>
+                          <span class="truncate text-[0.75rem] text-muted-color">&#64;{{ biz.slug }}</span>
+                        </span>
+                      </span>
+
+                      @if (fichaDe(biz); as ficha) {
+                        <span
+                          class="pointer-events-none inline-flex h-[1.375rem] items-center justify-self-start whitespace-nowrap rounded-full px-2.5 text-[0.71875rem] font-semibold"
+                          [class.bg-primary\/10]="!!ficha.plan_name"
+                          [class.text-primary]="!!ficha.plan_name"
+                          [class.text-muted-color]="!ficha.plan_name"
+                        >{{ planCorto(ficha) }}</span>
+
+                        <span class="flex min-w-0 items-center gap-2">
+                          <span
+                            class="pointer-events-none h-[0.4375rem] w-[0.4375rem] shrink-0 rounded-full"
+                            [style.background]="estadoWeb(ficha).tono === 'ok' ? '#27a644' : estadoWeb(ficha).tono === 'draft' ? '#8a6d1f' : '#d0d3da'"
+                            aria-hidden="true"
+                          ></span>
+                          <span class="flex min-w-0 flex-col gap-px">
+                            <span class="pointer-events-none whitespace-nowrap text-[0.78125rem] text-color">{{ estadoWeb(ficha).texto }}</span>
+                            @if (urlWeb(ficha); as href) {
+                              <a
+                                [href]="href"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                [attr.aria-label]="'Abrir la tienda de ' + biz.name + ' en una pestaña nueva'"
+                                class="relative z-10 inline-flex max-w-full items-center gap-1 self-start text-[0.71875rem] text-muted-color hover:text-primary hover:underline"
+                              >
+                                <span class="truncate">{{ ficha.website_domain }}</span>
+                                <svg class="h-2.5 w-2.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                  <path d="M14 4h6v6M20 4l-8.5 8.5" />
+                                  <path d="M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5" />
+                                </svg>
+                              </a>
+                            } @else {
+                              <span class="pointer-events-none text-[0.71875rem] text-muted-color">—</span>
+                            }
+                          </span>
+                        </span>
+
+                        <span class="pointer-events-none flex min-w-0 flex-col gap-px">
+                          <span class="whitespace-nowrap text-[0.78125rem] font-medium" [class.text-color]="ficha.order_count_30d > 0" [class.text-muted-color]="ficha.order_count_30d === 0">{{ actividad(ficha) }}</span>
+                          <span class="whitespace-nowrap text-[0.71875rem] text-muted-color">{{ facturado(ficha) }}</span>
+                        </span>
+
+                        <span class="pointer-events-none whitespace-nowrap text-[0.78125rem] text-muted-color">{{ antiguedad(ficha) }}</span>
+                      } @else {
+                        <!-- Sin ficha no se inventan columnas: quedan vacías. -->
+                        <span class="pointer-events-none text-[0.78125rem] text-muted-color">—</span>
+                        <span class="pointer-events-none text-[0.78125rem] text-muted-color">—</span>
+                        <span class="pointer-events-none text-[0.78125rem] text-muted-color">—</span>
+                        <span class="pointer-events-none text-[0.78125rem] text-muted-color">—</span>
+                      }
+
+                      <span class="pointer-events-none flex justify-end text-primary opacity-0 transition-opacity duration-150 group-hover:opacity-100" aria-hidden="true">
+                        <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" /></svg>
+                      </span>
+                    </div>
+                  }
+                </div>
+              } @else {
+                <ul class="m-0 flex list-none flex-col gap-2 p-0" role="list" aria-label="Negocios">
+                  @for (biz of visibleBusinesses(); track biz.id) {
+                    <li class="m-0 list-none p-0">
+                      <button
+                        type="button"
+                        [attr.data-testid]="'select-business-' + biz.slug"
+                        [attr.aria-label]="'Entrar a ' + biz.name"
+                        (click)="select(biz)"
+                        class="group flex w-full items-center gap-3.5 rounded-lg bg-surface-100 p-3.5 text-left border border-hairline transition-all duration-200 hover:bg-surface-100"
                       >
-                        <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
-                      </svg>
-                    </button>
-                  </li>
-                }
-              </ul>
+                        <div
+                          class="flex h-9 w-9 shrink-0 items-center justify-center rounded-md bg-primary/10 text-[0.8125rem] font-semibold text-primary transition-colors duration-200 group-hover:bg-primary group-hover:text-primary-contrast"
+                          aria-hidden="true"
+                        >
+                          {{ biz.name.charAt(0).toUpperCase() }}
+                        </div>
+                        <div class="flex min-w-0 flex-1 flex-col overflow-hidden">
+                          <span
+                            class="truncate text-[0.8125rem] font-medium tracking-tight text-color transition-colors duration-200 group-hover:text-primary"
+                          >{{ biz.name }}</span>
+                          <span class="truncate text-[0.75rem] text-muted-color">&#64;{{ biz.slug }}</span>
+                        </div>
+                        <svg
+                          class="ml-auto h-3.5 w-3.5 shrink-0 text-muted-color opacity-0 transition-all duration-200 group-hover:opacity-100"
+                          fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true"
+                        >
+                          <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
+                        </svg>
+                      </button>
+                    </li>
+                  }
+                </ul>
+              }
 
               @if (businesses().length > 0 && visibleBusinesses().length === 0) {
                 <p class="py-6 text-center text-[0.8125rem] text-muted-color">
@@ -199,9 +303,17 @@ export class SelectBusinessPageComponent implements OnInit {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly runtimeConfig = inject(RuntimeConfigService);
+  private readonly hubData = inject(HubDataCacheService);
   private readonly logoutService = inject(LogoutService);
 
   readonly businesses = signal<BusinessMembership[]>([]);
+
+  /**
+   * La ficha de cada comercio, por id. Es decoración: llega después, puede no
+   * llegar nunca (un comerciante sin `platform:read` recibe 403) y la lista se
+   * dibuja igual. Nada de lo que decide la pantalla depende de esto.
+   */
+  readonly summaries = signal<Map<string, MerchantSummary>>(new Map());
 
   protected logout(): void {
     void this.logoutService.logout();
@@ -224,13 +336,25 @@ export class SelectBusinessPageComponent implements OnInit {
 
   readonly filter = signal('');
 
+  /**
+   * La tabla ancha es para quien mira el ecosistema entero. Un comerciante con
+   * dos negocios no la necesita —y su API no la puede llenar—, así que se queda
+   * con la tarjeta angosta de siempre.
+   */
+  readonly anchoDeOperador = computed(() => this.isSuperAdmin() && this.businesses().length > 0);
+
   readonly visibleBusinesses = computed(() => {
     const q = this.filter().trim().toLowerCase();
     const all = this.businesses();
     if (!q) return all;
-    return all.filter(
-      (b) => b.name.toLowerCase().includes(q) || (b.slug ?? '').toLowerCase().includes(q),
-    );
+    return all.filter((b) => {
+      const dominio = this.summaries().get(b.id)?.website_domain ?? '';
+      return (
+        b.name.toLowerCase().includes(q) ||
+        (b.slug ?? '').toLowerCase().includes(q) ||
+        dominio.toLowerCase().includes(q)
+      );
+    });
   });
   readonly loading = signal(false);
   readonly loadError = signal<string | null>(null);
@@ -239,7 +363,14 @@ export class SelectBusinessPageComponent implements OnInit {
     // Load /me first so user().is_super_admin is authoritative before any auto-select.
     // login() only fetches me/businesses; the base lib's isSuperAdmin() would fall back
     // to JWT kind==='admin' (true for all portal users) if we don't load the user here.
-    this.auth.ensureUserLoaded().subscribe(() => this.loadBusinesses());
+    this.auth.ensureUserLoaded().subscribe(() => {
+      this.loadBusinesses();
+      // Sólo tiene sentido para quien opera la plataforma; para el resto es un
+      // 403 seguro. Va suelta: la lista ya se está pintando.
+      if (this.auth.user()?.is_super_admin) {
+        void this.hubData.getMerchantSummaries().then((m) => this.summaries.set(m));
+      }
+    });
   }
 
   loadBusinesses(): void {
@@ -269,6 +400,67 @@ export class SelectBusinessPageComponent implements OnInit {
         this.loading.set(false);
       },
     });
+  }
+
+  /**
+   * El nombre del plan a secas. La API lo manda como «Lidera — Inventario,
+   * almacenes, despacho y POS»: entero no entra en una etiqueta, envuelve a
+   * cuatro líneas y se desborda encima de la fila de abajo.
+   */
+  planCorto(f: MerchantSummary): string {
+    return f.plan_name ? shortPlanName(f.plan_name) : 'Gratis';
+  }
+
+  /** La ficha de un comercio, si llegó. */
+  fichaDe(biz: BusinessMembership): MerchantSummary | null {
+    return this.summaries().get(biz.id) ?? null;
+  }
+
+  /**
+   * El estado de la tienda en tres palabras. `has_website` sin publicar es un
+   * borrador — no es lo mismo que no tener tienda, y la diferencia importa
+   * cuando estás mirando por qué un comercio no vende.
+   */
+  estadoWeb(f: MerchantSummary): { texto: string; tono: 'ok' | 'draft' | 'none' } {
+    if (!f.has_website) return { texto: 'Sin tienda', tono: 'none' };
+    return f.website_published
+      ? { texto: 'Publicada', tono: 'ok' }
+      : { texto: 'Borrador', tono: 'draft' };
+  }
+
+  /** El dominio como URL absoluta, para abrirlo en otra pestaña. */
+  urlWeb(f: MerchantSummary): string | null {
+    const d = (f.website_domain ?? '').trim();
+    if (!d) return null;
+    return /^https?:\/\//i.test(d) ? d : `https://${d}`;
+  }
+
+  /** «hace 8 m» — un comercio de la semana pasada no se lee igual que uno de 2024. */
+  antiguedad(f: MerchantSummary): string {
+    if (!f.created_at) return '—';
+    const alta = new Date(f.created_at).getTime();
+    if (Number.isNaN(alta)) return '—';
+    const dias = Math.max(0, Math.floor((Date.now() - alta) / 86_400_000));
+    if (dias < 30) return `hace ${dias} d`;
+    const meses = Math.round(dias / 30);
+    if (meses < 12) return `hace ${meses} m`;
+    const anios = Math.floor(meses / 12);
+    return anios === 1 ? 'hace 1 año' : `hace ${anios} años`;
+  }
+
+  actividad(f: MerchantSummary): string {
+    return f.order_count_30d === 0
+      ? 'Sin pedidos'
+      : `${f.order_count_30d} ${f.order_count_30d === 1 ? 'pedido' : 'pedidos'}`;
+  }
+
+  facturado(f: MerchantSummary): string {
+    if (f.order_count_30d === 0) return '—';
+    return new Intl.NumberFormat('es-PE', {
+      style: 'currency',
+      currency: 'PEN',
+      maximumFractionDigits: 0,
+    }).format(f.revenue_30d ?? 0);
   }
 
   goToPlatform(): void {

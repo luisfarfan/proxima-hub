@@ -12,6 +12,7 @@ import { HubDataCacheService } from '../../../core/services/hub-data-cache.servi
 import { NgTemplateOutlet } from '@angular/common';
 import { QuotaLabelPipe } from '../../../shared/pipes/quota-label.pipe';
 import { resolveActiveBusinessName } from '../../../core/auth/active-business-name';
+import { shortPlanName } from '../../../core/billing/plan-name';
 
 /**
  * El color propio de cada app, y sólo en el chip del icono.
@@ -59,14 +60,6 @@ const ADD_ON_CATALOG: Record<string, { name: string; monthlyPrice: number; minPl
   cms: { name: 'Tienda Web', monthlyPrice: 50, minPlan: 'emprende' },
   pricing_intelligence: { name: 'Intelligence', monthlyPrice: 100 },
 };
-
-/**
- * `PlanSummary.name` viene como «Lidera — Inventario, almacenes, despacho y
- * POS»: sirve para un listado, no para una etiqueta de tarjeta.
- */
-function shortPlanName(name: string): string {
-  return name.split('—')[0].trim() || name;
-}
 
 /** Cómo se abre una app bloqueada: comprando un add-on, o subiendo de plan. */
 interface UnlockPath {
