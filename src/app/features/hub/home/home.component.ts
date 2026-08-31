@@ -396,6 +396,13 @@ export class HomeComponent {
     loader: async () => this.hubData.getAppSignals(this.businessCtx.businessId()),
   });
 
+  /**
+   * Mientras no se sepa, la fila de números se reserva en vez de aparecer de
+   * golpe: al llegar tarde empujaba la tarjeta de Panel ~80 px hacia abajo y con
+   * ella todo lo que venía después.
+   */
+  protected readonly statsLoading = this.signalsRes.isLoading;
+
   private readonly moneyFormat = computed(() => {
     const ab = this.user()?.active_business as { currency_code?: string } | null | undefined;
     return new Intl.NumberFormat('es-PE', {

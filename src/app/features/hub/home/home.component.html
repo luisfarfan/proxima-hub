@@ -73,7 +73,13 @@
           </span>
         </span>
 
-        @if (!lead.noAccess && panelStats().length > 0) {
+        @if (!lead.noAccess && statsLoading()) {
+          <span class="hub-stats" aria-hidden="true">
+            <span class="hub-stat hub-stat-ghost"></span>
+            <span class="hub-stat hub-stat-ghost"></span>
+            <span class="hub-stat hub-stat-ghost"></span>
+          </span>
+        } @else if (!lead.noAccess && panelStats().length > 0) {
           <span class="hub-stats">
             @for (stat of panelStats(); track stat.key) {
               <span class="hub-stat">

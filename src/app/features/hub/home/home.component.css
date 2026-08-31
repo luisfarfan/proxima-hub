@@ -302,6 +302,11 @@
   background: #f6f5f2;
 }
 
+.hub-stat-ghost {
+  min-height: 56px;
+  animation: hub-pulse 1.5s ease-in-out infinite;
+}
+
 .hub-stat b {
   font-family: var(--font-display);
   font-size: 1.3125rem;
@@ -701,4 +706,38 @@
   /* Un enlace de 18 px de alto no se acierta con el pulgar. */
   .hub-section-link { padding: 13px 0; display: inline-flex; align-items: center; min-height: 44px; }
   .hub-section-head { flex-wrap: wrap; gap: 0.25rem 1rem; }
+}
+
+/*
+ * Menos movimiento, misma información.
+ *
+ * El registro ya exigía esto con una prueba propia; el centro del Hub se quedó
+ * sin ello cuando le puse los hover con desplazamiento. Las tarjetas siguen
+ * respondiendo al puntero —cambian de borde y de sombra—, sólo dejan de moverse.
+ */
+@media (prefers-reduced-motion: reduce) {
+  .hub-lead,
+  .hub-app,
+  .hub-app-cta,
+  .hub-app-cta svg,
+  .hub-progress-fill,
+  .hub-next-go {
+    transition: none;
+  }
+
+  .hub-lead:hover:not(:disabled),
+  .hub-app:hover:not(:disabled) {
+    transform: none;
+  }
+
+  .hub-lead:hover:not(:disabled) .hub-app-cta svg,
+  .hub-app:hover:not(:disabled) .hub-app-cta svg {
+    transform: none;
+  }
+
+  .hub-skeleton,
+  .hub-stat-ghost {
+    animation: none;
+    opacity: 0.7;
+  }
 }
