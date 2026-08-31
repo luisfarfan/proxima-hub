@@ -148,7 +148,7 @@
               <form [formGroup]="negocio" class="reg-fields" (ngSubmit)="next()">
                 <div class="field">
                   <label for="biz-name">Nombre del negocio</label>
-                  <input pInputText id="biz-name" formControlName="name" placeholder="Bodega San Martín" autocomplete="organization" class="w-full"
+                  <input pInputText id="biz-name" formControlName="name" placeholder="Comercial San Martín" autocomplete="organization" class="w-full"
                     [attr.aria-invalid]="negocio.controls.name.invalid && negocio.controls.name.touched ? 'true' : null"
                     [attr.aria-describedby]="negocio.controls.name.invalid && negocio.controls.name.touched ? 'biz-name-err' : null"
                   />
