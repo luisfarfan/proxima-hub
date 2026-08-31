@@ -1,0 +1,273 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;family=Inter:wght@400;500;600&amp;display=swap">
+  <style>
+    body { margin: 0; }
+    a { color: #0009dc; text-decoration: none; }
+    a:hover { color: #0007b4; text-decoration: underline; }
+
+    .row {
+      cursor: pointer; font-family: inherit; text-align: left; width: 100%;
+      transition: background .16s ease, border-color .16s ease;
+    }
+    .row:hover { background: #f4f5f7; border-color: #d0d3da; }
+    .row:focus-within { background: #f4f5f7; }
+    .rowhit:focus-visible { outline: 2px solid #0009dc; outline-offset: -2px; }
+    .row .go { opacity: 0; transition: opacity .16s ease, transform .16s ease; transform: translateX(-3px); }
+    .row:hover .go { opacity: 1; transform: translateX(0); }
+
+    .chip { cursor: pointer; font-family: inherit; transition: background .14s ease, color .14s ease, border-color .14s ease; }
+    .chip:focus-visible { outline: 2px solid #0009dc; outline-offset: 2px; }
+
+    .weblink { color: #6b6f76; text-decoration: none; }
+    .weblink:hover { color: #0009dc; text-decoration: underline; }
+    .weblink:focus-visible { outline: 2px solid #0009dc; outline-offset: 2px; border-radius: 3px; }
+
+    .plat { cursor: pointer; font-family: inherit; text-align: left; transition: border-color .16s ease, background .16s ease; }
+    .plat:hover { border-color: rgba(0, 9, 220, .3); background: rgba(0, 9, 220, .04); }
+  </style>
+</helmet>
+
+<div style="width: 1120px; box-sizing: border-box; min-height: 780px; background: #fbfbfc; color: #08090a; font-family: Inter, ui-sans-serif, system-ui, sans-serif; letter-spacing: -0.003em; display: flex; justify-content: center; padding: 40px 24px 48px;">
+  <div style="width: 100%; max-width: 1000px; box-sizing: border-box;">
+
+    <!-- Cabecera: quién eres y qué es esta pantalla -->
+    <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 32px; margin-bottom: 24px;">
+      <div style="display: flex; align-items: center; gap: 14px; min-width: 0;">
+        <span style="width: 44px; height: 44px; flex-shrink: 0; border-radius: 16px; background: {{accent}}; color: #f8f9ff; font-size: 15px; font-weight: 600; letter-spacing: -0.01em; display: flex; align-items: center; justify-content: center;">P</span>
+        <span style="display: flex; flex-direction: column; gap: 3px; min-width: 0;">
+          <h1 style="font-family: 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif; font-size: 20px; font-weight: 600; letter-spacing: -0.02em; margin: 0;">Comercios del ecosistema</h1>
+          <p style="margin: 0; font-size: 13px; color: #6b6f76;">Entrar a uno es un acceso de soporte, no un negocio tuyo.</p>
+        </span>
+      </div>
+
+      <button class="plat" style="display: flex; align-items: center; gap: 12px; flex-shrink: 0; border-radius: 10px; border: 1px solid #e3e4e8; background: #ffffff; padding: 12px 16px;">
+        <span style="width: 32px; height: 32px; flex-shrink: 0; border-radius: 8px; background: #eceef2; color: #6b6f76; display: flex; align-items: center; justify-content: center;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path stroke-linecap="round" stroke-linejoin="round" d="M9 17.25v1.007a3 3 0 0 1-.879 2.122L7.5 21h9l-.621-.621A3 3 0 0 1 15 18.257V17.25m6-12V15a2.25 2.25 0 0 1-2.25 2.25H5.25A2.25 2.25 0 0 1 3 15V5.25m18 0A2.25 2.25 0 0 0 18.75 3H5.25A2.25 2.25 0 0 0 3 5.25m18 0H3"/></svg>
+        </span>
+        <span style="display: flex; flex-direction: column;">
+          <span style="font-size: 13px; font-weight: 500;">Acceder a Platform</span>
+          <span style="font-size: 12px; color: #6b6f76;">Panel de control global</span>
+        </span>
+      </button>
+    </div>
+
+    <!-- Buscar y filtrar: con 40 comercios el buscador deja de ser opcional -->
+    <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 16px;">
+      <label style="position: relative; display: flex; align-items: center; flex: 1; min-width: 0;">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#8a8f98" stroke-width="1.9" stroke-linecap="round" style="position: absolute; left: 12px; pointer-events: none;"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
+        <input
+          type="search"
+          value="{{q}}"
+          onInput="{{onSearch}}"
+          placeholder="Buscar por nombre, slug o dominio…"
+          style="width: 100%; box-sizing: border-box; height: 38px; border-radius: 8px; border: 1px solid #e3e4e8; background: #ffffff; padding: 0 12px 0 34px; font-family: inherit; font-size: 13px; color: #08090a;"
+        >
+      </label>
+
+      <sc-for list="{{planChips}}" as="chip" hint-placeholder-count="4">
+        <button class="chip" onClick="{{chip.pick}}" style="height: 38px; padding: 0 14px; border-radius: 8px; border: 1px solid {{chip.border}}; background: {{chip.bg}}; color: {{chip.fg}}; font-size: 12.5px; font-weight: {{chip.weight}}; white-space: nowrap;">
+          {{chip.label}}
+        </button>
+      </sc-for>
+    </div>
+
+    <!-- La lista. Encabezado de columnas: sin él, seis números sueltos no se leen -->
+    <div style="border: 1px solid #e3e4e8; border-radius: 12px; background: #ffffff; overflow: hidden;">
+      <div style="display: grid; grid-template-columns: minmax(0, 2.4fr) 100px minmax(0, 1.5fr) minmax(0, 1.2fr) 96px 20px; gap: 16px; align-items: center; padding: 10px 18px; border-bottom: 1px solid #e3e4e8; background: #fbfbfc;">
+        <span style="font-size: 10.5px; font-weight: 600; letter-spacing: 0.09em; text-transform: uppercase; color: #8a8f98;">Comercio</span>
+        <span style="font-size: 10.5px; font-weight: 600; letter-spacing: 0.09em; text-transform: uppercase; color: #8a8f98;">Plan</span>
+        <span style="font-size: 10.5px; font-weight: 600; letter-spacing: 0.09em; text-transform: uppercase; color: #8a8f98;">Tienda</span>
+        <span style="font-size: 10.5px; font-weight: 600; letter-spacing: 0.09em; text-transform: uppercase; color: #8a8f98;">Últimos 30 días</span>
+        <span style="font-size: 10.5px; font-weight: 600; letter-spacing: 0.09em; text-transform: uppercase; color: #8a8f98;">Alta</span>
+        <span></span>
+      </div>
+
+      <sc-for list="{{rows}}" as="biz" hint-placeholder-count="6">
+        <div class="row" style="position: relative; display: grid; grid-template-columns: minmax(0, 2.4fr) 100px minmax(0, 1.6fr) minmax(0, 1.2fr) 96px 20px; gap: 16px; align-items: center; box-sizing: border-box; padding: 13px 18px; background: #ffffff; border-top: {{biz.rule}};">
+
+          <button class="rowhit" onClick="{{biz.enter}}" aria-label="{{biz.enterLabel}}" style="position: absolute; inset: 0; width: 100%; height: 100%; padding: 0; background: transparent; border: 0; cursor: pointer;"></button>
+
+          <span style="display: flex; align-items: center; gap: 12px; min-width: 0; pointer-events: none;">
+            <span style="width: 34px; height: 34px; flex-shrink: 0; border-radius: 8px; background: rgba(0, 9, 220, 0.09); color: {{accent}}; font-size: 13px; font-weight: 600; display: flex; align-items: center; justify-content: center;">{{biz.initial}}</span>
+            <span style="display: flex; flex-direction: column; gap: 1px; min-width: 0;">
+              <span style="font-size: 13.5px; font-weight: 500; letter-spacing: -0.01em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{biz.name}}</span>
+              <span style="font-size: 12px; color: #8a8f98; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{biz.slug}}</span>
+            </span>
+          </span>
+
+          <span style="display: inline-flex; align-items: center; height: 22px; padding: 0 9px; border-radius: 999px; background: {{biz.planBg}}; color: {{biz.planFg}}; font-size: 11.5px; font-weight: 600; white-space: nowrap; justify-self: start; pointer-events: none;">{{biz.plan}}</span>
+
+          <span style="display: flex; align-items: center; gap: 8px; min-width: 0; pointer-events: none;">
+            <span style="width: 7px; height: 7px; flex-shrink: 0; border-radius: 50%; background: {{biz.webDot}};"></span>
+            <span style="display: flex; flex-direction: column; gap: 1px; min-width: 0;">
+              <span style="font-size: 12.5px; color: #08090a; white-space: nowrap;">{{biz.webLabel}}</span>
+              <sc-if value="{{biz.hasWeb}}" hint-placeholder-val="{{ true }}">
+                <a
+                  class="weblink"
+                  href="{{biz.webHref}}"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="{{biz.webAria}}"
+                  style="position: relative; z-index: 1; pointer-events: auto; display: inline-flex; align-items: center; gap: 4px; align-self: flex-start; font-size: 11.5px; white-space: nowrap; max-width: 100%;"
+                >
+                  <span style="overflow: hidden; text-overflow: ellipsis;">{{biz.webDomain}}</span>
+                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0;"><path d="M14 4h6v6M20 4l-8.5 8.5"/><path d="M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></svg>
+                </a>
+              </sc-if>
+              <sc-if value="{{biz.sinWeb}}" hint-placeholder-val="{{ false }}">
+                <span style="font-size: 11.5px; color: #8a8f98; white-space: nowrap;">{{biz.webDomain}}</span>
+              </sc-if>
+            </span>
+          </span>
+
+          <span style="display: flex; flex-direction: column; gap: 1px; min-width: 0; pointer-events: none;">
+            <span style="font-size: 12.5px; font-weight: 500; color: {{biz.activityFg}}; white-space: nowrap;">{{biz.orders}}</span>
+            <span style="font-size: 11.5px; color: #8a8f98; white-space: nowrap;">{{biz.revenue}}</span>
+          </span>
+
+          <span style="font-size: 12.5px; color: #6b6f76; white-space: nowrap; pointer-events: none;">{{biz.age}}</span>
+
+          <span class="go" style="display: flex; justify-content: flex-end; color: {{accent}}; pointer-events: none;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
+          </span>
+        </div>
+      </sc-for>
+
+      <sc-if value="{{vacio}}" hint-placeholder-val="{{ false }}">
+        <div style="padding: 40px 18px; text-align: center;">
+          <p style="margin: 0; font-size: 13px; color: #6b6f76;">Ningún comercio coincide con la búsqueda.</p>
+        </div>
+      </sc-if>
+    </div>
+
+    <div style="display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-top: 14px;">
+      <span style="font-size: 12px; color: #8a8f98;">{{conteo}}</span>
+      <span style="font-size: 12px; font-weight: 500; color: #6b6f76;">Cerrar sesión <span style="color: {{accent}};">→</span></span>
+    </div>
+
+  </div>
+</div>
+</x-dc>
+
+<script data-dc-script data-props='{"orden":{"editor":"enum","options":["Actividad","Nombre","Alta"],"default":"Actividad","section":"Lista"},"accent":{"editor":"color","default":"#0009dc","options":["#0009dc","#08090a","#000678"],"section":"Marca"},"$preview":{"width":1120,"height":900}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { q: '', plan: 'Todos' };
+  }
+
+  renderVals() {
+    const accent = this.props.accent ?? '#0009dc';
+    const orden = this.props.orden ?? 'Actividad';
+
+    // Nombres reales del ecosistema; las métricas son de muestra.
+    const datos = [
+      { name: 'LuchoEcommerce', slug: '@luchoecommerce', plan: 'Lidera', web: 'live', domain: 'luchoecommerce.pe', orders: 142, revenue: 12400, days: 240 },
+      { name: 'Botica Vida', slug: '@botica-vida', plan: 'Emprende', web: 'live', domain: 'boticavida.pe', orders: 91, revenue: 7310, days: 380 },
+      { name: 'Megatienda Lima', slug: '@megatienda-lima', plan: 'Lidera', web: 'draft', domain: 'megatienda-lima.proxima.pe', orders: 38, revenue: 4820, days: 96 },
+      { name: 'Voltio Store', slug: '@voltio-store', plan: 'Gratis', web: 'draft', domain: 'voltio-store.proxima.pe', orders: 3, revenue: 190, days: 5 },
+      { name: 'Moda Andina', slug: '@moda-andina', plan: 'Emprende', web: 'none', domain: '—', orders: 0, revenue: 0, days: 62 },
+      { name: '214 Store', slug: '@214store', plan: 'Gratis', web: 'none', domain: '—', orders: 0, revenue: 0, days: 11 },
+    ];
+
+    const q = this.state.q.trim().toLowerCase();
+    const plan = this.state.plan;
+
+    let vistos = datos.filter((b) => {
+      if (plan !== 'Todos' && b.plan !== plan) return false;
+      if (!q) return true;
+      return (b.name + ' ' + b.slug + ' ' + b.domain).toLowerCase().includes(q);
+    });
+
+    // Por defecto manda la actividad: en una lista de soporte lo primero que se
+    // busca es quién está vendiendo y quién lleva meses sin moverse.
+    if (orden === 'Nombre') vistos = [...vistos].sort((a, b) => a.name.localeCompare(b.name, 'es'));
+    else if (orden === 'Alta') vistos = [...vistos].sort((a, b) => a.days - b.days);
+    else vistos = [...vistos].sort((a, b) => b.orders - a.orders);
+
+    const soles = new Intl.NumberFormat('es-PE', {
+      style: 'currency', currency: 'PEN', maximumFractionDigits: 0,
+    });
+
+    const edad = (d) => {
+      if (d < 30) return `hace ${d} d`;
+      const meses = Math.round(d / 30);
+      if (meses < 12) return `hace ${meses} m`;
+      const anios = Math.floor(meses / 12);
+      return anios === 1 ? 'hace 1 año' : `hace ${anios} años`;
+    };
+
+    const WEB = {
+      live: { dot: '#27a644', label: 'Publicada' },
+      draft: { dot: '#8a6d1f', label: 'Borrador' },
+      none: { dot: '#d0d3da', label: 'Sin tienda' },
+    };
+    const PLAN = {
+      Lidera: { bg: 'rgba(0, 9, 220, 0.09)', fg: '#0009dc' },
+      Emprende: { bg: '#eceef2', fg: '#4a4d54' },
+      Gratis: { bg: 'transparent', fg: '#8a8f98' },
+    };
+
+    const rows = vistos.map((b, i) => ({
+      name: b.name,
+      slug: b.slug,
+      initial: b.name.charAt(0).toUpperCase(),
+      plan: b.plan,
+      planBg: PLAN[b.plan].bg,
+      planFg: PLAN[b.plan].fg,
+      webDot: WEB[b.web].dot,
+      webLabel: WEB[b.web].label,
+      webDomain: b.domain,
+      hasWeb: b.web !== 'none',
+      sinWeb: b.web === 'none',
+      // El dominio es el de la tienda publicada; un borrador todavía no tiene
+      // dirección pública, así que se abre el subdominio de la plataforma.
+      webHref: b.web === 'live' ? `https://${b.domain}` : `https://${b.slug.slice(1)}.proxima.pe`,
+      webAria: `Abrir la tienda de ${b.name} en una pestaña nueva`,
+      enter: () => {},
+      enterLabel: `Entrar a ${b.name}`,
+      orders: b.orders === 0 ? 'Sin pedidos' : `${b.orders} pedidos`,
+      revenue: b.orders === 0 ? '—' : soles.format(b.revenue),
+      // Un comercio sin un solo pedido en 30 días es la señal que se busca:
+      // se apaga en vez de mentir con un cero en negrita.
+      activityFg: b.orders === 0 ? '#8a8f98' : '#08090a',
+      age: edad(b.days),
+      rule: i === 0 ? 'none' : '1px solid #eceef2',
+    }));
+
+    const chip = (label) => {
+      const activo = this.state.plan === label;
+      return {
+        label,
+        pick: () => this.setState({ plan: label }),
+        bg: activo ? accent : '#ffffff',
+        fg: activo ? '#f8f9ff' : '#6b6f76',
+        border: activo ? accent : '#e3e4e8',
+        weight: activo ? '600' : '500',
+      };
+    };
+
+    return {
+      accent,
+      q: this.state.q,
+      onSearch: (e) => this.setState({ q: e.target.value }),
+      planChips: ['Todos', 'Lidera', 'Emprende', 'Gratis'].map(chip),
+      rows,
+      vacio: rows.length === 0,
+      conteo: rows.length === datos.length
+        ? `${datos.length} comercios`
+        : `${rows.length} de ${datos.length} comercios`,
+    };
+  }
+}
+</script>
+</body>
+</html>
