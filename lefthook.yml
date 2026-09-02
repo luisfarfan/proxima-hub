@@ -11,3 +11,14 @@ commit-msg:
   jobs:
     - name: conventional-commits
       run: ../proxima-engineering/scripts/check-commit-msg.sh {1}
+
+# BEGIN PROXIMA GUARDRAILS (D15) — lo mantiene scripts/install-guardrails.sh
+# Los repos son privados en GitHub Free: la branch protection del servidor NO
+# está disponible. Este hook es la única barrera real contra el push a main.
+# Bypass consciente:  PROXIMA_ALLOW_MAIN_PUSH=1 git push origin main
+pre-push:
+  jobs:
+    - name: no-push-to-main
+      use_stdin: true
+      run: ../proxima-engineering/scripts/check-push-branch.sh
+# END PROXIMA GUARDRAILS

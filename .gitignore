@@ -59,3 +59,9 @@ Thumbs.db
 .serena/
 graphify-out/
 .codegraph/
+
+# .claude/ es GENERADO por proxima-engineering (skills, reglas, sello, hooks).
+# Lo materializa scripts/update.sh; no se versiona. settings.json es la
+# excepción deliberada: lleva los hooks del repo y sí se versiona.
+.claude/*
+!.claude/settings.json

@@ -6,10 +6,26 @@
           {
             "command": "bd prime --hook-json",
             "type": "command"
+          },
+          {
+            "type": "command",
+            "command": "/Users/lucho/projects/me/proxima/proxima-engineering/scripts/hooks/harness-freshness.sh"
           }
         ],
         "matcher": ""
       }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 /Users/lucho/projects/me/proxima/proxima-engineering/scripts/hooks/block-main-push.py"
+          }
+        ]
+      }
     ]
-  }
+  },
+  "includeCoAuthoredBy": false
 }

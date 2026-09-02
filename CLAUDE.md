@@ -55,3 +55,17 @@ This protocol applies when ending a Beads implementation workflow. It is subordi
 - Do not commit or push without clear authority from the active profile or the current user request.
 - If a required sync or push is blocked, stop and report the exact command and error.
 <!-- END BEADS INTEGRATION -->
+
+<!-- BEGIN PROXIMA RULES v:1 — generado por proxima-engineering/scripts/sync-rules.sh -->
+## Reglas del PROXIMA Engineering System
+
+Canónicas en `proxima-engineering/rules/`. Acá se materializan con
+`scripts/sync-rules.sh` — **no las edites en este repo**, se pisan.
+Tags de este repo: `frontend`
+
+@.claude/rules/10-branching.md
+@.claude/rules/20-commits.md
+@.claude/rules/30-secrets.md
+@.claude/rules/40-verification.md
+@.claude/rules/50-frontend.md
+<!-- END PROXIMA RULES -->
