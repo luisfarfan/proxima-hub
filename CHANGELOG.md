@@ -1,5 +1,41 @@
 # Changelog
 
+## [0.3.0](https://github.com/luisfarfan/proxima-hub/compare/proxima-hub-v0.2.0...proxima-hub-v0.3.0) (2026-09-02)
+
+
+### Features
+
+* **cuenta:** dos grupos con dueño en vez de cuatro pestañas planas ([194c71e](https://github.com/luisfarfan/proxima-hub/commit/194c71e2ccd9fba786358e4e8ef639b09573f4a6))
+* **ecosystem:** onboard proxima-hub to Engineering System ([9ece7a0](https://github.com/luisfarfan/proxima-hub/commit/9ece7a056414acea6b3c6f90a030ae012f2963c0))
+* **hub:** el centro pide sus números una sola vez, y Caja ya tiene qué decir ([228e24b](https://github.com/luisfarfan/proxima-hub/commit/228e24ba368a0200b45128a64d1d123bf7e949d6))
+* **hub:** elegir comercio dice qué es cada uno, y su tienda se abre de un click ([6051acd](https://github.com/luisfarfan/proxima-hub/commit/6051acdfbc63c756c503e46c9c1437d507770d9a))
+* **hub:** la marca aparece con el primer byte, no cuando termina la sesión ([ff9ec59](https://github.com/luisfarfan/proxima-hub/commit/ff9ec599950422d4cecd9fc37ca81c3e75c95634))
+* **hub:** separar lo que es tuyo de lo que hay que comprar ([7322ae9](https://github.com/luisfarfan/proxima-hub/commit/7322ae9972afe39c2544c365e67ec3f3c4ff74ac))
+* **identity:** una sola marca, y el login se pinta de amarillo pared ([e45b0e7](https://github.com/luisfarfan/proxima-hub/commit/e45b0e7db12be8511c5e74e3a00c8d75eba6f354))
+* **plan:** /plan argumenta el cambio con el uso real ([f32cba4](https://github.com/luisfarfan/proxima-hub/commit/f32cba4990f10b20558bf2d16050795fc3850dab))
+* **plan:** la escalera — el mapa completo, con tu peldaño marcado ([eb506ce](https://github.com/luisfarfan/proxima-hub/commit/eb506cef4aae81cb40f4e0d11231b322a06c2759))
+* **registro:** el registro acompaña en vez de solo recoger ([e16bbcf](https://github.com/luisfarfan/proxima-hub/commit/e16bbcf4f0e1e97ea24ef4e39f3359be9895c997))
+
+
+### Bug Fixes
+
+* **auth:** el Hub restaura la sesión desde la cookie SSO (PPR-91) ([440681e](https://github.com/luisfarfan/proxima-hub/commit/440681e96210af54b8fa0c2a79683381a0f3cc61))
+* **ci:** inline workflow — hub is public, cannot use private reusable ([90ec9cb](https://github.com/luisfarfan/proxima-hub/commit/90ec9cbc7c68db69a16362d0499cd1a77f297f6d))
+* **equipo:** el rol real, la lista al día y el nombre del invitado (PPR-107, PPR-108, PPR-110) ([a9d0a91](https://github.com/luisfarfan/proxima-hub/commit/a9d0a9143141ea8e088cef96d20e95265a7b92d5))
+* **hub:** al super admin deja de escondérsele el centro del hub (PPR-112) ([669fd6e](https://github.com/luisfarfan/proxima-hub/commit/669fd6eef0ae3a4bd68f93b45fa3a234c911b98c))
+* **hub:** barrido responsive de las cinco pantallas de la cuenta ([b52a0de](https://github.com/luisfarfan/proxima-hub/commit/b52a0deb3dbb3a605e26b2ca6a24d603b5a889a2))
+* **hub:** cerrar sesión cierra la sesión, no rebota a elegir-negocio ([9e2afbe](https://github.com/luisfarfan/proxima-hub/commit/9e2afbe397aa348401b66ba35396862781c546d9))
+* **hub:** el centro se recorta por rol (PPR-112) ([1a96875](https://github.com/luisfarfan/proxima-hub/commit/1a9687509dc9e42c2eec2e20fc9db2dd27843ffb))
+* **hub:** el error interno del backend deja de llegar al toast (PPR-106) ([20cd6e0](https://github.com/luisfarfan/proxima-hub/commit/20cd6e05890c1867aa7c2c63ce741e5ffa5d89b9))
+* **hub:** el nombre del negocio sobrevive a la recarga (PPR-96) ([798bbed](https://github.com/luisfarfan/proxima-hub/commit/798bbedb8c8dcf0768fa1d51b38a4f388a15ac14))
+* **hub:** el super admin entra a la plataforma, no elige "su" negocio (PPR-139) ([2f31ef3](https://github.com/luisfarfan/proxima-hub/commit/2f31ef3e735ee0736efde3617e7cd76ef8994c0a))
+* **hub:** los números del centro dejan de empujar la tarjeta de Panel ([2d6436b](https://github.com/luisfarfan/proxima-hub/commit/2d6436b287b895e2c03ce35e6d9d91b9a4e5702d))
+* **identity:** el acceso deja de prometer que Próxima es sólo para bodegas ([281ff5c](https://github.com/luisfarfan/proxima-hub/commit/281ff5c5672e9e955f86adeddce9b2643a6a896b))
+* **identity:** objetivos táctiles en las pantallas de invitado ([1c8e781](https://github.com/luisfarfan/proxima-hub/commit/1c8e781232d507b36b173be8cf1e0828d3a4b0ab))
+* **plan,cuenta:** la escalera estaba rota y el móvil sin revisar ([4d9b086](https://github.com/luisfarfan/proxima-hub/commit/4d9b086cd3d4e60eb9f4c00d9a107e986d224152))
+* **plan:** "Tienda Web" abre el asistente en vez de cobrar sin diseño ([9d9a3f7](https://github.com/luisfarfan/proxima-hub/commit/9d9a3f7bc00f2ff892b34beff9a60d840cdf8489))
+* **plan:** la pantalla se rompía con los nombres reales de los planes ([59c6ba5](https://github.com/luisfarfan/proxima-hub/commit/59c6ba5dbdeeaf40e99b7342cd829c971456f1c5))
+
 ## [0.2.0](https://github.com/luisfarfan/proxima-hub/compare/proxima-hub-v0.1.0...proxima-hub-v0.2.0) (2026-06-28)
 
 
