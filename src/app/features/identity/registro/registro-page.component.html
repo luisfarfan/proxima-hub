@@ -1,6 +1,7 @@
 <div class="reg-root">
+  <div class="reg-left">
   <header class="reg-top">
-    <span class="reg-mark">Próxima</span>
+    <proxima-logo size="md" class="reg-mark" />
     <span class="reg-top-r">¿Ya tienes cuenta? <a routerLink="/login" class="reg-a">Iniciar sesión</a></span>
   </header>
 
@@ -22,37 +23,51 @@
             <p class="reg-sub">Ingresa el código de 6 dígitos que enviamos a <b class="reg-strong">{{ verifyEmailAddr() }}</b>.</p>
           </header>
           <div class="reg-fields">
-            <div class="field">
-              <input
-                pInputText
-                id="reg-code-field"
-                class="w-full reg-code"
-                [formControl]="codeCtrl"
-                inputmode="numeric"
-                maxlength="6"
-                autocomplete="one-time-code"
-                placeholder="000000"
-                aria-label="Código de verificación"
-                aria-describedby="reg-code-err"
-                (keyup.enter)="verifyCode()"
-              />
-              @if (codeError(); as e) {
-                <p id="reg-code-err" class="field-err" role="alert">{{ e }}</p>
-              }
-              @if (resentNote()) {
-                <p class="reg-resent">Código reenviado a tu correo.</p>
-              }
-            </div>
-            <div class="reg-code-actions">
-              <button type="button" class="reg-textbtn" (click)="resendCode()">Reenviar código</button>
-              <span class="reg-dot">·</span>
-              <button type="button" class="reg-textbtn" (click)="backToAccount()">Cambiar correo</button>
-            </div>
+            @if (registrationExpired()) {
+              <div class="reg-expired" role="alert">
+                <span class="reg-expired-ico" aria-hidden="true">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+                </span>
+                <div class="reg-expired-body">
+                  <p class="reg-expired-h">El código venció</p>
+                  <p class="reg-expired-p">Los códigos duran 10 minutos. No se creó ninguna cuenta y tu correo sigue libre: pide uno nuevo y sigues donde estabas.</p>
+                </div>
+              </div>
+            } @else {
+              <div class="field">
+                <app-registro-code-input
+                  [formControl]="codeCtrl"
+                  [invalid]="!!codeError()"
+                  describedBy="reg-code-err"
+                  (keyup.enter)="verifyCode()"
+                />
+                @if (codeError(); as e) {
+                  <p id="reg-code-err" class="field-err" role="alert">{{ e }}</p>
+                }
+                @if (resendError(); as e) {
+                  <p class="field-err" role="alert">{{ e }}</p>
+                }
+                @if (resentNote()) {
+                  <p class="reg-resent">Código reenviado a tu correo.</p>
+                }
+              </div>
+              <div class="reg-code-actions">
+                <button type="button" class="reg-textbtn" (click)="resendCode()">Reenviar código</button>
+                <span class="reg-dot">·</span>
+                <button type="button" class="reg-textbtn" (click)="backToAccount()">Cambiar correo</button>
+              </div>
+            }
           </div>
           <div class="reg-nav solo">
-            <button type="button" class="btn-primary" (click)="verifyCode()" [disabled]="codeCtrl.invalid || verifying()">
-              @if (verifying()) { Verificando… } @else { Verificar y crear cuenta }
-            </button>
+            @if (registrationExpired()) {
+              <button type="button" class="btn-primary" (click)="restartRegistration()">
+                Pedir un código nuevo
+              </button>
+            } @else {
+              <button type="button" class="btn-primary" (click)="verifyCode()" [disabled]="codeCtrl.invalid || verifying()">
+                @if (verifying()) { Verificando… } @else { Verificar y crear cuenta }
+              </button>
+            }
           </div>
         </section>
       } @else {
@@ -66,8 +81,47 @@
           </span>
         </div>
 
-        <div class="reg-prog" role="progressbar" aria-label="Progreso de registro" aria-valuemin="1" aria-valuemax="3" [attr.aria-valuenow]="step()">
-          <span class="reg-prog-track"><span class="reg-prog-fill" [style.width.%]="step() * 100 / 3"></span></span>
+        <div class="reg-prog">
+          <ol class="reg-rail">
+            @for (milestone of milestones; track milestone.step) {
+              <li
+                class="reg-rail-item"
+                [class.is-on]="step() === milestone.step"
+                [class.is-done]="step() > milestone.step"
+                [attr.aria-current]="step() === milestone.step ? 'step' : null"
+              >
+                @if (step() > milestone.step) {
+                  <!-- Un hito ya cumplido se ve completado; tiene que poder abrirse. -->
+                  <button
+                    type="button"
+                    class="reg-rail-btn"
+                    [attr.aria-label]="'Volver al paso ' + milestone.step + ': ' + milestone.label"
+                    (click)="goTo(milestone.step)"
+                  >
+                    <span class="reg-rail-dot" aria-hidden="true">
+                      <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                    </span>
+                    <span class="reg-rail-lbl">{{ milestone.label }}</span>
+                  </button>
+                } @else {
+                  <span class="reg-rail-dot" aria-hidden="true">{{ milestone.step }}</span>
+                  <span class="reg-rail-lbl">{{ milestone.label }}</span>
+                }
+              </li>
+            }
+          </ol>
+          <span class="reg-eta">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+            2 min
+          </span>
+          <span
+            class="reg-prog-track"
+            role="progressbar"
+            aria-label="Progreso de registro"
+            aria-valuemin="1"
+            aria-valuemax="3"
+            [attr.aria-valuenow]="step()"
+          ><span class="reg-prog-fill" [style.width.%]="step() * 100 / 3"></span></span>
         </div>
 
         @for (s of [step()]; track s) {
@@ -94,7 +148,7 @@
               <form [formGroup]="negocio" class="reg-fields" (ngSubmit)="next()">
                 <div class="field">
                   <label for="biz-name">Nombre del negocio</label>
-                  <input pInputText id="biz-name" formControlName="name" placeholder="Bodega San Martín" autocomplete="organization" class="w-full"
+                  <input pInputText id="biz-name" formControlName="name" placeholder="Comercial San Martín" autocomplete="organization" class="w-full"
                     [attr.aria-invalid]="negocio.controls.name.invalid && negocio.controls.name.touched ? 'true' : null"
                     [attr.aria-describedby]="negocio.controls.name.invalid && negocio.controls.name.touched ? 'biz-name-err' : null"
                   />
@@ -106,15 +160,72 @@
                   }
                 </div>
                 <div class="field">
-                  <label for="biz-rubro">Rubro</label>
-                  <p-select inputId="biz-rubro" formControlName="rubro" [options]="rubros()" optionLabel="label" optionValue="value" [filter]="true" filterPlaceholder="Buscar…" placeholder="Selecciona tu rubro" styleClass="w-full" appendTo="body" panelStyleClass="reg-pan" />
+                  <label for="biz-rubro">¿Qué vendes?</label>
+                  @if (quickRubros().length > 0) {
+                    <div class="rubro-chips" role="group" aria-label="Rubros más comunes">
+                      @for (r of quickRubros(); track r.value) {
+                        <button
+                          type="button"
+                          class="rubro-chip"
+                          [class.is-on]="selectedRubro() === r.value"
+                          [attr.aria-pressed]="selectedRubro() === r.value"
+                          (click)="pickRubro(r.value)"
+                        >
+                          <span class="rubro-chip-ico" aria-hidden="true">
+                            @switch (rubroIcon(r.value)) {
+                              @case ('comida') {
+                                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3v8a2 2 0 0 0 4 0V3M8 11v10M17 3c-1.5 1.5-2 3.5-2 5.5 0 1.4.6 2.5 2 2.5v10"/></svg>
+                              }
+                              @case ('moda') {
+                                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3l3 2 3-2 5 3-2 4-2-1v12H8V9L6 10 4 6z"/></svg>
+                              }
+                              @case ('salud') {
+                                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="8" width="18" height="13" rx="2"/><path d="M12 12v5M9.5 14.5h5M8 8V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v3"/></svg>
+                              }
+                              @case ('taller') {
+                                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a4 4 0 0 0 5 5L21 19a2 2 0 0 1-2.8 2.8L10 13.6a4 4 0 0 1-5-5z"/></svg>
+                              }
+                              @case ('transporte') {
+                                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 16V7h11v9M14 10h4l3 3v3M5.5 19a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3zM17.5 19a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3z"/></svg>
+                              }
+                              @default {
+                                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9v10a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1V9M3 9l1.5-5h15L21 9M3 9h18"/></svg>
+                              }
+                            }
+                          </span>
+                          {{ r.label }}
+                        </button>
+                      }
+                    </div>
+                  }
+                  <p-select inputId="biz-rubro" formControlName="rubro" [options]="rubros()" optionLabel="label" optionValue="value" [filter]="true" filterPlaceholder="Buscar…" placeholder="Buscar entre todos los rubros" styleClass="w-full" appendTo="body" panelStyleClass="reg-pan" />
                   @if (negocio.controls.rubro.invalid && negocio.controls.rubro.touched) {
                     <p class="field-err" role="alert">Selecciona el rubro de tu negocio.</p>
+                  } @else {
+                    <span class="field-help">Precargamos las categorías del catálogo según esto. Se cambia después.</span>
                   }
                 </div>
                 <div class="field">
-                  <span class="field-label">¿Tu negocio tiene RUC?</span>
-                  <p-selectButton formControlName="hasRuc" [options]="rucOptions" optionLabel="label" optionValue="value" [allowEmpty]="false" styleClass="w-full" />
+                  <span class="field-label" id="ruc-q">¿Tu negocio tiene RUC?</span>
+                  <div class="ruc-choices" role="radiogroup" aria-labelledby="ruc-q">
+                    @for (option of rucOptions; track option.value) {
+                      <button
+                        type="button"
+                        role="radio"
+                        class="ruc-choice"
+                        [class.is-on]="hasRuc() === option.value"
+                        [attr.aria-checked]="hasRuc() === option.value"
+                        [attr.tabindex]="hasRuc() === option.value || (hasRuc() === null && $first) ? 0 : -1"
+                        (click)="setHasRuc(option.value)"
+                      >
+                        <span class="ruc-choice-t">
+                          <span class="ruc-radio" aria-hidden="true"></span>
+                          {{ option.label }}
+                        </span>
+                        <span class="ruc-choice-d">{{ option.consequence }}</span>
+                      </button>
+                    }
+                  </div>
                   @if (negocio.controls.hasRuc.invalid && negocio.controls.hasRuc.touched) {
                     <p class="field-err" role="alert">Selecciona si tienes RUC.</p>
                   }
@@ -187,7 +298,28 @@
                 </div>
                 <div class="field">
                   <label for="acc-pass">Contraseña</label>
-                  <p-password inputId="acc-pass" formControlName="password" [feedback]="true" [toggleMask]="true" placeholder="Mínimo 8 caracteres" promptLabel="Ingresa una contraseña" weakLabel="Débil" mediumLabel="Media" strongLabel="Fuerte" styleClass="w-full" [inputStyleClass]="'w-full'" />
+                  <p-password inputId="acc-pass" formControlName="password" [feedback]="false" [toggleMask]="true" placeholder="Mínimo 8 caracteres" styleClass="w-full" [inputStyleClass]="'w-full'" />
+
+                  <div class="pw-meter" aria-hidden="true">
+                    @for (segment of passwordSegments; track segment) {
+                      <span class="pw-seg" [class.is-on]="passwordScore() >= segment" [class.is-weak]="passwordScore() < 2"></span>
+                    }
+                  </div>
+                  <p class="pw-state" aria-live="polite">{{ passwordLabel() }}</p>
+
+                  <ul class="pw-rules">
+                    @for (rule of passwordRules(); track rule.label) {
+                      <li class="pw-rule" [class.is-met]="rule.met" [class.is-optional]="!rule.required">
+                        <span class="pw-rule-dot" aria-hidden="true">
+                          @if (rule.met) {
+                            <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                          }
+                        </span>
+                        {{ rule.label }}
+                      </li>
+                    }
+                  </ul>
+
                   @if (cuenta.controls.password.invalid && cuenta.controls.password.touched) {
                     <p class="field-err" role="alert">
                       @if (cuenta.controls.password.hasError('required')) { Ingresa una contraseña. }
@@ -220,6 +352,33 @@
                   <div #turnstileEl class="reg-turnstile"></div>
                 }
 
+                @if (submitting()) {
+                  <div class="reg-creating" aria-live="polite">
+                    <span class="reg-creating-h">Creando tu cuenta</span>
+                    <ul class="reg-creating-steps">
+                      <li class="reg-creating-step">
+                        <span class="reg-creating-tick" aria-hidden="true">
+                          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                        </span>
+                        Creamos tu negocio
+                      </li>
+                      <li class="reg-creating-step">
+                        <span class="reg-creating-tick" aria-hidden="true">
+                          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                        </span>
+                        Reservamos {{ slugPreview() }}.proxima.pe
+                      </li>
+                      <li class="reg-creating-step">
+                        <span class="reg-creating-tick" aria-hidden="true">
+                          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                        </span>
+                        Preparamos las categorías de tu rubro
+                      </li>
+                    </ul>
+                    <p class="reg-creating-note">Toma unos segundos. No cierres esta pestaña.</p>
+                  </div>
+                }
+
                 @if (errorKey(); as e) {
                   <p class="field-err" role="alert">{{ e }}</p>
                 }
@@ -245,4 +404,17 @@
   </main>
 
   <p class="sr-only" aria-live="polite">Paso {{ step() }} de 3, {{ stepLabel() }}</p>
+  </div>
+
+  @if (!success()) {
+    <app-registro-live-panel
+      class="reg-stage"
+      [name]="storeName()"
+      [rubroLabel]="rubroLabel()"
+      [hasRuc]="hasRuc()"
+      [ruc]="negocio.controls.ruc.value"
+      [fullName]="cuenta.controls.fullName.value"
+      [email]="cuenta.controls.email.value"
+    />
+  }
 </div>

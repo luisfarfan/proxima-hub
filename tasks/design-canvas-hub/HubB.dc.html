@@ -1,0 +1,151 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500&family=Plus+Jakarta+Sans:wght@500;600;700&family=Inter:wght@400;500;600&display=swap">
+  <style>
+    body { margin: 0; font-family: 'Inter', system-ui, sans-serif; letter-spacing: -0.003em; }
+    button { font: inherit; cursor: pointer; border: 0; background: none; color: inherit; text-align: left; }
+
+    .hero { position: relative; overflow: hidden; border-radius: 20px; background: #060818; color: #f6f6f8; padding: 34px 36px; }
+    .hero::before { content: ''; position: absolute; inset: -40px; background-image: radial-gradient(rgba(255,255,255,0.09) 1px, transparent 1px); background-size: 22px 22px; animation: drift 26s linear infinite; }
+    @keyframes drift { from { transform: translate3d(0,0,0); } to { transform: translate3d(22px,22px,0); } }
+    .hero::after { content: ''; position: absolute; right: -120px; top: -120px; width: 380px; height: 380px; border-radius: 50%; background: rgba(0,9,220,0.55); filter: blur(90px); animation: breathe 9s ease-in-out infinite; }
+    @keyframes breathe { 0%,100% { opacity: 0.55; transform: scale(1); } 50% { opacity: 0.85; transform: scale(1.1); } }
+
+    .ring { position: relative; width: 92px; height: 92px; flex-shrink: 0; }
+    .ring svg { transform: rotate(-90deg); }
+    .ring-num { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+
+    .switch { display: flex; align-items: center; gap: 10px; padding: 12px 14px; border-radius: 12px; border: 1px solid rgba(27,26,23,0.11); background: #fff; transition: transform 200ms cubic-bezier(0.16,1,0.3,1), border-color 180ms ease; }
+    .switch:hover { transform: translateY(-2px); border-color: rgba(27,26,23,0.24); }
+    .switch-ico { width: 34px; height: 34px; border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; background: #0009dc; color: #fff; }
+    .switch.is-locked { background: transparent; border-style: dashed; }
+    .switch.is-locked .switch-ico { background: rgba(27,26,23,0.06); color: #a5a39b; }
+    .switch-name { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 0.875rem; font-weight: 600; }
+    .switch.is-locked .switch-name { color: #6c6a63; font-weight: 500; }
+    .switch-sub { display: block; font-size: 0.6875rem; color: #8a887f; margin-top: 2px; }
+
+    .later { display: flex; align-items: center; gap: 11px; padding: 11px 0; font-size: 0.8125rem; color: #6c6a63; border-bottom: 1px solid rgba(27,26,23,0.06); }
+    .later:last-child { border-bottom: none; }
+    .later-n { width: 20px; height: 20px; border-radius: 50%; background: rgba(27,26,23,0.06); color: #8a887f; font-size: 0.6875rem; font-weight: 600; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+
+    .in { opacity: 0; animation: up 560ms cubic-bezier(0.16,1,0.3,1) forwards; }
+    @keyframes up { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+    @media (prefers-reduced-motion: reduce) { .in { animation-duration: 1ms; opacity: 1; transform: none; } .hero::before, .hero::after { animation: none; } }
+  </style>
+</helmet>
+<div style="width: 1180px; height: 1020px; box-sizing: border-box; background: #fbfaf8; color: #1b1a17; overflow: hidden;">
+
+  <header style="display: flex; align-items: center; justify-content: space-between; padding: 18px 40px; border-bottom: 1px solid rgba(27,26,23,0.07);">
+    <span style="font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 600; font-size: 1.1875rem; letter-spacing: -0.02em;">Próxima</span>
+    <span style="display: flex; align-items: center; gap: 12px;">
+      <span style="display: inline-flex; align-items: center; gap: 8px; height: 34px; padding: 0 12px; border: 1px solid rgba(27,26,23,0.11); border-radius: 999px; background: #fff; font-size: 0.8125rem; font-weight: 500;">
+        <span style="width: 22px; height: 22px; border-radius: 6px; background: #1b1a17; color: #fff; font-family: 'Fraunces', Georgia, serif; font-size: 0.6875rem; display: flex; align-items: center; justify-content: center;">L</span>
+        LuchoEcommerce
+      </span>
+      <span style="width: 32px; height: 32px; border-radius: 50%; background: #0009dc; color: #fff; font-weight: 600; font-size: 0.8125rem; display: flex; align-items: center; justify-content: center;">L</span>
+    </span>
+  </header>
+
+  <main style="max-width: 1100px; margin: 0 auto; padding: 30px 40px; display: flex; flex-direction: column; gap: 22px;">
+
+    <!-- Un solo siguiente paso, y ocupa lo que merece -->
+    <section class="in hero">
+      <div style="position: relative; display: flex; align-items: center; gap: 32px;">
+        <div class="ring">
+          <svg width="92" height="92" viewBox="0 0 92 92">
+            <circle cx="46" cy="46" r="40" fill="none" stroke="rgba(255,255,255,0.14)" stroke-width="7"/>
+            <circle cx="46" cy="46" r="40" fill="none" stroke="#6272f9" stroke-width="7" stroke-linecap="round" stroke-dasharray="251" stroke-dashoffset="251"/>
+          </svg>
+          <span class="ring-num">
+            <b style="font-family: 'Fraunces', Georgia, serif; font-size: 1.5rem; font-weight: 500;">0</b>
+            <span style="font-size: 0.625rem; color: rgba(246,246,248,0.55);">de 10</span>
+          </span>
+        </div>
+        <div style="flex: 1; min-width: 0;">
+          <span style="display: block; font-size: 0.6875rem; font-weight: 600; letter-spacing: 0.13em; text-transform: uppercase; color: rgba(246,246,248,0.5); margin-bottom: 10px;">Tu siguiente paso</span>
+          <h1 style="margin: 0; font-family: 'Fraunces', Georgia, serif; font-weight: 500; font-size: 2.125rem; line-height: 1.08; letter-spacing: -0.018em;">Sube tu primer producto</h1>
+          <p style="margin: 10px 0 0; font-size: 0.9375rem; line-height: 1.5; color: rgba(246,246,248,0.7); max-width: 34rem;">Sin productos no hay nada que vender ni que mostrar. Tu plan Gratis incluye diez — con uno solo ya puedes registrar tu primera venta.</p>
+        </div>
+        <span style="flex-shrink: 0; height: 48px; padding: 0 26px; border-radius: 11px; background: #fff; color: #060818; font-weight: 600; font-size: 0.9375rem; display: inline-flex; align-items: center; gap: 10px;">
+          Agregar producto
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        </span>
+      </div>
+    </section>
+
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px;">
+
+      <!-- Lo que viene después, sin ruido -->
+      <section class="in" style="animation-delay: 100ms; border: 1px solid rgba(27,26,23,0.11); border-radius: 16px; background: #fff; padding: 22px;">
+        <div style="display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 10px;">
+          <h2 style="margin: 0; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 1rem; font-weight: 600;">Y después</h2>
+          <span style="font-size: 0.75rem; color: #8a887f;">4 pasos más</span>
+        </div>
+        <div class="later"><span class="later-n">2</span>Configura tus métodos de pago</div>
+        <div class="later"><span class="later-n">3</span>Ponle nombre y logo a tu tienda</div>
+        <div class="later"><span class="later-n">4</span>Deja tu contacto visible</div>
+        <div class="later"><span class="later-n">5</span>Completa los datos de tus productos</div>
+        <p style="margin: 14px 0 0; padding-top: 12px; border-top: 1px solid rgba(27,26,23,0.06); font-size: 0.75rem; line-height: 1.5; color: #8a887f;">Se abren de a uno. Nada de siete casillas vacías el primer día.</p>
+      </section>
+
+      <!-- Plan, con la cuota que de verdad aprieta -->
+      <section class="in" style="animation-delay: 160ms; border: 1px solid rgba(27,26,23,0.11); border-radius: 16px; background: #fff; padding: 22px; display: flex; flex-direction: column;">
+        <div style="display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 14px;">
+          <h2 style="margin: 0; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 1rem; font-weight: 600;">Plan Gratis</h2>
+          <span style="font-size: 0.75rem; color: #8a887f;">S/ 0 al mes · sin vencimiento</span>
+        </div>
+        <div style="display: flex; justify-content: space-between; font-size: 0.75rem; margin-bottom: 6px;"><span style="color: #6c6a63;">Productos</span><b>0 / 10</b></div>
+        <div style="height: 5px; border-radius: 999px; background: rgba(27,26,23,0.09); margin-bottom: 12px;"></div>
+        <div style="display: flex; justify-content: space-between; font-size: 0.75rem; margin-bottom: 6px;"><span style="color: #6c6a63;">Usuarios</span><b>1 / 1</b></div>
+        <div style="height: 5px; border-radius: 999px; background: rgba(27,26,23,0.09); margin-bottom: 12px;"><span style="display: block; height: 100%; width: 100%; background: #bb3a2c; border-radius: 999px;"></span></div>
+        <div style="display: flex; justify-content: space-between; font-size: 0.75rem; margin-bottom: 6px;"><span style="color: #6c6a63;">Pedidos del mes</span><b>0 / 30</b></div>
+        <div style="height: 5px; border-radius: 999px; background: rgba(27,26,23,0.09);"></div>
+        <p style="margin: auto 0 0; padding-top: 18px; font-size: 0.8125rem; line-height: 1.5; color: #6c6a63;">Cuando llegues al tope te lo decimos acá, con el plan exacto que lo resuelve. <a href="#" style="color: #0009dc; text-decoration: none;">Ver planes</a></p>
+      </section>
+
+    </div>
+
+    <!-- El switcher, reducido a lo que es: un cambiador -->
+    <section class="in" style="animation-delay: 220ms;">
+      <div style="display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 12px;">
+        <h2 style="margin: 0; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 1rem; font-weight: 600;">Tus aplicaciones</h2>
+        <span style="font-size: 0.75rem; color: #8a887f;">Una sesión, todos tus productos</span>
+      </div>
+      <div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px;">
+        <button type="button" class="switch">
+          <span class="switch-ico"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg></span>
+          <span><span class="switch-name">Panel</span><span class="switch-sub">Abrir</span></span>
+        </button>
+        <button type="button" class="switch is-locked">
+          <span class="switch-ico"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18"/></svg></span>
+          <span><span class="switch-name">Tienda Web</span><span class="switch-sub">Add-on · S/ 50 al mes</span></span>
+        </button>
+        <button type="button" class="switch is-locked">
+          <span class="switch-ico"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="8" width="18" height="13" rx="2"/><path d="M3 8l2-4h14l2 4"/></svg></span>
+          <span><span class="switch-name">Caja</span><span class="switch-sub">Desde el plan Lidera</span></span>
+        </button>
+        <button type="button" class="switch is-locked">
+          <span class="switch-ico"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.8 4.3L18 9l-4.2 1.7L12 15l-1.8-4.3L6 9l4.2-1.7L12 3z"/></svg></span>
+          <span><span class="switch-name">Intelligence</span><span class="switch-sub">Add-on · S/ 100 al mes</span></span>
+        </button>
+      </div>
+    </section>
+
+  </main>
+
+</div>
+</x-dc>
+<script data-dc-script data-props='{"$preview":{"width":1180,"height":1020}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

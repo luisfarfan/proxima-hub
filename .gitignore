@@ -54,3 +54,8 @@ Thumbs.db
 *.db
 .beads-credential-key
 .beads/proxieddb/
+
+# Local state written by the retrieval tools rein provisions: machine-specific, regenerated, never committed.
+.serena/
+graphify-out/
+.codegraph/

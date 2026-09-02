@@ -106,6 +106,18 @@ function humanizeRole(slug: string): string {
       @if (showInvite() && canInvite()) {
         <div class="invite-form" role="region" aria-label="Formulario de invitación">
           <div class="field">
+            <label class="field-label" for="invite-name">Nombre</label>
+            <input
+              id="invite-name"
+              type="text"
+              class="field-input"
+              placeholder="Ej. Ana Torres"
+              [value]="inviteName()"
+              (input)="inviteName.set($any($event.target).value)"
+              autocomplete="name"
+            />
+          </div>
+          <div class="field">
             <label class="field-label" for="invite-email">Correo electrónico</label>
             <input
               id="invite-email"
@@ -176,13 +188,14 @@ function humanizeRole(slug: string): string {
                 } @else if (roles().length > 0) {
                   <select
                     class="role-select"
-                    [value]="m.role_id || m.role"
                     [disabled]="changingRoleId() === m.id"
                     (change)="changeRole(m.id, $any($event.target).value)"
                     [attr.aria-label]="'Rol de ' + (m.full_name || m.email)"
                   >
                     @for (r of roles(); track r.id) {
-                      <option [value]="r.id">{{ humanizeRole(r.name) }}</option>
+                      <option [value]="r.id" [selected]="isMemberRole(m, r)">
+                        {{ humanizeRole(r.name) }}
+                      </option>
                     }
                   </select>
                 } @else {
@@ -467,7 +480,34 @@ export class EquipoPageComponent {
 
   protected readonly humanizeRole = humanizeRole;
 
+  /**
+   * PPR-107 — el `<select>` mostraba "Owner" para todos.
+   *
+   * Llevaba `[value]="m.role_id || m.role"`, y en un `<select>` esa propiedad se
+   * fija ANTES de que el `@for` haya creado sus `<option>`: sin una opción que
+   * coincida, el navegador se queda en la primera, que es Owner. El dato llegaba
+   * bien; la pantalla no lo usaba para preseleccionar.
+   *
+   * Marcar la opción resuelve el orden. La comparación va como texto porque el
+   * `role_id` del miembro puede venir numérico y el `value` de la opción siempre
+   * es string.
+   */
+  protected isMemberRole(member: TeamMember, role: TeamRole): boolean {
+    const current = member.role_id ?? member.role;
+    return current != null && String(current) === String(role.id);
+  }
+
   protected readonly showInvite = signal(false);
+  /**
+   * PPR-110 — la invitación sólo pedía correo y rol, así que la persona quedaba
+   * sin nombre en todo el producto: el Hub la saludaba con "Hola, tú" y su fila
+   * del equipo era sólo una dirección. La API ya aceptaba `full_name` en
+   * `POST /admin/team/members`; el formulario nunca lo preguntaba.
+   *
+   * Opcional a propósito: no vale la pena bloquear una invitación por esto, y
+   * la persona puede completarlo después desde su perfil.
+   */
+  protected readonly inviteName = signal('');
   protected readonly inviteEmail = signal('');
   protected readonly inviteRoleId = signal('');
   protected readonly inviting = signal(false);
@@ -492,11 +532,19 @@ export class EquipoPageComponent {
     this.inviting.set(true);
     try {
       const payload: Record<string, string> = { email };
+      const name = this.inviteName().trim();
+      if (name) payload['full_name'] = name;
       if (this.inviteRoleId()) payload['role_id'] = this.inviteRoleId();
       await firstValueFrom(this.http.post('admin/team/members', payload));
       this.inviteSuccess.set(true);
+      this.inviteName.set('');
       this.inviteEmail.set('');
       this.inviteRoleId.set('');
+      // PPR-108: sin esto la persona invitada no aparecía hasta recargar, y el
+      // formulario seguía abierto con el mensaje de éxito encima — como si
+      // esperara otro dato. Invitar dos veces era la reacción natural.
+      this.membersRes.reload();
+      this.showInvite.set(false);
     } catch (err: unknown) {
       const detail = (err as { error?: { detail?: string } })?.error?.detail;
       this.inviteError.set(detail ?? 'Error al enviar la invitación.');

@@ -1,0 +1,394 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500&amp;family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;family=Inter:wght@400;500;600&amp;family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,400..800&amp;display=swap">
+  <style>
+    body { margin: 0; }
+    a { color: #0009dc; text-decoration: none; }
+    a:hover { color: #0007b4; text-decoration: underline; }
+    .px-fig { background: oklch(0.365 0.268 265); clip-path: polygon(0 0, 100% 0, 100% 62%, 50% 100%, 0 62%); }
+    .px-word { font-family: 'Bricolage Grotesque', 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif; font-variation-settings: 'wdth' 86; font-weight: 800; letter-spacing: -0.01em; line-height: 1; }
+
+    /* La tarjeta entera es el botón: un solo destino, sin píldora redundante. */
+    .app-card {
+      cursor: pointer;
+      font-family: inherit;
+      text-align: left;
+      transition: transform .22s cubic-bezier(.16,1,.3,1), box-shadow .22s ease, border-color .22s ease;
+    }
+    .app-card:hover { transform: translateY(-2px); box-shadow: 0 18px 34px -24px rgba(27,26,23,.55); border-color: rgba(27,26,23,.2); }
+    .app-card:focus-visible { outline: 2px solid #0009dc; outline-offset: 2px; }
+    .app-cta { opacity: .5; transition: opacity .18s ease; }
+    .app-card:hover .app-cta { opacity: 1; }
+    .app-cta svg { transition: transform .2s cubic-bezier(.16,1,.3,1); }
+    .app-card:hover .app-cta svg { transform: translateX(3px); }
+
+    .lock-card { cursor: pointer; font-family: inherit; text-align: left; transition: border-color .18s ease, background .18s ease; }
+    .lock-card:hover { border-color: rgba(0,9,220,.4); background: rgba(0,9,220,.03); }
+    .lock-card:focus-visible { outline: 2px solid #0009dc; outline-offset: 2px; }
+
+    .step-row { cursor: pointer; font-family: inherit; text-align: left; width: 100%; background: none; border: 0; }
+    .step-row:hover .step-label { color: #0009dc; }
+    .step-row:focus-visible { outline: 2px solid #0009dc; outline-offset: 2px; border-radius: 6px; }
+
+    .banner-btn { cursor: pointer; font-family: inherit; transition: background .16s ease; border: 0; }
+    .banner-btn:hover { filter: brightness(1.12); }
+    .banner-btn:focus-visible { outline: 2px solid #0009dc; outline-offset: 2px; }
+  </style>
+</helmet>
+
+<div style="width: 1120px; box-sizing: border-box; min-height: 1400px; background: #fbfaf8; color: #1b1a17; font-family: Inter, ui-sans-serif, system-ui, sans-serif; letter-spacing: -0.003em;">
+
+  <!-- Top bar — sin cambios, es la barra que ya existe -->
+  <div style="display: flex; align-items: center; justify-content: space-between; padding: 17.6px 32px; border-bottom: 1px solid rgba(27, 26, 23, 0.07);">
+    <div style="display: flex; align-items: center; gap: 8px; line-height: 1; color: oklch(0.205 0.016 74);">
+      <span class="px-fig" style="width: 14px; height: 22px; flex-shrink: 0;"></span>
+      <span class="px-word" style="font-size: 18.4px;">PROXIMA</span>
+    </div>
+    <div style="display: flex; align-items: center; gap: 12px;">
+      <div style="display: inline-flex; align-items: center; gap: 9px; height: 36px; padding: 0 12px 0 8px; border: 1px solid rgba(27, 26, 23, 0.11); border-radius: 999px; background: #ffffff; font-size: 13px; font-weight: 500;">
+        <span style="width: 24px; height: 24px; border-radius: 7px; background: #1b1a17; color: #fff; font-family: Fraunces, ui-serif, Georgia, serif; font-weight: 500; font-size: 13px; display: flex; align-items: center; justify-content: center;">M</span>
+        Megatienda Lima
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#73716a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+      </div>
+      <span style="width: 36px; height: 36px; border-radius: 50%; background: {{accent}}; color: #fff; font-weight: 600; font-size: 13px; display: flex; align-items: center; justify-content: center;">L</span>
+    </div>
+  </div>
+
+  <div style="max-width: 1024px; box-sizing: border-box; margin: 0 auto; padding: 44px 32px 80px;">
+
+    <!-- ── Saludo + el paso que toca, ahora accionable ───────────────────── -->
+    <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 32px; margin-bottom: 36px;">
+      <div style="min-width: 0;">
+        <h1 style="font-family: Fraunces, ui-serif, Georgia, serif; font-weight: 500; font-size: 40px; letter-spacing: -0.015em; line-height: 1.05; margin: 0;">Hola, Lucho</h1>
+        <p style="margin: 10px 0 0; font-size: 15px; color: #6c6a63;">Megatienda Lima · <span style="color: #1b1a17; font-weight: 500;">Plan {{planLabel}}</span></p>
+      </div>
+
+      <sc-if value="{{hasNext}}" hint-placeholder-val="{{ true }}">
+        <div style="display: flex; align-items: center; gap: 16px; flex-shrink: 0; padding: 14px 16px 14px 18px; border: 1px solid rgba(27, 26, 23, 0.11); border-radius: 14px; background: #ffffff; box-shadow: 0 2px 10px -6px rgba(27, 26, 23, 0.28);">
+          <span style="width: 8px; height: 8px; border-radius: 50%; background: #bb3a2c; flex-shrink: 0;"></span>
+          <span style="display: flex; flex-direction: column; gap: 2px;">
+            <span style="font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #73716a;">Lo que falta para vender</span>
+            <span style="font-family: 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif; font-size: 15px; font-weight: 600;">{{nextLabel}}</span>
+          </span>
+          <button class="banner-btn" onClick="{{completeNext}}" style="height: 40px; padding: 0 18px; border-radius: 10px; background: {{accent}}; color: #fff; font-size: 13px; font-weight: 600; display: inline-flex; align-items: center; gap: 7px;">
+            Empezar
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </button>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{allDone}}" hint-placeholder-val="{{ false }}">
+        <div style="display: flex; align-items: center; gap: 12px; flex-shrink: 0; padding: 16px 20px; border: 1px solid rgba(39, 166, 68, 0.28); border-radius: 14px; background: rgba(39, 166, 68, 0.06);">
+          <span style="width: 22px; height: 22px; border-radius: 50%; background: #27a644; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          </span>
+          <span style="font-family: 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif; font-size: 15px; font-weight: 600;">Tu negocio está listo para vender</span>
+        </div>
+      </sc-if>
+    </div>
+
+    <!-- ── Tus apps ───────────────────────────────────────────────────────── -->
+    <div style="margin-bottom: 36px;">
+      <div style="display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 16px;">
+        <h2 style="font-family: 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif; font-weight: 600; font-size: 17px; letter-spacing: -0.01em; margin: 0;">Tus apps</h2>
+        <span style="font-size: 13px; color: #73716a;">Incluidas en el plan {{planLabel}}</span>
+      </div>
+
+      <!-- Panel: el que se abre todos los días manda, y trae por qué abrirlo -->
+      <button class="app-card" onClick="{{openPanel}}" style="display: block; width: 100%; box-sizing: border-box; border: 1px solid rgba(27, 26, 23, 0.11); border-radius: 18px; background: #ffffff; padding: 22px 24px; box-shadow: 0 2px 10px -6px rgba(27, 26, 23, 0.28); margin-bottom: 12px;">
+        <div style="display: flex; align-items: flex-start; gap: 16px;">
+          <span style="width: 48px; height: 48px; border-radius: 14px; background: rgba(0, 9, 220, 0.08); color: {{accent}}; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M8.5 4v16"/><path d="M5.75 8h.01M5.75 11.5h.01M5.75 15h.01"/><path d="M11.5 9h6M11.5 12.5h6M11.5 16h3.5"/></svg>
+          </span>
+          <span style="display: flex; flex-direction: column; gap: 3px; min-width: 0; flex: 1;">
+            <span style="font-family: 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif; font-size: 19px; font-weight: 700; letter-spacing: -0.015em;">Panel</span>
+            <span style="font-size: 13px; line-height: 1.45; color: #6c6a63;">Tu escritorio: catálogo, pedidos, stock y clientes</span>
+          </span>
+          <span class="app-cta" style="display: inline-flex; align-items: center; gap: 7px; font-size: 13px; font-weight: 600; color: {{accent}}; flex-shrink: 0; padding-top: 4px;">
+            {{ctaPanel}}
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </span>
+        </div>
+
+        <div style="display: flex; gap: 10px; margin: 18px 0 0 64px;">
+          <span style="display: flex; flex-direction: column; gap: 1px; flex: 1; padding: 11px 14px; border-radius: 11px; background: #f6f5f2;">
+            <b style="font-family: Fraunces, ui-serif, Georgia, serif; font-size: 21px; font-weight: 500; line-height: 1.1; color: #8a6d1f;">12</b>
+            <span style="font-size: 12px; color: #6c6a63;">pedidos sin atender</span>
+          </span>
+          <span style="display: flex; flex-direction: column; gap: 1px; flex: 1; padding: 11px 14px; border-radius: 11px; background: #f6f5f2;">
+            <b style="font-family: Fraunces, ui-serif, Georgia, serif; font-size: 21px; font-weight: 500; line-height: 1.1;">S/ 4,820</b>
+            <span style="font-size: 12px; color: #6c6a63;">vendido hoy</span>
+          </span>
+        </div>
+      </button>
+
+      <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px;">
+
+        <sc-if value="{{ownCaja}}" hint-placeholder-val="{{ true }}">
+          <button class="app-card" onClick="{{openCaja}}" style="display: flex; flex-direction: column; gap: 14px; width: 100%; box-sizing: border-box; border: 1px solid rgba(27, 26, 23, 0.11); border-radius: 18px; background: #ffffff; padding: 20px 22px; box-shadow: 0 2px 10px -6px rgba(27, 26, 23, 0.28);">
+            <span style="display: flex; align-items: flex-start; gap: 14px; width: 100%;">
+              <span style="width: 44px; height: 44px; border-radius: 13px; background: oklch(0.52 0.13 205 / 0.11); color: oklch(0.52 0.13 205); display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M5 3.5h14v16.5l-3.5-1.8-3.5 1.8-3.5-1.8-3.5 1.8z"/><path d="M8.5 8h7M8.5 12h7M8.5 16h4"/></svg>
+              </span>
+              <span style="display: flex; flex-direction: column; gap: 3px; min-width: 0; flex: 1;">
+                <span style="font-family: 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif; font-size: 17px; font-weight: 600;">Caja</span>
+                <span style="font-size: 13px; line-height: 1.45; color: #6c6a63;">Punto de venta: cobra en mostrador y emite boleta</span>
+              </span>
+            </span>
+            <span style="display: flex; align-items: center; justify-content: space-between; gap: 12px; width: 100%; padding-top: 13px; border-top: 1px solid rgba(27, 26, 23, 0.07);">
+<span></span>
+              <span class="app-cta" style="display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 600; color: {{accent}}; flex-shrink: 0;">
+                {{ctaCaja}}
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+              </span>
+            </span>
+          </button>
+        </sc-if>
+
+        <sc-if value="{{ownTienda}}" hint-placeholder-val="{{ true }}">
+          <button class="app-card" onClick="{{openTienda}}" style="display: flex; flex-direction: column; gap: 14px; width: 100%; box-sizing: border-box; border: 1px solid rgba(27, 26, 23, 0.11); border-radius: 18px; background: #ffffff; padding: 20px 22px; box-shadow: 0 2px 10px -6px rgba(27, 26, 23, 0.28);">
+            <span style="display: flex; align-items: flex-start; gap: 14px; width: 100%;">
+              <span style="width: 44px; height: 44px; border-radius: 13px; background: oklch(0.53 0.15 28 / 0.11); color: oklch(0.53 0.15 28); display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 8h18"/><rect x="6" y="11" width="5.5" height="5.5" rx="1"/><rect x="13.5" y="11" width="5.5" height="5.5" rx="1" stroke-dasharray="2 2"/></svg>
+              </span>
+              <span style="display: flex; flex-direction: column; gap: 3px; min-width: 0; flex: 1;">
+                <span style="font-family: 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif; font-size: 17px; font-weight: 600;">Tienda Web</span>
+                <span style="font-size: 13px; line-height: 1.45; color: #6c6a63;">Arrastra bloques, arma tu tienda y publícala</span>
+              </span>
+            </span>
+            <span style="display: flex; align-items: center; justify-content: space-between; gap: 12px; width: 100%; padding-top: 13px; border-top: 1px solid rgba(27, 26, 23, 0.07);">
+              <span style="display: inline-flex; align-items: center; gap: 8px; font-size: 12.5px; color: #6c6a63; min-width: 0;">
+                <span style="width: 7px; height: 7px; border-radius: 50%; background: #8a6d1f; flex-shrink: 0;"></span>
+                Sin publicar · borrador con 4 secciones
+              </span>
+              <span class="app-cta" style="display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 600; color: {{accent}}; flex-shrink: 0;">
+                {{ctaTienda}}
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+              </span>
+            </span>
+          </button>
+        </sc-if>
+
+      </div>
+    </div>
+
+    <!-- ── Lo que se abre pagando: papel, no tarjeta ──────────────────────── -->
+    <div style="margin-bottom: 36px;">
+      <div style="display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 16px;">
+        <h2 style="font-family: 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif; font-weight: 600; font-size: 17px; letter-spacing: -0.01em; margin: 0;">Para cuando crezcas</h2>
+        <a href="#plan" style="font-size: 12px;">Ver todos los planes</a>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 10px;">
+
+        <sc-if value="{{lockCaja}}" hint-placeholder-val="{{ false }}">
+          <button class="lock-card" style="display: flex; align-items: center; gap: 14px; width: 100%; box-sizing: border-box; border: 1px dashed rgba(27, 26, 23, 0.18); border-radius: 14px; background: transparent; padding: 16px 18px;">
+            <span style="width: 38px; height: 38px; border-radius: 11px; background: rgba(27, 26, 23, 0.06); color: #73716a; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+              <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M5 3.5h14v16.5l-3.5-1.8-3.5 1.8-3.5-1.8-3.5 1.8z"/><path d="M8.5 8h7M8.5 12h7M8.5 16h4"/></svg>
+            </span>
+            <span style="display: flex; flex-direction: column; gap: 3px; min-width: 0;">
+              <span style="font-family: 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif; font-size: 15px; font-weight: 600; color: #4a4841;">Caja</span>
+              <span style="font-size: 12px; line-height: 1.45; color: #6c6a63;">El punto de venta viene incluido desde el plan Emprende</span>
+            </span>
+            <span style="margin-left: auto; flex-shrink: 0; text-align: right;">
+              <b style="display: block; font-family: Fraunces, ui-serif, Georgia, serif; font-size: 18px; font-weight: 500;">Emprende</b>
+              <span style="font-size: 11px; color: #73716a;">cambiar de plan</span>
+            </span>
+          </button>
+        </sc-if>
+
+        <sc-if value="{{lockTienda}}" hint-placeholder-val="{{ false }}">
+          <button class="lock-card" style="display: flex; align-items: center; gap: 14px; width: 100%; box-sizing: border-box; border: 1px dashed rgba(27, 26, 23, 0.18); border-radius: 14px; background: transparent; padding: 16px 18px;">
+            <span style="width: 38px; height: 38px; border-radius: 11px; background: rgba(27, 26, 23, 0.06); color: #73716a; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+              <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 8h18"/><rect x="6" y="11" width="5.5" height="5.5" rx="1"/><rect x="13.5" y="11" width="5.5" height="5.5" rx="1" stroke-dasharray="2 2"/></svg>
+            </span>
+            <span style="display: flex; flex-direction: column; gap: 3px; min-width: 0;">
+              <span style="font-family: 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif; font-size: 15px; font-weight: 600; color: #4a4841;">Tienda Web</span>
+              <span style="font-size: 12px; line-height: 1.45; color: #6c6a63;">El constructor de tiendas se activa como add-on desde Emprende</span>
+            </span>
+            <span style="margin-left: auto; flex-shrink: 0; text-align: right;">
+              <b style="display: block; font-family: Fraunces, ui-serif, Georgia, serif; font-size: 18px; font-weight: 500;">S/ 50</b>
+              <span style="font-size: 11px; color: #73716a;">al mes</span>
+            </span>
+          </button>
+        </sc-if>
+
+        <button class="lock-card" style="display: flex; align-items: center; gap: 14px; width: 100%; box-sizing: border-box; border: 1px dashed rgba(27, 26, 23, 0.18); border-radius: 14px; background: transparent; padding: 16px 18px;">
+          <span style="width: 38px; height: 38px; border-radius: 11px; background: rgba(27, 26, 23, 0.06); color: #73716a; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+            <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 17l5-5.5 3.5 3L18 8"/><path d="M14.5 8H18v3.5"/><path d="M6.6 3.4l.75 1.95 1.95.75-1.95.75-.75 1.95-.75-1.95L3.9 6.1l1.95-.75.75-1.95z"/></svg>
+          </span>
+          <span style="display: flex; flex-direction: column; gap: 3px; min-width: 0;">
+            <span style="font-family: 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif; font-size: 15px; font-weight: 600; color: #4a4841;">Intelligence</span>
+            <span style="font-size: 12px; line-height: 1.45; color: #6c6a63;">Precios sugeridos y márgenes con IA — se activa suelto</span>
+          </span>
+          <span style="margin-left: auto; flex-shrink: 0; text-align: right;">
+            <b style="display: block; font-family: Fraunces, ui-serif, Georgia, serif; font-size: 18px; font-weight: 500;">S/ 100</b>
+            <span style="font-size: 11px; color: #73716a;">al mes</span>
+          </span>
+        </button>
+
+      </div>
+    </div>
+
+    <!-- ── Configuración + plan ───────────────────────────────────────────── -->
+    <div style="display: grid; grid-template-columns: 1.4fr 1fr; gap: 14px; align-items: start;">
+
+      <div style="border: 1px solid rgba(27, 26, 23, 0.11); border-radius: 16px; background: #ffffff; padding: 24px 26px;">
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px;">
+          <h2 style="font-family: 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif; font-weight: 600; font-size: 17px; letter-spacing: -0.01em; margin: 0;">Termina de configurar</h2>
+          <span style="font-size: 13px; font-weight: 600; color: #6c6a63;">{{doneCount}} de {{totalCount}}</span>
+        </div>
+        <div style="height: 4px; background: rgba(27, 26, 23, 0.11); border-radius: 999px; overflow: hidden; margin-bottom: 18px;">
+          <span style="display: block; height: 100%; width: {{progressWidth}}; background: {{accent}}; border-radius: 999px; transition: width .3s ease;"></span>
+        </div>
+
+        <div style="display: flex; flex-direction: column;">
+          <sc-for list="{{steps}}" as="step" hint-placeholder-count="5">
+            <button class="step-row" onClick="{{step.toggle}}" style="display: flex; align-items: center; gap: 12px; padding: 11px 0; font-size: 14px; border-top: {{step.rule}};">
+              <sc-if value="{{step.done}}" hint-placeholder-val="{{ false }}">
+                <span style="width: 21px; height: 21px; flex-shrink: 0; border-radius: 50%; background: {{accent}}; display: flex; align-items: center; justify-content: center;">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                </span>
+              </sc-if>
+              <sc-if value="{{step.pending}}" hint-placeholder-val="{{ true }}">
+                <span style="width: 21px; height: 21px; flex-shrink: 0; border-radius: 50%; border: 1.5px solid {{step.ring}}; background: {{step.fill}}; box-sizing: border-box;"></span>
+              </sc-if>
+              <span class="step-label" style="flex: 1; color: {{step.color}}; font-weight: {{step.weight}}; text-decoration: {{step.strike}};">{{step.label}}</span>
+              <sc-if value="{{step.isNext}}" hint-placeholder-val="{{ false }}">
+                <span style="font-size: 12px; font-weight: 600; color: {{accent}}; flex-shrink: 0;">Empezar</span>
+              </sc-if>
+            </button>
+          </sc-for>
+        </div>
+
+        <p style="margin: 16px 0 0; padding-top: 14px; border-top: 1px solid rgba(27, 26, 23, 0.07); font-size: 12px; line-height: 1.55; color: #73716a;">Solo aparecen los pasos que tu plan permite completar. Los que dependen de otro plan se suman cuando lo actives.</p>
+      </div>
+
+      <div style="display: flex; flex-direction: column; border: 1px solid rgba(27, 26, 23, 0.11); border-radius: 16px; background: #ffffff; padding: 24px 26px;">
+        <span style="display: block; font-size: 11px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: {{accent}}; margin-bottom: 11px;">Tu plan</span>
+        <h2 id="plan" style="font-family: Fraunces, ui-serif, Georgia, serif; font-weight: 500; font-size: 28px; line-height: 1.1; margin: 2px 0 0; letter-spacing: -0.01em;">{{planLabel}}</h2>
+
+        <div style="display: flex; flex-direction: column; gap: 6px; margin: 20px 0 22px;">
+          <div style="display: flex; align-items: baseline; justify-content: space-between; font-size: 13px;">
+            <span style="color: #6c6a63;">Usuarios</span>
+            <b style="color: #1b1a17; font-weight: 600; font-size: 12px;">{{usersLabel}}</b>
+          </div>
+          <div style="height: 4px; background: rgba(27, 26, 23, 0.11); border-radius: 999px; overflow: hidden; margin-bottom: 8px;">
+            <span style="display: block; height: 100%; width: {{usersWidth}}; background: #1b1a17; border-radius: 999px;"></span>
+          </div>
+          <div style="display: flex; align-items: baseline; justify-content: space-between; font-size: 13px;">
+            <span style="color: #6c6a63;">Almacenamiento</span>
+            <b style="color: #1b1a17; font-weight: 600; font-size: 12px;">{{storageLabel}}</b>
+          </div>
+          <div style="height: 4px; background: rgba(27, 26, 23, 0.11); border-radius: 999px; overflow: hidden;">
+            <span style="display: block; height: 100%; width: {{storageWidth}}; background: {{storageBar}}; border-radius: 999px;"></span>
+          </div>
+        </div>
+
+        <div style="height: 46px; border-radius: 10px; background: {{accent}}; color: #fff; font-weight: 600; font-size: 13px; display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: auto;">
+          Salir en vivo
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        </div>
+        <p style="font-size: 12px; line-height: 1.45; color: #73716a; margin: 11px 0 0; text-align: center;">Publica tu tienda, emite boletas SUNAT y conecta WhatsApp.</p>
+      </div>
+
+    </div>
+  </div>
+</div>
+</x-dc>
+
+<script data-dc-script data-props='{"plan":{"editor":"enum","options":["Lidera","Emprende","Gratis"],"default":"Lidera","section":"Estado"},"accent":{"editor":"color","default":"#0009dc","options":["#0009dc","#1b1a17","#000678"],"section":"Marca"},"$preview":{"width":1120,"height":1480}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = {
+      done: { biz: true, nombre: true, logo: false, productos: false, pagos: false },
+      opening: null,
+    };
+  }
+
+  renderVals() {
+    const accent = this.props.accent ?? '#0009dc';
+    const plan = this.props.plan ?? 'Lidera';
+
+    // Espejo de APP_GATES/ADD_ON_CATALOG: qué entra con cada plan.
+    const ownCaja = plan === 'Lidera' || plan === 'Emprende';
+    const ownTienda = plan === 'Lidera';
+
+    const defs = [
+      { id: 'biz', label: 'Crea tu negocio' },
+      { id: 'nombre', label: 'Configura el nombre de tu tienda' },
+      { id: 'logo', label: 'Sube tu logo' },
+      { id: 'productos', label: 'Sube tus primeros productos' },
+      { id: 'pagos', label: 'Configura tus métodos de pago' },
+    ];
+
+    const done = this.state.done;
+    const next = defs.find((d) => !done[d.id]) ?? null;
+    const doneCount = defs.filter((d) => done[d.id]).length;
+
+    const steps = defs.map((d, i) => {
+      const isDone = !!done[d.id];
+      const isNext = !!next && next.id === d.id;
+      return {
+        id: d.id,
+        label: d.label,
+        done: isDone,
+        pending: !isDone,
+        isNext: isNext,
+        rule: i === 0 ? 'none' : '1px solid rgba(27, 26, 23, 0.07)',
+        ring: isNext ? accent : 'rgba(27, 26, 23, 0.18)',
+        fill: isNext ? 'rgba(0, 9, 220, 0.1)' : 'transparent',
+        color: isDone ? '#73716a' : '#1b1a17',
+        weight: isNext ? '600' : '400',
+        strike: isDone ? 'line-through' : 'none',
+        toggle: () => this.setState({ done: { ...this.state.done, [d.id]: !this.state.done[d.id] } }),
+      };
+    });
+
+    const openApp = (key) => () => this.setState({ opening: key });
+    const cta = (key) => (this.state.opening === key ? 'Abriendo' : 'Abrir');
+
+    return {
+      accent: accent,
+      planLabel: plan,
+      ownCaja: ownCaja,
+      ownTienda: ownTienda,
+      lockCaja: !ownCaja,
+      lockTienda: !ownTienda,
+      steps: steps,
+      doneCount: doneCount,
+      totalCount: defs.length,
+      progressWidth: Math.round((doneCount / defs.length) * 100) + '%',
+      hasNext: !!next,
+      allDone: !next,
+      nextLabel: next ? next.label : '',
+      completeNext: () => {
+        if (!next) return;
+        this.setState({ done: { ...this.state.done, [next.id]: true } });
+      },
+      openPanel: openApp('panel'),
+      openCaja: openApp('caja'),
+      openTienda: openApp('tienda'),
+      ctaPanel: cta('panel'),
+      ctaCaja: cta('caja'),
+      ctaTienda: cta('tienda'),
+      usersLabel: plan === 'Gratis' ? '4 / 5' : '4 / 100',
+      usersWidth: plan === 'Gratis' ? '80%' : '4%',
+      // El API manda -1 para «sin tope»; imprimirlo tal cual es el bug de hoy.
+      storageLabel: plan === 'Gratis' ? '0,4 / 1 GB' : 'Ilimitado',
+      storageWidth: plan === 'Gratis' ? '40%' : '100%',
+      storageBar: plan === 'Gratis' ? '#1b1a17' : 'rgba(27, 26, 23, 0.22)',
+    };
+  }
+}
+</script>
+</body>
+</html>

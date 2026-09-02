@@ -1,0 +1,165 @@
+{
+  "pages": [
+    {
+      "id": "page-1",
+      "name": "Registro"
+    },
+    {
+      "id": "page-2",
+      "name": "Adquisición"
+    }
+  ],
+  "artboards": [
+    {
+      "file": "Main.dc.html",
+      "x": 0,
+      "y": 0,
+      "w": 720,
+      "h": 1060,
+      "title": "Portada · el diagnóstico",
+      "page": "page-1"
+    },
+    {
+      "file": "HoyRegistro.dc.html",
+      "x": 780,
+      "y": 40,
+      "w": 560,
+      "h": 880,
+      "title": "Hoy · registro paso 1",
+      "page": "page-1"
+    },
+    {
+      "file": "RegistroA.dc.html",
+      "x": 1400,
+      "y": 40,
+      "w": 1180,
+      "h": 860,
+      "title": "A · Taller en vivo",
+      "page": "page-1"
+    },
+    {
+      "file": "RegistroB.dc.html",
+      "x": 2640,
+      "y": 40,
+      "w": 1180,
+      "h": 860,
+      "title": "B · Una pregunta a la vez",
+      "page": "page-1"
+    },
+    {
+      "file": "RegistroDetalle.dc.html",
+      "x": 1400,
+      "y": 1000,
+      "w": 1180,
+      "h": 760,
+      "title": "Micro-estados animados",
+      "page": "page-1"
+    },
+    {
+      "file": "HoyPlan.dc.html",
+      "x": 0,
+      "y": 0,
+      "w": 832,
+      "h": 1060,
+      "title": "Hoy · /plan",
+      "page": "page-2"
+    },
+    {
+      "file": "PlanA.dc.html",
+      "x": 892,
+      "y": 0,
+      "w": 1180,
+      "h": 920,
+      "title": "A · Tu uso decide",
+      "page": "page-2"
+    },
+    {
+      "file": "PlanB.dc.html",
+      "x": 2132,
+      "y": 0,
+      "w": 1180,
+      "h": 860,
+      "title": "B · Asistente por objetivo",
+      "page": "page-2"
+    },
+    {
+      "file": "AddonTienda.dc.html",
+      "x": 892,
+      "y": 1020,
+      "w": 1180,
+      "h": 760,
+      "title": "Add-on Tienda Web",
+      "page": "page-2"
+    }
+  ],
+  "annotations": [
+    {
+      "id": "nota-hoy-registro",
+      "x": 780,
+      "y": -120,
+      "w": 560,
+      "text": "ESTADO ACTUAL — recreado del código.\nColumna de 408 px centrada; el resto de la pantalla no hace nada.",
+      "page": "page-1"
+    },
+    {
+      "id": "nota-dir-a",
+      "x": 1400,
+      "y": -120,
+      "w": 560,
+      "text": "DIRECCIÓN A · Taller en vivo\nEl formulario a la izquierda, y a la derecha se arma tu negocio mientras escribes. Escribe en el campo del nombre: el monograma y el subdominio se actualizan.",
+      "page": "page-1"
+    },
+    {
+      "id": "nota-dir-b",
+      "x": 2640,
+      "y": -120,
+      "w": 560,
+      "text": "DIRECCIÓN B · Una pregunta a la vez\nPantalla completa, una decisión por vez, opciones grandes con icono. Más lento en clics, mucho más fácil en un celular.",
+      "page": "page-1"
+    },
+    {
+      "id": "nota-detalle",
+      "x": 1400,
+      "y": 940,
+      "w": 460,
+      "text": "Los seis momentos donde hoy el usuario se queda sin respuesta. Sirven para cualquiera de las dos direcciones.",
+      "page": "page-1"
+    },
+    {
+      "id": "nota-hoy-plan",
+      "x": 0,
+      "y": -120,
+      "w": 560,
+      "text": "ESTADO ACTUAL — recreado del código.\nLos planes son filas de texto: no se ve qué ganas al subir, ni por qué la Tienda Web está bloqueada.",
+      "page": "page-2"
+    },
+    {
+      "id": "nota-plan-a",
+      "x": 892,
+      "y": -120,
+      "w": 560,
+      "text": "DIRECCIÓN A · Tu uso decide\nTus cuotas reales abren el caso. Haz clic en una tarjeta de plan: el candado de la Tienda Web se abre o se cierra y el total de abajo cambia.",
+      "page": "page-2"
+    },
+    {
+      "id": "nota-plan-b",
+      "x": 2132,
+      "y": -120,
+      "w": 560,
+      "text": "DIRECCIÓN B · Asistente por objetivo\nMarca y desmarca objetivos: el plan recomendado, el porqué y el total se recalculan solos.",
+      "page": "page-2"
+    },
+    {
+      "id": "nota-addon",
+      "x": 892,
+      "y": 960,
+      "w": 460,
+      "text": "Por qué «Crear mi tienda» abre un asistente y no un cobro — con el dinero visible desde el primer paso.",
+      "page": "page-2"
+    }
+  ],
+  "launch": {
+    "view": "canvas",
+    "page": "page-1"
+  }
+}

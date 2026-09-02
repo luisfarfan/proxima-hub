@@ -1,0 +1,120 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500&family=Plus+Jakarta+Sans:wght@500;600;700&family=Inter:wght@400;500;600&display=swap">
+  <style>
+    body { margin: 0; font-family: 'Inter', system-ui, sans-serif; letter-spacing: -0.003em; }
+    a { color: #0009dc; text-decoration: none; } a:hover { color: #000678; }
+    button { font: inherit; cursor: pointer; border: 0; background: none; color: inherit; text-align: left; }
+
+    .grp { display: block; font-size: 0.6875rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #8a887f; margin-bottom: 9px; }
+    .who { display: flex; align-items: center; gap: 9px; margin-bottom: 12px; }
+    .who-av { width: 26px; height: 26px; border-radius: 8px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 0.6875rem; font-weight: 600; }
+    .who-n { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 0.875rem; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .who-s { display: block; font-size: 0.6875rem; color: #8a887f; margin-top: 1px; }
+
+    .nl { display: flex; align-items: center; gap: 10px; width: 100%; box-sizing: border-box; padding: 9px 11px; border-radius: 9px; font-size: 0.875rem; color: #4a4841; transition: background .14s ease, color .14s ease; }
+    .nl:hover { background: rgba(27,26,23,0.05); color: #1b1a17; }
+    .nl.on { background: #f3f4ff; color: #0009dc; font-weight: 600; }
+    .nl svg { flex-shrink: 0; opacity: .75; }
+    .nl.on svg { opacity: 1; }
+    .nl-b { margin-left: auto; font-size: 0.6875rem; font-weight: 600; color: #8a887f; background: rgba(27,26,23,0.06); padding: 2px 7px; border-radius: 999px; }
+  </style>
+</helmet>
+
+<div style="width: 1180px; height: 820px; box-sizing: border-box; background: #fbfaf8; color: #1b1a17; overflow: hidden; display: flex; flex-direction: column;">
+
+  <header style="display: flex; align-items: center; justify-content: space-between; padding: 16px 32px; border-bottom: 1px solid rgba(27,26,23,0.07);">
+    <span style="font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 600; font-size: 1.1875rem; letter-spacing: -0.02em;">Próxima</span>
+    <span style="display: flex; align-items: center; gap: 12px;">
+      <span style="display: inline-flex; align-items: center; gap: 8px; height: 34px; padding: 0 12px; border: 1px solid rgba(27,26,23,0.11); border-radius: 999px; background: #fff; font-size: 0.8125rem; font-weight: 500;">
+        <span style="width: 22px; height: 22px; border-radius: 6px; background: #1b1a17; color: #fff; font-family: 'Fraunces', Georgia, serif; font-size: 0.6875rem; display: flex; align-items: center; justify-content: center;">L</span>
+        LuchoEcommerce
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#73716a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+      </span>
+      <span style="width: 32px; height: 32px; border-radius: 50%; background: #0009dc; color: #fff; font-weight: 600; font-size: 0.8125rem; display: flex; align-items: center; justify-content: center;">L</span>
+    </span>
+  </header>
+
+  <div style="flex: 1; display: flex; min-height: 0;">
+
+    <!-- El rail: dos grupos con dueño visible -->
+    <aside style="width: 244px; flex-shrink: 0; box-sizing: border-box; padding: 26px 18px; border-right: 1px solid rgba(27,26,23,0.07);">
+
+      <div style="margin-bottom: 26px;">
+        <span class="grp">Este negocio</span>
+        <div class="who">
+          <span class="who-av" style="background: #1b1a17; color: #fff; font-family: 'Fraunces', Georgia, serif;">L</span>
+          <span style="min-width: 0;">
+            <span class="who-n">LuchoEcommerce</span>
+            <span class="who-s">Plan Gratis</span>
+          </span>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 2px;">
+          <button type="button" class="nl on">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="13" rx="2"/><path d="M2 11h20"/></svg>
+            Plan y facturación
+          </button>
+          <button type="button" class="nl">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.5"/><path d="M2 20c0-3.3 3.1-5 7-5s7 1.7 7 5M17 11a3 3 0 1 0 0-6M18 20c0-2.2-.8-3.6-2-4.4"/></svg>
+            Equipo
+            <span class="nl-b">1</span>
+          </button>
+        </div>
+      </div>
+
+      <div>
+        <span class="grp">Tu cuenta</span>
+        <div class="who">
+          <span class="who-av" style="background: #0009dc; color: #fff;">L</span>
+          <span style="min-width: 0;">
+            <span class="who-n">Luis Farfán</span>
+            <span class="who-s">lucho.farfan9@gmail.com</span>
+          </span>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 2px;">
+          <button type="button" class="nl">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-6 8-6s8 2 8 6"/></svg>
+            Perfil
+          </button>
+          <button type="button" class="nl">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
+            Acceso y seguridad
+          </button>
+        </div>
+      </div>
+
+      <p style="margin: 26px 0 0; padding-top: 18px; border-top: 1px solid rgba(27,26,23,0.07); font-size: 0.75rem; line-height: 1.55; color: #8a887f;">
+        Cambiar de negocio arriba cambia solo lo del primer grupo. Tu perfil es el mismo en todos.
+      </p>
+    </aside>
+
+    <!-- El contenido, con menos ancho que antes -->
+    <main style="flex: 1; min-width: 0; padding: 30px 34px; overflow: hidden;">
+      <h1 style="margin: 0 0 6px; font-family: 'Fraunces', Georgia, serif; font-weight: 500; font-size: 1.875rem; letter-spacing: -0.02em;">Plan y facturación</h1>
+      <p style="margin: 0 0 24px; font-size: 0.875rem; color: #6c6a63;">LuchoEcommerce · se cobra el 24 de cada mes</p>
+      <div style="height: 150px; border: 1px solid rgba(27,26,23,0.11); border-radius: 16px; background: #fff;"></div>
+      <div style="display: flex; gap: 12px; margin-top: 14px;">
+        <div style="flex: 1; height: 210px; border: 1px solid rgba(27,26,23,0.11); border-radius: 16px; background: #fff;"></div>
+        <div style="flex: 1; height: 210px; border: 1px solid rgba(27,26,23,0.11); border-radius: 16px; background: #fff;"></div>
+        <div style="flex: 1; height: 210px; border: 1px solid rgba(27,26,23,0.11); border-radius: 16px; background: #fff;"></div>
+      </div>
+    </main>
+
+  </div>
+
+</div>
+</x-dc>
+<script data-dc-script data-props='{"$preview":{"width":1180,"height":820}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

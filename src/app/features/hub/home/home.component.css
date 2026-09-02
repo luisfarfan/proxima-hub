@@ -11,7 +11,11 @@
 
 /* ── Hero ──────────────────────────────────────────────────────────────────── */
 .hub-hero {
-  margin-bottom: 2.75rem;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 2rem;
+  margin-bottom: 2.25rem;
 }
 
 .hub-eyebrow {
@@ -70,141 +74,260 @@
   color: var(--faint);
 }
 
-/* ── App switcher ──────────────────────────────────────────────────────────── */
-.hub-apps {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(16.5rem, 1fr));
-  gap: 0.9rem;
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
 
-.hub-app {
+/* ── Lo que falta para vender ──────────────────────────────────────────────
+   Era una píldora gris al costado del saludo: decía el paso pero no dejaba
+   darlo, y la pantalla que lo resuelve estaba 900 px más abajo.
+   ──────────────────────────────────────────────────────────────────────── */
+.hub-next {
   display: flex;
   align-items: center;
-  gap: 14px;
-  text-align: left;
-  width: 100%;
-  padding: 1.1rem 1.15rem;
+  gap: 16px;
+  flex-shrink: 0;
+  padding: 14px 16px 14px 18px;
   border: 1px solid var(--line);
-  border-radius: 0.85rem;
+  border-radius: 14px;
+  background: var(--surface);
+  box-shadow: 0 2px 10px -6px rgba(27, 26, 23, 0.28);
+}
+
+.hub-next-dot { width: 8px; height: 8px; border-radius: 50%; background: #bb3a2c; flex-shrink: 0; }
+.hub-next-body { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+
+.hub-next-eyebrow {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--faint);
+}
+
+.hub-next-label {
+  font-family: var(--font-heading);
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.hub-next-go {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  height: 40px;
+  padding: 0 18px;
+  border: none;
+  border-radius: 10px;
+  background: var(--accent);
+  color: #fff;
+  font-family: inherit;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.16s ease;
+}
+
+.hub-next-go:hover { background: #0007b4; }
+.hub-next-go:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+.hub-ready {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
+  margin: 0;
+  padding: 16px 20px;
+  border: 1px solid rgba(39, 166, 68, 0.28);
+  border-radius: 14px;
+  background: rgba(39, 166, 68, 0.06);
+  font-family: var(--font-heading);
+  font-size: 0.9375rem;
+  font-weight: 600;
+}
+
+.hub-ready-check {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: #27a644;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+/* ── Las apps ──────────────────────────────────────────────────────────────
+   La tarjeta ENTERA es el destino: la píldora azul que vivía adentro era un
+   segundo botón encima del primero, y tres de ellas eran tres acciones
+   primarias compitiendo. El «Abrir →» ahora sólo se refuerza al pasar por
+   encima — es el patrón que ya existía en este archivo y había quedado sin uso.
+   ──────────────────────────────────────────────────────────────────────── */
+.hub-lead,
+.hub-app {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  box-sizing: border-box;
+  text-align: left;
+  border: 1px solid var(--line);
   background: var(--surface);
   color: var(--ink);
+  font-family: inherit;
   cursor: pointer;
-  transition: border-color 0.16s ease, transform 0.16s ease;
+  box-shadow: 0 2px 10px -6px rgba(27, 26, 23, 0.28);
+  transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.22s ease,
+    border-color 0.22s ease;
 }
 
-.hub-app:hover {
-  border-color: rgba(27, 26, 23, 0.3);
+.hub-lead { border-radius: 1.125rem; padding: 22px 24px; margin-bottom: 12px; }
+.hub-app { border-radius: 1.125rem; padding: 20px 22px; gap: 14px; height: 100%; }
+
+.hub-lead:hover:not(:disabled),
+.hub-app:hover:not(:disabled) {
   transform: translateY(-2px);
+  box-shadow: 0 18px 34px -24px rgba(27, 26, 23, 0.55);
+  border-color: rgba(27, 26, 23, 0.2);
 }
 
-.hub-app:focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: 2px;
-}
+.hub-lead:focus-visible,
+.hub-app:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 
-.hub-app-icon {
-  width: 2.6rem;
-  height: 2.6rem;
+.hub-lead.no-access,
+.hub-app.no-access { cursor: not-allowed; box-shadow: none; opacity: 0.7; }
+
+.hub-lead-top { display: flex; align-items: flex-start; gap: 16px; }
+.hub-app-top { display: flex; align-items: flex-start; gap: 14px; }
+
+/*
+ * El color de cada app vive acá y en ningún otro lado. `color` lo inyecta el
+ * componente; el fondo se deriva del mismo tono con `color-mix`, así el chip
+ * queda teñido sin sumar una segunda variable por app.
+ */
+.hub-app-chip {
+  width: 46px;
+  height: 46px;
   flex-shrink: 0;
-  border-radius: 0.7rem;
-  background: #f1f0ec;
-  color: var(--ink);
+  border-radius: 13px;
+  background: color-mix(in srgb, currentColor 9%, transparent);
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-.hub-app-icon svg {
-  width: 1.35rem;
-  height: 1.35rem;
-}
+.hub-app-chip svg { width: 23px; height: 23px; }
 
-.hub-app-body {
-  display: flex;
-  flex-direction: column;
-  min-width: 0;
-  flex: 1;
+.hub-lead .hub-app-chip { width: 48px; height: 48px; border-radius: 14px; }
+.hub-lead .hub-app-chip svg { width: 24px; height: 24px; }
+
+.no-access .hub-app-chip { color: var(--faint) !important; }
+
+.hub-app-body { display: flex; flex-direction: column; gap: 3px; min-width: 0; flex: 1; }
+
+.hub-lead-name {
+  font-family: var(--font-heading);
+  font-size: 1.1875rem;
+  font-weight: 700;
+  letter-spacing: -0.015em;
+  color: var(--ink);
 }
 
 .hub-app-name {
-  font-size: 0.9375rem;
+  font-family: var(--font-heading);
+  font-size: 1.0625rem;
   font-weight: 600;
   color: var(--ink);
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  white-space: nowrap;
 }
 
-.hub-app-badge {
-  font-size: 0.625rem;
-  font-weight: 600;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  color: var(--muted);
-  background: #f1f0ec;
-  padding: 1px 7px;
-  border-radius: 999px;
-}
-
-.hub-app-desc {
-  font-size: 0.8125rem;
-  color: var(--muted);
-  margin-top: 2px;
-}
+.hub-app-desc { font-size: 0.8125rem; line-height: 1.45; color: var(--muted); }
 
 .hub-app-cta {
   display: inline-flex;
   align-items: center;
-  gap: 4px;
-  font-size: 0.8125rem;
-  font-weight: 500;
-  color: var(--accent);
+  gap: 7px;
   flex-shrink: 0;
-  opacity: 0;
-  transform: translateX(-4px);
-  transition: opacity 0.16s ease, transform 0.16s ease;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--accent);
+  opacity: 0.5;
+  transition: opacity 0.18s ease;
 }
 
-.hub-app:hover .hub-app-cta,
-.hub-app:focus-visible .hub-app-cta {
-  opacity: 1;
-  transform: translateX(0);
+.hub-lead .hub-app-cta { padding-top: 4px; }
+
+.hub-lead:hover:not(:disabled) .hub-app-cta,
+.hub-app:hover:not(:disabled) .hub-app-cta,
+.hub-lead:focus-visible .hub-app-cta,
+.hub-app:focus-visible .hub-app-cta { opacity: 1; }
+
+.hub-app-cta svg { transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1); }
+.hub-lead:hover:not(:disabled) .hub-app-cta svg,
+.hub-app:hover:not(:disabled) .hub-app-cta svg { transform: translateX(3px); }
+
+.no-access .hub-app-cta { color: var(--faint); opacity: 1; }
+
+/* Por qué abrirla ahora. */
+.hub-app-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding-top: 13px;
+  border-top: 1px solid var(--line-soft);
+  margin-top: auto;
 }
 
-.hub-app.locked .hub-app-icon {
-  color: var(--faint);
-}
-
-.hub-app.locked .hub-app-cta {
+.hub-app-state {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  font-size: 0.78125rem;
   color: var(--muted);
 }
 
-/* Permission-gated (role lacks access): muted, non-interactive, no upsell. */
-.hub-app.no-access {
-  cursor: not-allowed;
-  opacity: 0.66;
+.hub-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; background: var(--faint); }
+.hub-dot.is-ok { background: #27a644; }
+.hub-dot.is-warn { background: #8a6d1f; }
+
+/* Los números de la app que se abre todos los días. */
+.hub-stats { display: flex; gap: 10px; margin: 18px 0 0 64px; }
+
+.hub-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  flex: 1;
+  padding: 11px 14px;
+  border-radius: 11px;
+  background: #f6f5f2;
 }
-.hub-app.no-access:hover {
-  transform: none;
-  border-color: var(--border);
-  box-shadow: none;
+
+.hub-stat-ghost {
+  min-height: 56px;
+  animation: hub-pulse 1.5s ease-in-out infinite;
 }
-.hub-app.no-access .hub-app-icon,
-.hub-app.no-access .hub-app-cta {
-  color: var(--faint);
+
+.hub-stat b {
+  font-family: var(--font-display);
+  font-size: 1.3125rem;
+  font-weight: 500;
+  line-height: 1.1;
+  color: var(--ink);
 }
-.hub-app.no-access .hub-app-cta {
-  opacity: 1;
-  transform: none;
+
+.hub-stat b.is-alert { color: #8a6d1f; }
+.hub-stat span { font-size: 0.75rem; color: var(--muted); }
+
+.hub-apps {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  list-style: none;
+  padding: 0;
+  margin: 0;
 }
-.hub-app-badge--lock {
-  color: #8a6d1f;
-  background: #fbf3da;
-}
+
+.hub-apps > li { display: flex; }
 
 /* ── Bottom grid ───────────────────────────────────────────────────────────── */
 .hub-grid2 {
@@ -443,6 +566,13 @@
   }
 }
 
+@media (max-width: 860px) {
+  /* El saludo y el paso pendiente dejan de pelear por el ancho. */
+  .hub-hero { flex-direction: column; align-items: stretch; gap: 1.25rem; }
+  .hub-next,
+  .hub-ready { align-self: stretch; }
+}
+
 @media (max-width: 640px) {
   .hub-main {
     padding: 2rem 1.25rem 4rem;
@@ -454,5 +584,160 @@
 
   .hub-apps {
     grid-template-columns: 1fr;
+  }
+
+  /* En 375 px tres números en fila quedan en dos caracteres por columna. */
+  .hub-stats { margin-left: 0; flex-wrap: wrap; }
+  .hub-stat { flex-basis: calc(50% - 5px); }
+
+  /* El pulgar no acierta un objetivo de 40 px. */
+  .hub-next { flex-wrap: wrap; }
+  .hub-next-go { min-height: 44px; width: 100%; justify-content: center; }
+}
+
+/* ── Dirección A: lo tuyo y lo que falta ──────────────────────────────────── */
+
+.hub-hero-lead { min-width: 0; }
+
+.hub-section-link { font-size: 0.75rem; color: var(--accent); text-decoration: none; }
+.hub-section-link:hover { text-decoration: underline; }
+
+/*
+ * Lo bloqueado NO puede verse como lo tuyo: papel y borde punteado, sin sombra.
+ * Esa diferencia de forma es la que faltaba — la etiqueta gris de 10 px no
+ * alcanzaba y el usuario leía «tengo acceso a todo».
+ */
+.hub-locked { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
+
+.hub-lock {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  box-sizing: border-box;
+  border: 1px dashed rgba(27, 26, 23, 0.18);
+  border-radius: 0.875rem;
+  background: transparent;
+  padding: 16px 18px;
+  text-align: left;
+  cursor: pointer;
+  font-family: inherit;
+  transition: border-color 0.18s ease, background 0.18s ease;
+}
+
+.hub-lock:hover { border-color: rgba(0, 9, 220, 0.4); background: rgba(0, 9, 220, 0.03); }
+.hub-lock:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+.hub-lock-icon {
+  width: 38px;
+  height: 38px;
+  border-radius: 11px;
+  background: rgba(27, 26, 23, 0.06);
+  color: var(--faint);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.hub-lock-icon svg { width: 19px; height: 19px; }
+.hub-lock-body { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+.hub-lock-name { font-family: var(--font-heading); font-size: 0.9375rem; font-weight: 600; color: #4a4841; }
+.hub-lock-detail { font-size: 0.75rem; line-height: 1.45; color: var(--muted); }
+
+.hub-lock-price { margin-left: auto; flex-shrink: 0; text-align: right; }
+.hub-lock-price b { display: block; font-family: var(--font-display); font-size: 1.125rem; font-weight: 500; color: var(--ink); }
+.hub-lock-price span { font-size: 0.6875rem; color: var(--faint); }
+
+/* Checklist: el paso que toca se distingue del resto. */
+.hub-check.is-next { font-weight: 600; }
+.hub-check.is-next .hub-check-box { border-color: var(--accent); background: rgba(0, 9, 220, 0.1); }
+.hub-check-go { margin-left: auto; font-size: 0.75rem; font-weight: 600; color: var(--accent); flex-shrink: 0; }
+.hub-check-note {
+  margin: 16px 0 0;
+  padding-top: 14px;
+  border-top: 1px solid var(--line-soft);
+  font-size: 0.75rem;
+  line-height: 1.55;
+  color: var(--faint);
+}
+
+.hub-usage-bar > span.is-full { background: #bb3a2c; }
+.hub-usage-bar > span.is-unlimited { background: var(--line-soft); }
+
+.hub-compare {
+  width: 100%;
+  height: 44px;
+  border: 1px solid rgba(27, 26, 23, 0.16);
+  border-radius: 0.625rem;
+  background: var(--surface);
+  color: var(--ink);
+  font-family: inherit;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: border-color 0.15s ease;
+}
+
+.hub-compare:hover { border-color: rgba(27, 26, 23, 0.32); }
+.hub-compare:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+@media (max-width: 720px) {
+  /*
+   * Con `flex-wrap` el texto seguía compitiendo por el ancho contra el precio y
+   * quedaba «Viene / incluida / desde / el / plan» — una palabra por línea. En
+   * columna cada bloque tiene el ancho entero.
+   */
+  .hub-lock { flex-direction: column; align-items: stretch; gap: 0.875rem; }
+
+  .hub-lock-icon { align-self: flex-start; }
+
+  .hub-lock-price {
+    margin-left: 0;
+    text-align: left;
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+  }
+
+  .hub-lock { min-height: 44px; }
+  .hub-check { min-height: 44px; }
+
+  /* Un enlace de 18 px de alto no se acierta con el pulgar. */
+  .hub-section-link { padding: 13px 0; display: inline-flex; align-items: center; min-height: 44px; }
+  .hub-section-head { flex-wrap: wrap; gap: 0.25rem 1rem; }
+}
+
+/*
+ * Menos movimiento, misma información.
+ *
+ * El registro ya exigía esto con una prueba propia; el centro del Hub se quedó
+ * sin ello cuando le puse los hover con desplazamiento. Las tarjetas siguen
+ * respondiendo al puntero —cambian de borde y de sombra—, sólo dejan de moverse.
+ */
+@media (prefers-reduced-motion: reduce) {
+  .hub-lead,
+  .hub-app,
+  .hub-app-cta,
+  .hub-app-cta svg,
+  .hub-progress-fill,
+  .hub-next-go {
+    transition: none;
+  }
+
+  .hub-lead:hover:not(:disabled),
+  .hub-app:hover:not(:disabled) {
+    transform: none;
+  }
+
+  .hub-lead:hover:not(:disabled) .hub-app-cta svg,
+  .hub-app:hover:not(:disabled) .hub-app-cta svg {
+    transform: none;
+  }
+
+  .hub-skeleton,
+  .hub-stat-ghost {
+    animation: none;
+    opacity: 0.7;
   }
 }

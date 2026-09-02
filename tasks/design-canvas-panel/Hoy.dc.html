@@ -1,0 +1,147 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap">
+  <style>
+    body { margin: 0; font-family: 'Inter', ui-sans-serif, system-ui, sans-serif; letter-spacing: -0.003em; }
+    a { color: #0009dc; text-decoration: none; } a:hover { color: #000678; }
+    .h { font-family: 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif; letter-spacing: -0.02em; }
+    .lbl { font-family: 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif; font-size: 0.625rem; font-weight: 700; letter-spacing: 0.09em; text-transform: uppercase; color: #8a8f98; }
+    .num { font-family: 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif; font-weight: 800; font-variant-numeric: tabular-nums; letter-spacing: -0.03em; line-height: 1; }
+    .card { border: 1px solid #e3e4e8; border-radius: 12px; background: #fff; }
+    .btn { border: 0; font: inherit; cursor: pointer; }
+    .cta { display: inline-flex; align-items: center; gap: 7px; height: 36px; padding: 0 14px; border-radius: 8px; background: #0009dc; color: #fff; font-family: 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif; font-size: 0.8125rem; font-weight: 600; transition: background 140ms ease; }
+    .cta:hover { background: #1a24e6; }
+    .ghost { display: inline-flex; align-items: center; gap: 7px; height: 36px; padding: 0 13px; border-radius: 8px; border: 1px solid #e3e4e8; background: #fff; font-size: 0.8125rem; font-weight: 500; color: #08090a; transition: background 140ms ease, border-color 140ms ease; }
+    .ghost:hover { background: #f4f5f7; border-color: #d0d3da; }
+    .up { color: #1a9e4a; font-weight: 600; }
+    .down { color: #dc2626; font-weight: 600; }
+    .work { display: flex; gap: 13px; padding: 15px 16px; border: 1px solid #e3e4e8; border-radius: 12px; background: #fff; transition: border-color 140ms ease, box-shadow 140ms ease; }
+    .work:hover { border-color: #d0d3da; box-shadow: 0 1px 3px rgba(8,9,10,0.05); }
+    .pip { width: 30px; height: 30px; border-radius: 9px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .in { opacity: 0; animation: rise 520ms cubic-bezier(0.16,1,0.3,1) forwards; }
+    .in2 { animation-delay: 90ms; } .in3 { animation-delay: 170ms; }
+    @keyframes rise { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+    @media (prefers-reduced-motion: reduce) { .in { animation-duration: 1ms; } }
+  </style>
+</helmet>
+
+<div style="width: 1180px; height: 1000px; box-sizing: border-box; padding: 40px 44px; background: #fbfbfc; color: #08090a; overflow: hidden;">
+
+  <p class="lbl" style="margin: 0 0 4px; color: #0009dc;">/home · con el Panel absorbido</p>
+  <h2 class="h" style="margin: 0 0 4px; font-size: 1.625rem; font-weight: 800;">Hoy</h2>
+  <p style="margin: 0 0 28px; font-size: 0.875rem; color: #6b6f76;">Dos preguntas, en orden: <strong style="color:#08090a;font-weight:600;">cómo va</strong> arriba, <strong style="color:#08090a;font-weight:600;">qué hago</strong> abajo. Nada más.</p>
+
+  <!-- ── Cómo va ─────────────────────────────────────────────────────────── -->
+  <div class="in">
+    <div style="display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 10px;">
+      <p class="lbl" style="margin: 0;">Hoy · martes 26</p>
+      <a href="#" style="font-size: 0.75rem; font-weight: 500;">Ver la semana →</a>
+    </div>
+
+    <div class="card" style="display: flex; align-items: stretch; overflow: hidden;">
+      <div style="flex: 1.6; padding: 22px 24px; border-right: 1px solid #eceef2;">
+        <p class="lbl" style="margin: 0 0 8px;">Vendido hoy</p>
+        <p class="num" style="margin: 0; font-size: 2.75rem;">S/ 1,240<span style="font-size: 1.5rem; color: #a0a4ab;">.50</span></p>
+        <p style="margin: 10px 0 0; font-size: 0.8125rem; color: #6b6f76;">
+          <span class="up">▲ 18 %</span> que el martes pasado <span style="color: #a0a4ab;">· S/ 1,051</span>
+        </p>
+      </div>
+      <div style="flex: 1; padding: 22px 24px; border-right: 1px solid #eceef2;">
+        <p class="lbl" style="margin: 0 0 8px;">Ventas</p>
+        <p class="num" style="margin: 0; font-size: 1.75rem;">37</p>
+        <p style="margin: 8px 0 0; font-size: 0.8125rem; color: #6b6f76;"><span class="up">▲ 6</span> que el martes pasado</p>
+      </div>
+      <div style="flex: 1; padding: 22px 24px;">
+        <p class="lbl" style="margin: 0 0 8px;">Ticket promedio</p>
+        <p class="num" style="margin: 0; font-size: 1.75rem;">S/ 33.50</p>
+        <p style="margin: 8px 0 0; font-size: 0.8125rem; color: #6b6f76;"><span class="down">▼ S/ 0.40</span> que el martes pasado</p>
+      </div>
+    </div>
+
+    <p style="margin: 9px 0 0; font-size: 0.75rem; color: #a0a4ab;">Se compara contra el mismo día de la semana pasada, no contra ayer: un martes se parece a un martes, no a un lunes.</p>
+  </div>
+
+  <!-- ── Qué hago ────────────────────────────────────────────────────────── -->
+  <div class="in in2" style="margin-top: 34px;">
+    <div style="display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 10px;">
+      <p class="lbl" style="margin: 0;">Pendiente · 4 cosas</p>
+      <span style="font-size: 0.75rem; color: #a0a4ab;">Lo urgente primero</span>
+    </div>
+
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+
+      <div class="work">
+        <span class="pip" style="background: #fef2f2; color: #dc2626;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 9v4m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg>
+        </span>
+        <div style="min-width: 0; flex: 1;">
+          <p class="h" style="margin: 0 0 2px; font-size: 0.9375rem; font-weight: 700;">3 productos agotados</p>
+          <p style="margin: 0 0 9px; font-size: 0.8125rem; line-height: 1.5; color: #6b6f76;">Arroz Costeño 5 kg · Aceite Primor 1 L · Leche Gloria 400 g</p>
+          <a href="#" class="ghost" style="height: 32px;">Reponer stock</a>
+        </div>
+      </div>
+
+      <div class="work">
+        <span class="pip" style="background: #fffaf0; color: #b45309;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h12"/></svg>
+        </span>
+        <div style="min-width: 0; flex: 1;">
+          <p class="h" style="margin: 0 0 2px; font-size: 0.9375rem; font-weight: 700;">7 pedidos por facturar</p>
+          <p style="margin: 0 0 9px; font-size: 0.8125rem; line-height: 1.5; color: #6b6f76;">El más antiguo lleva 2 días esperando su comprobante.</p>
+          <a href="#" class="ghost" style="height: 32px;">Emitir comprobantes</a>
+        </div>
+      </div>
+
+      <div class="work">
+        <span class="pip" style="background: #fffaf0; color: #b45309;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2h14a2 2 0 002-2v-1M16 12h5"/></svg>
+        </span>
+        <div style="min-width: 0; flex: 1;">
+          <p class="h" style="margin: 0 0 2px; font-size: 0.9375rem; font-weight: 700;">Caja abierta desde las 8:15</p>
+          <p style="margin: 0 0 9px; font-size: 0.8125rem; line-height: 1.5; color: #6b6f76;">Lleva <strong style="color: #08090a; font-weight: 600;">S/ 890.00</strong> en efectivo y 4 h 20 min abierta.</p>
+          <a href="#" class="ghost" style="height: 32px;">Ver la caja</a>
+        </div>
+      </div>
+
+      <div class="work">
+        <span class="pip" style="background: #f0f4ff; color: #0009dc;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 7h-9m9 5h-9m9 5h-9M5 7h.01M5 12h.01M5 17h.01"/></svg>
+        </span>
+        <div style="min-width: 0; flex: 1;">
+          <p class="h" style="margin: 0 0 2px; font-size: 0.9375rem; font-weight: 700;">2 pedidos por preparar</p>
+          <p style="margin: 0 0 9px; font-size: 0.8125rem; line-height: 1.5; color: #6b6f76;">Ambos son para recojo en tienda hoy.</p>
+          <a href="#" class="ghost" style="height: 32px;">Ir a logística</a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ── La salida ───────────────────────────────────────────────────────── -->
+  <div class="in in3" style="margin-top: 30px; display: flex; align-items: center; justify-content: space-between; gap: 20px; padding: 16px 20px; border: 1px dashed #d0d3da; border-radius: 12px;">
+    <div>
+      <p class="h" style="margin: 0 0 2px; font-size: 0.9375rem; font-weight: 700;">¿Por qué vendiste más este martes?</p>
+      <p style="margin: 0; font-size: 0.8125rem; color: #6b6f76;">Productos, clientes, canales y búsquedas viven en Analítica. Aquí no se explica: aquí se decide qué hacer.</p>
+    </div>
+    <a href="#" class="ghost" style="flex-shrink: 0;">
+      Abrir Analítica
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+    </a>
+  </div>
+
+</div>
+</x-dc>
+<script data-dc-script data-props='{"$preview":{"width":1180,"height":1000}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

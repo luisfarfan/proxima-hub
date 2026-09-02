@@ -1,0 +1,15 @@
+{
+  "artboards": [
+    { "file": "Main.dc.html", "x": 0, "y": 0, "w": 840, "h": 1400, "title": "Lo que vi en 214 Store" },
+    { "file": "Absorbe.dc.html", "x": 920, "y": 180, "w": 1180, "h": 900, "title": "A · Hoy absorbe, el Panel desaparece" },
+    { "file": "UnaPregunta.dc.html", "x": 2160, "y": 190, "w": 1180, "h": 880, "title": "B · El Panel contesta una sola pregunta" },
+    { "file": "Crece.dc.html", "x": 3400, "y": 170, "w": 1180, "h": 920, "title": "C · La pantalla crece contigo" }
+  ],
+  "annotations": [
+    { "id": "nota-vi", "x": 0, "y": -120, "w": 620, "text": "ESTA VEZ SÍ, EN TU NAVEGADOR con tu sesión: abrí el Panel de 214 Store y medí lo que hay.\nOcho defectos concretos, todos visibles en pantalla. El de fondo: con 2 pedidos, casi todo número que muestra es ruido presentado como señal." },
+    { "id": "nota-a", "x": 920, "y": 60, "w": 560, "text": "A · HOY ABSORBE — tres pantallas pasan a dos.\nAnalítica no cambia; Hoy gana el dinero, que no existe hoy en ninguna parte. Nada de «↑100 %», ni promedios de dos datos, ni gráficos vacíos: lo que no se puede afirmar, no se afirma.\nA cambio: desaparece un ítem del menú." },
+    { "id": "nota-b", "x": 2160, "y": 70, "w": 560, "text": "B · UNA SOLA PREGUNTA — el Panel se queda pero deja de ser un cajón.\n«¿Cómo va el dinero?» y cabe sin scroll. Se borra el 90 % del contenido, no el ítem del menú.\nA cambio: siguen siendo tres pantallas y hay que explicar cuándo usar cuál." },
+    { "id": "nota-c", "x": 3400, "y": 50, "w": 560, "text": "C · CRECE CONTIGO — un bloque sin datos no se dibuja.\nNi ceros, ni guiones, ni barras llenas: en su lugar dice qué falta para que aparezca. Con 2 pedidos ves tres cosas; con 2.000, la pantalla completa.\nA cambio: la más cara — cada bloque necesita su regla, y hay que acordarlas una por una." }
+  ],
+  "launch": { "view": "canvas" }
+}

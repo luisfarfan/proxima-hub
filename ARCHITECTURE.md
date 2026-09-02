@@ -73,6 +73,18 @@ La base **ya existe** (ADR-013): la cookie de sesión es **HttpOnly en `.proxima
 - Checklist de onboarding → `GET /admin/business/status`.
 - Card de plan + uso → `GET /billing/*`; CTA "Salir en vivo" → paywall.
 
+#### El add-on "Tienda Web" NO va al checkout desde acá (2026-08-18)
+
+Su botón manda al asistente de proxima-admin (`{adminUrl}/websites/nueva`), no a
+`POST billing/addon/checkout`. No es un atajo: `provision_addon` exige el
+`template_id` del diseño elegido (`TEMPLATE_REQUIRED`), así que un checkout sin
+diseño **cobra y después falla al provisionar** — el comercio paga y no recibe
+nada. El asistente junta diseño, subdominio y respuestas primero.
+
+Lo que falta es que el asistente arranque el cobro con el diseño ya elegido:
+bead `proxima-api-3wy`. Hasta entonces activa sin cobrar, así que no se toca
+este botón "para arreglarlo" sin cerrar ese bead.
+
 ### Cuenta / organización (migra de proxima-admin settings)
 - **Mi cuenta** (perfil) · **Plan / billing** · **Seguridad / sesiones** · **Equipo** (miembros/roles).
 - *(Negocio y Sedes se quedan en admin — son config de tienda, no de cuenta.)*

@@ -10,11 +10,14 @@ import { Menu } from 'primeng/menu';
 import type { MenuItem } from 'primeng/api';
 import { AuthService, BusinessContextService } from '@luisfarfan/auth';
 import { RuntimeConfigService } from '../../../core/config/runtime-config.service';
+import { ProximaLogoComponent } from '../../../shared/ui/proxima-logo.component';
+import { resolveActiveBusinessName } from '../../../core/auth/active-business-name';
+import { LogoutService } from '../../../core/auth/logout.service';
 
 @Component({
   selector: 'app-hub-shell',
   standalone: true,
-  imports: [RouterLink, RouterOutlet, Menu],
+  imports: [RouterLink, RouterOutlet, Menu, ProximaLogoComponent],
   templateUrl: './hub-shell.component.html',
   styleUrl: './hub-shell.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -24,6 +27,7 @@ export class HubShellComponent {
   protected readonly auth = inject(AuthService);
   private readonly businessCtx = inject(BusinessContextService);
   private readonly runtimeConfig = inject(RuntimeConfigService);
+  private readonly logoutService = inject(LogoutService);
 
   readonly appVersion = this.runtimeConfig.appVersion;
 
@@ -41,39 +45,29 @@ export class HubShellComponent {
 
   protected readonly activeBusinessName = computed(() => {
     const bizId = this.businessCtx.businessId();
-    return this.memberships().find((m) => m.id === bizId)?.name ?? 'Mi negocio';
+    return resolveActiveBusinessName(this.memberships(), this.user(), bizId);
   });
 
   protected readonly activeBusinessInitial = computed(
     () => this.activeBusinessName()[0]?.toUpperCase() ?? 'B',
   );
 
+  /**
+   * El menú del avatar dejó de repetir los cuatro destinos del rail de la
+   * cuenta: eran los mismos cuatro, dos veces en la misma pantalla. Acá queda
+   * la puerta de entrada y la salida; adentro manda el rail.
+   */
   protected readonly accountMenuItems: MenuItem[] = [
     {
-      label: 'Mi cuenta',
-      icon: 'pi pi-user',
-      command: () => this.router.navigate(['/cuenta']),
-    },
-    {
-      label: 'Plan',
-      icon: 'pi pi-credit-card',
+      label: 'Cuenta y plan',
+      icon: 'pi pi-cog',
       command: () => this.router.navigate(['/plan']),
-    },
-    {
-      label: 'Seguridad',
-      icon: 'pi pi-lock',
-      command: () => this.router.navigate(['/seguridad']),
-    },
-    {
-      label: 'Equipo',
-      icon: 'pi pi-users',
-      command: () => this.router.navigate(['/equipo']),
     },
     { separator: true },
     {
       label: 'Cerrar sesión',
       icon: 'pi pi-sign-out',
-      command: () => this.auth.logout(),
+      command: () => void this.logoutService.logout(),
     },
   ];
 

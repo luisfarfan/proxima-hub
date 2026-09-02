@@ -1,0 +1,565 @@
+:host { display: block; }
+
+/* Plan header */
+.plan-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.plan-name {
+  font-family: var(--font-display);
+  font-size: 1.625rem;
+  font-weight: 500;
+  color: var(--ink);
+  letter-spacing: -0.01em;
+}
+
+.plan-status-badge {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: #f1f0ec;
+  color: var(--muted);
+}
+
+.plan-status-badge.active  { background: #dcfce7; color: #15803d; }
+.plan-status-badge.trial   { background: #fef9c3; color: #92400e; }
+.plan-status-badge.cancelled { background: #fee2e2; color: #b91c1c; }
+
+.plan-desc, .cancelled-note {
+  font-size: 0.875rem;
+  color: var(--muted);
+  margin: 0 0 0.75rem;
+}
+
+.plan-actions {
+  margin-top: 1.25rem;
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+.usage-not-included {
+  font-weight: 400 !important;
+  font-style: italic;
+  color: var(--faint) !important;
+}
+
+/* Plans list */
+.plans-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.plan-row {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.875rem 0;
+  border-bottom: 1px solid var(--line-soft);
+}
+
+.plan-row:last-child { border-bottom: none; }
+
+.plan-row.highlighted {
+  margin: 0 -1.5rem;
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+  background: #f8f7ff;
+  border-radius: 0.5rem;
+  border-bottom: none;
+  outline: 1.5px solid var(--accent);
+}
+
+.plan-row.current-row { opacity: 0.6; }
+
+.plan-row-info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.plan-row-name {
+  font-size: 0.9375rem;
+  font-weight: 500;
+  color: var(--ink);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.plan-row-desc {
+  font-size: 0.8125rem;
+  color: var(--muted);
+}
+
+.plan-current-badge, .plan-recommended-badge {
+  font-size: 0.625rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  padding: 1px 6px;
+  border-radius: 999px;
+}
+
+.plan-current-badge     { background: #f1f0ec; color: var(--muted); }
+.plan-recommended-badge { background: var(--accent); color: #fff; }
+
+.plan-row-right {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-shrink: 0;
+}
+
+.plan-row-price {
+  font-size: 0.875rem;
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+/* Inline downgrade confirm */
+.inline-confirm {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.inline-confirm-label {
+  font-size: 0.8125rem;
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+/* Add-on active badge */
+.addon-active-badge {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: #dcfce7;
+  color: #15803d;
+}
+
+/* Flash alert */
+.alert {
+  border-radius: 0.6rem;
+  padding: 0.75rem 1rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.alert-success { background: #f0fdf4; border: 1px solid #bbf7d0; color: #15803d; }
+.alert-error   { background: #fef2f2; border: 1px solid #fecaca; color: #b91c1c; }
+
+/* Cancel confirmation card */
+.confirm-card {
+  border: 1px solid rgba(185, 28, 28, 0.25);
+  border-radius: 0.875rem;
+  background: #fff9f9;
+  padding: 1.5rem;
+}
+
+.confirm-h {
+  font-family: var(--font-heading);
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: var(--ink);
+  margin: 0 0 0.6rem;
+}
+
+.confirm-body {
+  font-size: 0.875rem;
+  color: var(--muted);
+  margin: 0 0 1.1rem;
+  line-height: 1.55;
+}
+
+.confirm-actions {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.btn-primary.btn-danger             { background: #b91c1c; }
+.btn-primary.btn-danger:hover:not([disabled]) { background: #991b1b; }
+
+/* Payment history table */
+.payments-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+}
+
+.payments-table th {
+  text-align: left;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--muted);
+  padding: 0.4rem 0.5rem 0.75rem;
+  border-bottom: 1px solid var(--line);
+}
+
+.payments-table th:first-child,
+.payments-table td:first-child { padding-left: 0; }
+
+.payments-table td {
+  padding: 0.75rem 0.5rem;
+  color: var(--ink);
+  border-bottom: 1px solid var(--line-soft);
+  vertical-align: middle;
+}
+
+.payments-table tr:last-child td { border-bottom: none; }
+
+.payment-status {
+  display: inline-block;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: #f1f0ec;
+  color: var(--muted);
+}
+
+.payment-status.paid    { background: #dcfce7; color: #15803d; }
+.payment-status.pending { background: #fef9c3; color: #92400e; }
+.payment-status.failed  { background: #fee2e2; color: #b91c1c; }
+  
+/* ── Franja de uso ─────────────────────────────────────────────────────── */
+.usage-strip {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  border: 1px solid var(--line);
+  border-radius: 1rem;
+  background: #fff;
+  padding: 1.25rem 1.5rem;
+}
+
+.usage-strip.has-alert { border-color: rgba(0, 9, 220, 0.2); background: #f7f7ff; }
+
+.usage-strip-lead { flex-shrink: 0; max-width: 20rem; }
+
+.usage-eyebrow {
+  display: block;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 0.45rem;
+}
+
+.usage-claim { margin: 0; font-size: 0.9375rem; line-height: 1.45; color: var(--ink); }
+.usage-claim b { font-weight: 600; }
+.usage-suggestion { margin: 0.4rem 0 0; font-size: 0.8125rem; line-height: 1.45; color: var(--muted); }
+.usage-suggestion b { font-weight: 600; color: var(--ink); }
+
+/*
+ * `repeat(3, …)` con cuatro cuotas dejaba la cuarta sola en una segunda fila.
+ * `auto-fit` con un mínimo real acomoda las que haya, y el mínimo evita que
+ * «Almacenamiento» y su número se pisen como pasaba a 3 columnas.
+ */
+.usage-meters { flex: 1; display: grid; grid-template-columns: repeat(auto-fit, minmax(9.5rem, 1fr)); gap: 1rem 1.5rem; }
+.usage-meter-head { display: flex; align-items: baseline; justify-content: space-between; gap: 0.75rem; font-size: 0.75rem; color: var(--muted); margin-bottom: 7px; }
+.usage-meter-head span { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.usage-meter-head b { flex-shrink: 0; }
+.usage-meter-head b { font-weight: 600; color: var(--ink); }
+.usage-meter-bar { height: 6px; border-radius: 999px; background: rgba(27, 26, 23, 0.09); overflow: hidden; }
+.usage-meter-bar > span { display: block; height: 100%; border-radius: 999px; background: var(--accent); transition: width 0.6s cubic-bezier(0.16, 1, 0.3, 1); }
+.usage-meter-bar > span.is-alert { background: #bb3a2c; }
+
+@media (max-width: 900px) {
+  .usage-strip { flex-direction: column; align-items: stretch; gap: 1.25rem; }
+  .usage-strip-lead { max-width: none; }
+  .usage-meters { grid-template-columns: minmax(0, 1fr); gap: 0.875rem; }
+}
+
+/* ── Add-ons y total ───────────────────────────────────────────────────── */
+.addon-cards { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0.625rem; }
+
+.addon-card {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  border: 1px solid var(--line);
+  border-radius: 0.875rem;
+  background: #fff;
+  padding: 1rem 1.125rem;
+}
+
+.addon-card.is-locked { background: #faf9f7; }
+.addon-card-main { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 3px; }
+.addon-card-name { font-size: 0.9375rem; font-weight: 600; color: var(--ink); }
+.addon-card-price { font-weight: 400; color: var(--muted); }
+.addon-card-desc { font-size: 0.8125rem; color: var(--muted); }
+
+.addon-lock {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 28px;
+  padding: 0 11px;
+  border-radius: 999px;
+  background: rgba(27, 26, 23, 0.06);
+  color: var(--muted);
+  font-size: 0.75rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.total-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  margin-top: 1.25rem;
+  padding-top: 1.125rem;
+  border-top: 1px solid var(--line-soft);
+}
+
+.total-breakdown { font-size: 0.8125rem; color: var(--muted); }
+.total-amount { display: flex; align-items: baseline; gap: 0.625rem; font-size: 0.8125rem; color: var(--muted); }
+.total-amount b { font-family: var(--font-display); font-size: 1.625rem; font-weight: 500; letter-spacing: -0.02em; color: var(--ink); }
+
+@media (max-width: 640px) {
+  /*
+   * Envolver dejaba «/ mes» solo en una línea y el botón flotando a media
+   * altura. En una columna cada cosa ocupa su renglón y la acción es del ancho
+   * del dedo.
+   */
+  .addon-card { flex-direction: column; align-items: stretch; gap: 0.875rem; }
+  .addon-card .btn-outline,
+  .addon-card .btn-danger-sm,
+  .addon-lock { align-self: flex-start; }
+  .addon-card .btn-outline { width: 100%; justify-content: center; }
+  .addon-card .btn-outline,
+  .addon-card .btn-danger-sm,
+  .step-cta,
+  .rung { min-height: 44px; }
+  .addon-lock { white-space: normal; height: auto; padding: 6px 11px; line-height: 1.4; }
+
+  .total-bar { flex-direction: column; align-items: flex-start; gap: 0.625rem; }
+
+  /* «Almacenami…» cortado: en dos columnas angostas la etiqueta necesita envolver. */
+  .usage-meter-head { align-items: flex-start; }
+  .usage-meter-head span { white-space: normal; }
+
+  /* El título del peldaño y su diferencia de precio, uno debajo del otro. */
+  .card-head { flex-direction: column; align-items: flex-start; gap: 0.25rem; }
+}
+
+/* ── La escalera ──────────────────────────────────────────────────────────
+   Cinco peldaños de altura creciente. El alto sale del precio (calculado en
+   el componente), así que la forma dice lo mismo que el número.
+   ──────────────────────────────────────────────────────────────────────── */
+.ladder-h {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+  margin: 0 0 0.4rem;
+}
+
+.ladder-sub {
+  margin: 0 0 1.5rem;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  color: var(--muted);
+  max-width: 38rem;
+}
+
+.ladder {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+  /* Debe coincidir con RUNG_MIN_H + RUNG_RANGE_H del componente. */
+  min-height: 224px;
+}
+
+.rung-slot { flex: 1; min-width: 0; display: flex; }
+
+.rung {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  border: 1px solid var(--line);
+  border-bottom: 0;
+  border-radius: 0.875rem 0.875rem 0 0;
+  background: var(--surface);
+  padding: 1rem 0.9375rem 1.125rem;
+  text-align: left;
+  cursor: pointer;
+  font-family: inherit;
+  transition: background 0.18s ease, border-color 0.18s ease, transform 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.rung:hover { transform: translateY(-3px); border-color: var(--line-strong, rgba(27, 26, 23, 0.3)); }
+.rung:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+/* Orden importa: `is-on` tiene que ganarle a `is-now`. */
+.rung.is-now { background: #f4f2ee; }
+.rung.is-assisted { border-style: dashed; }
+.rung.is-on { border-color: var(--accent); background: #f7f7ff; }
+
+.rung-flag {
+  position: absolute;
+  top: -11px;
+  left: 15px;
+  height: 22px;
+  padding: 0 10px;
+  border-radius: 999px;
+  background: var(--ink);
+  color: #fff;
+  font-size: 0.625rem;
+  font-weight: 600;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  display: inline-flex;
+  align-items: center;
+  white-space: nowrap;
+}
+
+.rung-flag.is-mute { background: #e7e5e0; color: var(--muted); }
+
+.rung-name {
+  font-family: var(--font-heading);
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: var(--ink);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.rung-price {
+  display: block;
+  margin-top: 3px;
+  font-family: var(--font-display);
+  font-size: 1.375rem;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+}
+
+.rung-headline {
+  display: block;
+  margin-top: 0.5625rem;
+  font-size: 0.75rem;
+  line-height: 1.4;
+  color: var(--muted);
+}
+
+.ladder-ground {
+  height: 3px;
+  border-radius: 999px;
+  background: var(--line);
+}
+
+/* ── El detalle del peldaño ───────────────────────────────────────────────── */
+.step-detail {
+  display: grid;
+  grid-template-columns: 1.25fr 1fr;
+  gap: 0.875rem;
+  margin-top: 1.5rem;
+}
+
+.step-delta { font-size: 0.8125rem; color: var(--muted); flex-shrink: 0; }
+
+.step-gains { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0.75rem; }
+
+.step-gain {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 0.875rem;
+  line-height: 1.45;
+  color: var(--ink);
+}
+
+.step-gain-ico {
+  width: 18px;
+  height: 18px;
+  border-radius: 6px;
+  background: rgba(0, 9, 220, 0.1);
+  color: var(--accent);
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 1px;
+}
+
+.step-jumps {
+  list-style: none;
+  margin: 1.25rem 0 0;
+  padding: 1.125rem 0 0;
+  border-top: 1px solid var(--line-soft);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.step-jump {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 7px 12px;
+  border-radius: 999px;
+  background: rgba(27, 26, 23, 0.05);
+  font-size: 0.75rem;
+  color: var(--muted);
+}
+
+.step-jump b { font-weight: 600; color: var(--ink); }
+.step-jump svg { color: var(--accent); }
+
+.step-how { display: flex; flex-direction: column; }
+.step-how-text { margin: 0 0 1.125rem; font-size: 0.875rem; line-height: 1.55; color: var(--muted); }
+.step-how-cta { margin-top: auto; }
+.step-cta { width: 100%; justify-content: center; text-decoration: none; box-sizing: border-box; }
+
+@media (max-width: 860px) {
+  /* Cinco peldaños en 860 px dejan 150 px cada uno: la escalera se vuelve lista. */
+  .ladder { height: auto; flex-direction: column; align-items: stretch; gap: 6px; }
+  .rung-slot { height: auto !important; }
+  .rung { border-radius: 0.875rem; border-bottom: 1px solid var(--line); padding: 1rem 1.125rem; }
+  .rung:hover { transform: none; }
+  .rung-flag { position: static; margin-bottom: 0.5rem; align-self: flex-start; }
+  .ladder-ground { display: none; }
+  .step-detail { grid-template-columns: minmax(0, 1fr); }
+}
+
+.step-cta.btn-primary {
+  background: var(--accent);
+  height: 2.875rem;
+  font-size: 0.9375rem;
+}
+
+.step-cta.btn-primary:hover:not(:disabled) { background: #0007b4; }
+
+/* La franja de uso convive con el rail: menos ancho, cuotas más angostas. */
+.usage-meters { grid-template-columns: repeat(auto-fit, minmax(8rem, 1fr)); }

@@ -1,0 +1,16 @@
+{
+  "artboards": [
+    { "file": "Main.dc.html", "x": 0, "y": 0, "w": 760, "h": 1040, "title": "Portada · qué falla hoy" },
+    { "file": "Hoy.dc.html", "x": 830, "y": 170, "w": 1400, "h": 700, "title": "Hoy · el header en producción" },
+    { "file": "Fila.dc.html", "x": 2290, "y": 150, "w": 1400, "h": 760, "title": "A · Una sola fila, ordenada" },
+    { "file": "Pisos.dc.html", "x": 3750, "y": 135, "w": 1400, "h": 790, "title": "B · Dos pisos" },
+    { "file": "Comando.dc.html", "x": 5210, "y": 120, "w": 1400, "h": 820, "title": "C · El buscador manda" }
+  ],
+  "annotations": [
+    { "id": "nota-hoy", "x": 830, "y": 60, "w": 560, "text": "HOY — recreado desde header.component.html, no de memoria: alturas, colores y radios salen de los tokens (--px-surface-2 #f4f5f7, hairline #e3e4e8, tinta #08090a, azul #0009dc).\nLa franja mide 44 px en escritorio y 40 en teléfono, con controles de 32 y avatar de 28." },
+    { "id": "nota-a", "x": 2290, "y": 40, "w": 560, "text": "A · UNA SOLA FILA — el cambio más barato.\nMisma anatomía, densidad honesta: 52 px, controles de 40, buscador que crece, acción del día con su nombre, y un teléfono donde nada se esconde.\nHaz clic en el avatar y en el buscador: reaccionan." },
+    { "id": "nota-b", "x": 3750, "y": 25, "w": 560, "text": "B · DOS PISOS — el que más ordena.\nTira fina de contexto arriba (negocio, plan, buscar, avisos, cuenta) y debajo la barra de la página con su título de verdad y SUS acciones: «Nuevo producto» en Catálogo, «Nueva venta» en Ventas.\nCuesta 100 px de cromo y obliga a cada pantalla a declarar título y acciones." },
+    { "id": "nota-c", "x": 5210, "y": 10, "w": 560, "text": "C · EL BUSCADOR MANDA — el más distinto.\nUna barra al centro que dice dónde estás y por la que te mueves. Sin migas, sin engranaje.\nHaz clic en la barra: se abre el panel con resultados y atajos. Ojo con el precio — lo que sólo se alcanza escribiendo, mucha gente no lo encuentra." }
+  ],
+  "launch": { "view": "canvas" }
+}

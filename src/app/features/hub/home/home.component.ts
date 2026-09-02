@@ -9,13 +9,68 @@ import { Router, RouterLink } from '@angular/router';
 import { AuthService, AuthTokenStorage, BusinessContextService } from '@luisfarfan/auth';
 import { RuntimeConfigService } from '../../../core/config/runtime-config.service';
 import { HubDataCacheService } from '../../../core/services/hub-data-cache.service';
+import { NgTemplateOutlet } from '@angular/common';
 import { QuotaLabelPipe } from '../../../shared/pipes/quota-label.pipe';
+import { resolveActiveBusinessName } from '../../../core/auth/active-business-name';
+import { shortPlanName } from '../../../core/billing/plan-name';
+
+/**
+ * El color propio de cada app, y sólo en el chip del icono.
+ *
+ * PROXIMA es un sistema de un acento (#0009dc). Tres tarjetas con el MISMO
+ * cuadrado azul no se distinguían entre sí: el azul dejaba de significar
+ * «acción» y pasaba a ser decoración de app. Teñir el chip —y nada más que el
+ * chip— devuelve identidad sin repintar la página: el fondo sigue siendo papel,
+ * el texto sigue siendo tinta y el azul de marca sigue siendo el botón.
+ *
+ * Los tres derivados comparten luminosidad y croma en OKLCH y sólo cambian de
+ * tono, así ninguno pesa más que otro.
+ */
+const APP_TINT: Record<string, string> = {
+  panel: '#0009dc',
+  caja: 'oklch(0.52 0.13 205)',
+  tienda: 'oklch(0.53 0.15 28)',
+  intelligence: 'oklch(0.52 0.15 300)',
+  app: 'oklch(0.52 0.12 155)',
+};
+
+/** El readiness ya dice si el sitio está publicado; no hace falta preguntarlo aparte. */
+const WEBSITE_READINESS_ID = 'storefront.website';
+
+/** Tono de la línea de estado de una app. */
+export type AppStatusTone = 'ok' | 'warn';
+
+export interface AppStatus {
+  text: string;
+  tone: AppStatusTone;
+}
 
 // entitlement key for each add-on app (matches businessCtx.entitlements())
 const ADD_ON_FEATURE_KEY: Record<string, string> = {
   tienda: 'cms',
   intelligence: 'pricing_intelligence',
 };
+
+/**
+ * Add-ons que se compran sueltos, espejo de `ADDON_LADDER` del API.
+ * Una feature que NO aparece acá y tampoco en ningún plan del catálogo no se
+ * puede anunciar con precio — y entonces no se inventa uno.
+ */
+const ADD_ON_CATALOG: Record<string, { name: string; monthlyPrice: number; minPlan?: string }> = {
+  cms: { name: 'Tienda Web', monthlyPrice: 50, minPlan: 'emprende' },
+  pricing_intelligence: { name: 'Intelligence', monthlyPrice: 100 },
+};
+
+/** Cómo se abre una app bloqueada: comprando un add-on, o subiendo de plan. */
+interface UnlockPath {
+  kind: 'addon' | 'plan' | 'unknown';
+  /** Línea que explica qué hay que hacer. */
+  detail: string;
+  /** Monto grande de la derecha. */
+  amount: string;
+  /** Renglón bajo el monto. */
+  amountNote: string;
+}
 
 // Two independent gates per app (mirrors how big apps separate billing from RBAC):
 //   - entitlement: does the BUSINESS pay for it? (plan) → upsell when missing.
@@ -47,6 +102,10 @@ interface SubscriptionStatus {
   plan_name: string;
   status: string;
   usage: UsageSummary[];
+}
+
+interface HubAppUnlock {
+  unlock?: UnlockPath;
 }
 
 interface ReadinessItem {
@@ -92,7 +151,7 @@ const FALLBACK_CHECKLIST: ReadinessItem[] = [
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [QuotaLabelPipe, RouterLink],
+  imports: [QuotaLabelPipe, RouterLink, NgTemplateOutlet],
   templateUrl: './home.component.html',
   styleUrl: './home.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -116,7 +175,7 @@ export class HomeComponent {
 
   protected readonly activeBusinessName = computed(() => {
     const bizId = this.businessCtx.businessId();
-    return this.memberships().find((m) => m.id === bizId)?.name ?? 'Mi negocio';
+    return resolveActiveBusinessName(this.memberships(), this.user(), bizId);
   });
 
   // Effective permission codes the user holds in the ACTIVE business.
@@ -130,7 +189,95 @@ export class HomeComponent {
     return ab?.permissions ? new Set(ab.permissions) : null;
   });
 
+  /**
+   * PPR-112 — el centro del Hub era idéntico para el dueño y para un empleado.
+   *
+   * Un miembro con rol Sales (`orders:*`) veía "Termina de configurar" con las
+   * tareas del NEGOCIO —nombre de tienda, logo, contacto, WhatsApp, métodos de
+   * pago, facturación, guías de despacho— y la tarjeta "Tu plan" con el plan
+   * contratado, los asientos y el almacenamiento. Ninguna tarea era suya y
+   * ninguna podía hacer: todas esas pantallas lo mandan a /forbidden.
+   *
+   * El dato ya estaba: el mismo `userPermissions` que decide qué aplicaciones
+   * ofrecer. El checklist y el plan simplemente no pasaban por ese filtro.
+   *
+   * `settings:manage` es el permiso de quien administra el negocio, que es de
+   * quien son esas tareas. Falla ABIERTO cuando la API no manda permisos, igual
+   * que el gate de aplicaciones: nunca esconder por un campo que no llegó.
+   */
+  protected readonly canManageBusiness = computed(() => {
+    const perms = this.userPermissions();
+    if (perms === null) return true;
+    // '*' es el comodín del super admin — el mismo que `hasAnyPerm` ya respeta
+    // acá abajo. Sin esta línea, a quien puede todo se le escondía el checklist
+    // y la tarjeta de plan: la API le manda ['*'], no la lista de códigos.
+    return perms.has('*') || perms.has('settings:manage');
+  });
+
   // --- App switcher ---
+  private readonly plansRes = resource({
+    loader: async () => this.hubData.getPlans(),
+  });
+
+  /** Del más barato al más caro: el primero que incluye una feature es el que hay que nombrar. */
+  private readonly plansByPrice = computed(() =>
+    [...(this.plansRes.value() ?? [])].sort((a, b) => a.monthly_price - b.monthly_price),
+  );
+
+  /**
+   * Qué abre una app bloqueada. Primero se pregunta si algún plan la incluye
+   * —«Caja» sale recién en Lidera, no es un add-on— y solo si ninguno lo hace
+   * se la trata como compra suelta.
+   */
+  /** Expuesto a la plantilla: el saludo y la tarjeta de plan no quieren la cola. */
+  protected shortPlanName(name: string): string {
+    return shortPlanName(name);
+  }
+
+  protected unlockFor(entitlement: string | undefined): UnlockPath {
+    if (!entitlement) return { kind: 'unknown', detail: '', amount: '', amountNote: '' };
+
+    const plan = this.plansByPrice().find((p) => p.features?.[entitlement] === true);
+    if (plan) {
+      const label = shortPlanName(plan.name);
+      return {
+        kind: 'plan',
+        detail: `Viene incluida desde el plan ${label} — no se compra suelta`,
+        amount: label,
+        amountNote: `S/ ${plan.monthly_price} al mes`,
+      };
+    }
+
+    const addon = ADD_ON_CATALOG[entitlement];
+    if (addon) {
+      const floorPlan = addon.minPlan
+        ? this.plansByPrice().find((p) => p.id === addon.minPlan)
+        : undefined;
+      const floor = floorPlan ? shortPlanName(floorPlan.name) : addon.minPlan ?? null;
+      return {
+        kind: 'addon',
+        detail: floor
+          ? `Add-on de S/ ${addon.monthlyPrice} al mes · necesita al menos el plan ${floor}`
+          : `Add-on de S/ ${addon.monthlyPrice} al mes · lo activamos contigo`,
+        amount: `+ S/ ${addon.monthlyPrice}`,
+        amountNote: 'al mes',
+      };
+    }
+
+    // Sin plan que la incluya y sin add-on conocido: se dice lo que se sabe.
+    return { kind: 'unknown', detail: 'Todavía no está disponible en tu cuenta', amount: '', amountNote: '' };
+  }
+
+  /** Lo que el comercio ya puede abrir. */
+  protected readonly ownedApps = computed(() => this.apps().filter((a) => !a.addOn));
+
+  /** Lo que está detrás de un plan o un add-on. */
+  protected readonly lockedApps = computed(() =>
+    this.apps()
+      .filter((a) => a.addOn)
+      .map((app) => ({ ...app, unlock: this.unlockFor(APP_GATES[app.key]?.entitlement) })),
+  );
+
   protected readonly apps = computed((): HubApp[] => {
     const e = this.businessCtx.entitlements();
     const has = (key: string) => !!e?.[key];
@@ -149,13 +296,13 @@ export class HomeComponent {
     };
 
     const candidates: Array<HubApp | null> = [
-      build({ key: 'panel', name: 'Panel', desc: 'Catálogo, pedidos, stock y clientes', icon: 'panel', url: this.runtimeConfig.adminUrl() ?? '' }),
-      build({ key: 'caja', name: 'Caja', desc: 'Vende en mostrador, sin fricción', icon: 'caja', url: this.runtimeConfig.posUrl() ?? '' }),
+      build({ key: 'panel', name: 'Panel', desc: 'Tu escritorio: catálogo, pedidos, stock y clientes', icon: 'panel', url: this.runtimeConfig.adminUrl() ?? '' }),
+      build({ key: 'caja', name: 'Caja', desc: 'Punto de venta: cobra en mostrador y emite boleta', icon: 'caja', url: this.runtimeConfig.posUrl() ?? '' }),
       this.runtimeConfig.builderUrl()
-        ? build({ key: 'tienda', name: 'Tienda Web', desc: 'Diseña y publica tu tienda online', icon: 'tienda', url: this.runtimeConfig.builderUrl()! })
+        ? build({ key: 'tienda', name: 'Tienda Web', desc: 'Arrastra bloques, arma tu tienda y publícala', icon: 'tienda', url: this.runtimeConfig.builderUrl()! })
         : null,
       this.runtimeConfig.intelligenceUrl()
-        ? build({ key: 'intelligence', name: 'Intelligence', desc: 'Precios y decisiones con IA', icon: 'intelligence', url: this.runtimeConfig.intelligenceUrl()! })
+        ? build({ key: 'intelligence', name: 'Intelligence', desc: 'Precios sugeridos y márgenes con IA', icon: 'intelligence', url: this.runtimeConfig.intelligenceUrl()! })
         : null,
       this.runtimeConfig.mobileUrl()
         ? build({ key: 'app', name: 'App', desc: 'Tu negocio en el celular', icon: 'app', url: this.runtimeConfig.mobileUrl()! })
@@ -179,7 +326,9 @@ export class HomeComponent {
   );
 
   protected usagePct(item: UsageSummary): number {
-    if (!item.limit) return 0;
+    // limit <= 0 es «sin tope» (-1) o «sin dato» (0): en ninguno de los dos
+    // casos hay una fracción que dibujar, y -1 daba una barra de -400%.
+    if (item.limit <= 0) return 0;
     return Math.min(100, Math.round((item.current / item.limit) * 100));
   }
 
@@ -196,6 +345,26 @@ export class HomeComponent {
     return status.readiness.sections
       .flatMap((s) => s.items)
       .filter((it) => it.status !== 'obsoleted');
+  });
+
+  /** El paso que toca ahora: el primero sin completar. */
+  protected readonly nextStep = computed(
+    () => this.checklistItems().find((item) => !item.complete) ?? null,
+  );
+
+  protected readonly restSteps = computed(() => {
+    const next = this.nextStep();
+    return this.checklistItems().filter((item) => item !== next);
+  });
+
+  /**
+   * Un comercio sin productos no puede «salir en vivo»: el catálogo vacío es
+   * lo primero. Mientras ese paso siga pendiente, la tarjeta del plan invita a
+   * comparar, no a publicar algo que no existe.
+   */
+  protected readonly canGoLive = computed(() => {
+    const catalog = this.checklistItems().find((item) => item.id === 'catalog.has_products');
+    return catalog ? catalog.complete : true;
   });
 
   protected readonly doneCount = computed(() => {
@@ -216,6 +385,127 @@ export class HomeComponent {
     const total = this.totalCount();
     return total ? Math.round((this.doneCount() / total) * 100) : 0;
   });
+
+  // --- Señales de cada app ---------------------------------------------
+  /**
+   * No bloquea nada: la home se pinta entera sin esto y los números aparecen
+   * cuando llegan. Un launcher que espera a un contador para dejarte entrar a
+   * tu negocio es peor launcher que uno sin contador.
+   */
+  private readonly signalsRes = resource({
+    loader: async () => this.hubData.getAppSignals(this.businessCtx.businessId()),
+  });
+
+  /**
+   * Mientras no se sepa, la fila de números se reserva en vez de aparecer de
+   * golpe: al llegar tarde empujaba la tarjeta de Panel ~80 px hacia abajo y con
+   * ella todo lo que venía después.
+   */
+  protected readonly statsLoading = this.signalsRes.isLoading;
+
+  private readonly moneyFormat = computed(() => {
+    const ab = this.user()?.active_business as { currency_code?: string } | null | undefined;
+    return new Intl.NumberFormat('es-PE', {
+      style: 'currency',
+      currency: ab?.currency_code || 'PEN',
+      maximumFractionDigits: 0,
+    });
+  });
+
+  /**
+   * Los números de Panel. Se omite el que no se pudo traer en vez de mostrar
+   * un cero: `null` es «no se sabe», y un empleado sin `fulfillment:manage`
+   * recibe 403, no un catálogo vacío.
+   */
+  protected readonly panelStats = computed(() => {
+    const s = this.signalsRes.value();
+    if (!s) return [];
+    const out: Array<{ key: string; value: string; label: string; alert: boolean }> = [];
+    if (s.pendingOrders !== null) {
+      out.push({
+        key: 'pending',
+        value: String(s.pendingOrders),
+        label: s.pendingOrders === 1 ? 'pedido sin atender' : 'pedidos sin atender',
+        alert: s.pendingOrders > 0,
+      });
+    }
+    if (s.depletedVariants !== null && s.depletedVariants > 0) {
+      // Cero agotados no es noticia: ocupa un mosaico para no decir nada.
+      out.push({
+        key: 'depleted',
+        value: String(s.depletedVariants),
+        label: s.depletedVariants === 1 ? 'producto agotado' : 'productos agotados',
+        alert: true,
+      });
+    }
+    if (s.revenueToday !== null) {
+      out.push({
+        key: 'revenue',
+        value: this.moneyFormat().format(s.revenueToday),
+        label: 'vendido hoy',
+        alert: false,
+      });
+    }
+    return out;
+  });
+
+  /** La app que se abre todos los días manda; el resto va en la grilla. */
+  protected readonly flagshipApp = computed(
+    () => this.ownedApps().find((a) => a.key === 'panel') ?? this.ownedApps()[0] ?? null,
+  );
+
+  protected readonly secondaryApps = computed(() => {
+    const lead = this.flagshipApp();
+    return this.ownedApps().filter((a) => a !== lead);
+  });
+
+  protected tintFor(app: HubApp): string {
+    return APP_TINT[app.key] ?? 'var(--accent)';
+  }
+
+  /**
+   * Por qué abrir esta app AHORA. Sólo se dice lo que se sabe de verdad: hoy
+   * eso es el estado de la tienda, que viene en el readiness que ya se pide.
+   * Caja no tiene línea porque el módulo POS no expone ninguna agregación —
+   * inventarle «caja abierta» sería adivinar.
+   */
+  protected statusFor(app: HubApp): AppStatus | null {
+    if (app.noAccess) return null;
+
+    if (app.key === 'tienda') {
+      const item = this.checklistItems().find((i) => i.id === WEBSITE_READINESS_ID);
+      if (!item) return null;
+      return item.complete
+        ? { text: 'Publicada y en línea', tone: 'ok' }
+        : { text: 'Sin publicar', tone: 'warn' };
+    }
+
+    if (app.key === 'caja') {
+      const s = this.signalsRes.value();
+      if (!s || s.posOpenSessions === null) return null;
+      if (s.posOpenSessions > 0) {
+        const cobrado = s.posRevenueToday !== null
+          ? ` · ${this.moneyFormat().format(s.posRevenueToday)} hoy`
+          : '';
+        return { text: `Turno abierto${cobrado}`, tone: 'ok' };
+      }
+      return { text: 'Sin turno abierto', tone: 'warn' };
+    }
+
+    return null;
+  }
+
+  /**
+   * El API manda -1 por «sin tope» y la tarjeta lo imprimía tal cual:
+   * «Almacenamiento 0 / -1». Un límite negativo no es un límite.
+   */
+  protected quotaLimit(item: UsageSummary): string {
+    return item.limit < 0 ? 'Ilimitado' : String(item.limit);
+  }
+
+  protected isUnlimited(item: UsageSummary): boolean {
+    return item.limit < 0;
+  }
 
   // --- Actions ---
   protected openApp(app: HubApp): void {

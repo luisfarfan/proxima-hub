@@ -1,0 +1,193 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap">
+  <style>
+    body { margin: 0; font-family: 'Inter', ui-sans-serif, system-ui, sans-serif; letter-spacing: -0.003em; }
+    a { color: #0009dc; text-decoration: none; } a:hover { color: #000678; }
+    .h { font-family: 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif; letter-spacing: -0.02em; }
+    .lbl { font-family: 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif; font-size: 0.625rem; font-weight: 700; letter-spacing: 0.09em; text-transform: uppercase; color: #8a8f98; }
+    .btn { border: 0; background: none; font: inherit; color: inherit; cursor: pointer; }
+
+    .tap { width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; border-radius: 0.5rem; color: #6b6f76; position: relative; transition: background 140ms ease, color 140ms ease; }
+    .tap:hover { background: #eceef2; color: #08090a; }
+
+    .bar {
+      display: flex; align-items: center; gap: 12px; height: 40px; width: 100%; max-width: 40rem;
+      padding: 0 8px 0 14px; border: 1px solid #d0d3da; background: #ffffff; border-radius: 999px;
+      transition: border-color 180ms ease, box-shadow 180ms ease, max-width 260ms cubic-bezier(0.16,1,0.3,1);
+    }
+    .bar:hover { border-color: #a0a4ab; }
+    .bar.on { border-color: #0009dc; box-shadow: 0 0 0 4px rgba(0,9,220,0.12); max-width: 46rem; }
+
+    .here {
+      display: inline-flex; align-items: center; gap: 7px; height: 26px; padding: 0 10px;
+      border-radius: 999px; background: #eceef2; font-size: 0.75rem; font-weight: 600; color: #08090a;
+      font-family: 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif; flex-shrink: 0;
+    }
+
+    .sheet {
+      position: absolute; left: 50%; transform: translateX(-50%); top: 60px; width: 620px; z-index: 6;
+      border: 1px solid #e3e4e8; border-radius: 14px; background: #fff; overflow: hidden;
+      box-shadow: 0 16px 44px rgba(8,9,10,0.13);
+      animation: drop 200ms cubic-bezier(0.16,1,0.3,1);
+    }
+    @keyframes drop { from { opacity: 0; transform: translate(-50%, -10px); } to { opacity: 1; transform: translate(-50%, 0); } }
+    .row { display: flex; align-items: center; gap: 12px; width: 100%; padding: 10px 16px; text-align: left; transition: background 110ms ease; }
+    .row:hover { background: #f4f5f7; }
+    .kbd { font-family: ui-monospace, monospace; font-size: 0.625rem; color: #8a8f98; border: 1px solid #e3e4e8; background: #f4f5f7; border-radius: 5px; padding: 2px 6px; }
+    @media (prefers-reduced-motion: reduce) { .sheet { animation-duration: 1ms; } .bar { transition-duration: 1ms; } }
+  </style>
+</helmet>
+
+<div style="width: 1400px; height: 820px; box-sizing: border-box; padding: 44px 48px; background: #fbfbfc; color: #08090a; overflow: hidden;">
+
+  <p class="lbl" style="margin: 0 0 4px; color: #0009dc;">Dirección C</p>
+  <h2 class="h" style="margin: 0 0 6px; font-size: 1.75rem; font-weight: 800;">El buscador manda</h2>
+  <p style="margin: 0 0 10px; font-size: 0.875rem; line-height: 1.6; color: #6b6f76; max-width: 42rem;">Una sola barra al centro que dice dónde estás <em>y</em> es por donde te mueves. Las migas desaparecen dentro de ella; el engranaje también. Escribes y saltas a cualquier lado.</p>
+  <p style="margin: 0 0 24px; font-size: 0.8125rem; color: #0009dc; font-weight: 500;">Haz clic en la barra para ver cómo se abre.</p>
+
+  <p class="lbl" style="margin: 0 0 8px;">Escritorio · 1280 px · 56 px</p>
+  <div style="width: 1280px; border: 1px solid #e3e4e8; border-radius: 10px 10px 0 0; overflow: visible; position: relative;">
+    <div style="display: flex; align-items: center; height: 56px; padding: 0 12px; gap: 12px; background: #f4f5f7; border-radius: 10px 10px 0 0; position: relative;">
+
+      <button type="button" class="btn tap" style="width: auto; padding: 0 10px; gap: 9px;" onClick="{{ noop }}">
+        <span class="h" style="width: 26px; height: 26px; display: flex; align-items: center; justify-content: center; border-radius: 7px; background: #dbeafe; color: #1e40af; font-size: 0.625rem; font-weight: 700;">BS</span>
+        <span style="font-size: 0.8125rem; font-weight: 500; color: #08090a; white-space: nowrap;">Bodega San Martín</span>
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#8a8f98" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19.5 8.25l-7.5 7.5-7.5-7.5"/></svg>
+      </button>
+
+      <div style="flex: 1; display: flex; justify-content: center; min-width: 0;">
+        <button type="button" class="btn bar {{ openClass }}" onClick="{{ toggle }}">
+          <span class="here">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
+            Catálogo
+          </span>
+          <span style="flex: 1; text-align: left; font-size: 0.875rem; color: #8a8f98;">Escribe para buscar o ir a otra pantalla…</span>
+          <kbd class="kbd" style="padding: 4px 8px;">⌘K</kbd>
+        </button>
+      </div>
+
+      <div style="display: flex; align-items: center; gap: 6px; flex-shrink: 0;">
+        <button type="button" class="btn tap" onClick="{{ noop }}" aria-label="Avisos">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0"/></svg>
+          <span class="h" style="position: absolute; top: 5px; right: 5px; min-width: 16px; height: 16px; display: flex; align-items: center; justify-content: center; padding: 0 4px; border-radius: 999px; background: #0009dc; color: #fff; font-size: 0.625rem; font-weight: 700; box-shadow: 0 0 0 2px #f4f5f7;">3</span>
+        </button>
+        <button type="button" class="btn tap" style="width: auto; padding: 0 6px 0 8px; gap: 8px;" onClick="{{ noop }}">
+          <span class="h" style="width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; border-radius: 999px; background: rgba(0,9,220,0.10); color: #0009dc; font-size: 0.75rem; font-weight: 700;">L</span>
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#8a8f98" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19.5 8.25l-7.5 7.5-7.5-7.5"/></svg>
+        </button>
+      </div>
+
+      <sc-if value="{{ open }}" hint-placeholder-val="{{ true }}">
+        <div class="sheet">
+          <div style="display: flex; align-items: center; gap: 12px; padding: 14px 16px; border-bottom: 1px solid #e3e4e8;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#8a8f98" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+            <span style="flex: 1; font-size: 0.9375rem; color: #08090a;">arroz<span style="display: inline-block; width: 1.5px; height: 17px; background: #0009dc; vertical-align: -3px; margin-left: 1px;"></span></span>
+            <kbd class="kbd">esc</kbd>
+          </div>
+          <div style="padding: 8px 0;">
+            <p class="lbl" style="margin: 4px 16px 6px;">Productos</p>
+            <button type="button" class="btn row" onClick="{{ noop }}">
+              <span style="width: 30px; height: 30px; border-radius: 7px; background: #eceef2; flex-shrink: 0;"></span>
+              <span style="flex: 1; min-width: 0;">
+                <span style="display: block; font-size: 0.8125rem; font-weight: 500;">Arroz Costeño 5 kg</span>
+                <span style="display: block; font-size: 0.75rem; color: #8a8f98;">18 en stock · S/ 24.90</span>
+              </span>
+              <kbd class="kbd">↵</kbd>
+            </button>
+            <button type="button" class="btn row" onClick="{{ noop }}">
+              <span style="width: 30px; height: 30px; border-radius: 7px; background: #eceef2; flex-shrink: 0;"></span>
+              <span style="flex: 1; min-width: 0;">
+                <span style="display: block; font-size: 0.8125rem; font-weight: 500;">Arroz Paisana 1 kg</span>
+                <span style="display: block; font-size: 0.75rem; color: #8a8f98;">Sin stock · S/ 5.50</span>
+              </span>
+            </button>
+            <p class="lbl" style="margin: 12px 16px 6px;">Ir a</p>
+            <button type="button" class="btn row" onClick="{{ noop }}">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#6b6f76" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
+              <span style="flex: 1; font-size: 0.8125rem; font-weight: 500;">Inventario · movimientos de arroz</span>
+            </button>
+            <button type="button" class="btn row" onClick="{{ noop }}">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#6b6f76" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v16m8-8H4"/></svg>
+              <span style="flex: 1; font-size: 0.8125rem; font-weight: 500;">Nueva venta</span>
+              <kbd class="kbd">⌘N</kbd>
+            </button>
+          </div>
+        </div>
+      </sc-if>
+
+    </div>
+
+    <div style="padding: 22px 24px 26px; background: #ffffff; border-top: 1px solid #e3e4e8;">
+      <p style="margin: 0 0 2px; font-size: 0.75rem; font-weight: 500; color: #8a8f98;">Gestionar</p>
+      <h1 class="h" style="margin: 0 0 2px; font-size: 1.75rem; font-weight: 800; line-height: 1.1;">Catálogo</h1>
+      <p style="margin: 0; font-size: 0.8125rem; color: #6b6f76;">248 productos · 12 sin stock</p>
+    </div>
+  </div>
+
+  <div style="display: flex; align-items: flex-start; gap: 40px; margin-top: 34px;">
+
+    <div>
+      <p class="lbl" style="margin: 0 0 8px;">Teléfono · 390 px</p>
+      <div style="width: 390px; border: 1px solid #e3e4e8; border-radius: 10px; overflow: hidden;">
+        <div style="display: flex; align-items: center; height: 56px; padding: 0 8px; gap: 6px; background: #f4f5f7;">
+          <span class="tap" style="width: 44px; height: 44px;">
+            <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+          </span>
+          <span class="bar" style="height: 44px; flex: 1; min-width: 0; padding: 0 12px;">
+            <span class="here" style="flex-shrink: 0;">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
+              Catálogo
+            </span>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#8a8f98" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="margin-left: auto;"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+          </span>
+          <span class="tap" style="width: 44px; height: 44px;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0"/></svg>
+            <span class="h" style="position: absolute; top: 7px; right: 7px; min-width: 16px; height: 16px; display: flex; align-items: center; justify-content: center; padding: 0 4px; border-radius: 999px; background: #0009dc; color: #fff; font-size: 0.625rem; font-weight: 700; box-shadow: 0 0 0 2px #f4f5f7;">3</span>
+          </span>
+          <span class="tap" style="width: 44px; height: 44px;">
+            <span class="h" style="width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; border-radius: 999px; background: rgba(0,9,220,0.10); color: #0009dc; font-size: 0.75rem; font-weight: 700;">L</span>
+          </span>
+        </div>
+        <div style="padding: 16px; background: #ffffff; border-top: 1px solid #e3e4e8;">
+          <p style="margin: 0 0 2px; font-size: 0.75rem; color: #8a8f98;">Gestionar</p>
+          <h1 class="h" style="margin: 0; font-size: 1.375rem; font-weight: 800;">Catálogo</h1>
+        </div>
+      </div>
+    </div>
+
+    <div style="flex: 1; padding-top: 26px; max-width: 32rem;">
+      <p class="lbl" style="margin: 0 0 12px;">Qué cambia</p>
+      <div style="display: flex; flex-direction: column; gap: 13px;">
+        <p style="margin: 0; font-size: 0.8125rem; line-height: 1.6; color: #6b6f76;"><strong class="h" style="color: #08090a; font-weight: 700;">Una sola cosa que aprender.</strong> Dónde estás y a dónde vas viven en el mismo objeto. El negocio manda a la izquierda, la cuenta a la derecha, y en medio no hay nada más.</p>
+        <p style="margin: 0; font-size: 0.8125rem; line-height: 1.6; color: #6b6f76;"><strong class="h" style="color: #08090a; font-weight: 700;">Buscar deja de ser un icono escondido.</strong> Es lo más ancho de la pantalla, y lo mismo en teléfono que en escritorio — no se degrada a una lupa.</p>
+        <p style="margin: 0; font-size: 0.8125rem; line-height: 1.6; color: #6b6f76;"><strong class="h" style="color: #08090a; font-weight: 700;">Las acciones se escriben.</strong> «Nueva venta» y el engranaje viven dentro de la barra con su atajo. La franja se queda con tres objetos y nada más.</p>
+      </div>
+      <p style="margin: 20px 0 0; font-size: 0.8125rem; line-height: 1.6; color: #b45309;"><strong class="h" style="font-weight: 700;">A cambio:</strong> es la más distinta de lo que ya conoce tu comercio, y una acción que sólo se alcanza escribiendo es una acción que mucha gente no encuentra. Pide onboarding, y probablemente un botón de «Nueva venta» que igual quede visible en Ventas.</p>
+    </div>
+
+  </div>
+
+</div>
+</x-dc>
+<script data-dc-script data-props='{"$preview":{"width":1400,"height":820}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {
+      open: this.state?.open ?? false,
+      openClass: this.state?.open ? 'on' : '',
+      toggle: () => this.setState({ open: !this.state?.open }),
+      noop: () => {},
+    };
+  }
+}
+</script>
+</body>
+</html>

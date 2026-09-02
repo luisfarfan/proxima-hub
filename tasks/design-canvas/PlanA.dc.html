@@ -1,0 +1,223 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500&family=Plus+Jakarta+Sans:wght@500;600;700&family=Inter:wght@400;500;600&display=swap">
+  <style>
+    body { margin: 0; font-family: 'Inter', system-ui, sans-serif; letter-spacing: -0.003em; }
+    a { color: #0009dc; text-decoration: none; } a:hover { color: #000678; text-decoration: underline; }
+    button { font: inherit; cursor: pointer; border: 0; background: none; color: inherit; text-align: left; }
+
+    .plan { position: relative; display: flex; flex-direction: column; border: 1px solid rgba(27,26,23,0.11); border-radius: 18px; background: #fff; padding: 24px; transition: transform 240ms cubic-bezier(0.16,1,0.3,1), border-color 200ms ease, box-shadow 240ms ease; opacity: 0; animation: rise 620ms cubic-bezier(0.16,1,0.3,1) forwards; }
+    @keyframes rise { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: none; } }
+    .plan:hover { transform: translateY(-3px); box-shadow: 0 18px 40px -26px rgba(27,26,23,0.5); }
+    .plan.on { border-color: #0009dc; box-shadow: 0 0 0 3px rgba(0,9,220,0.1), 0 20px 44px -26px rgba(0,9,220,0.55); }
+    .plan.mine { background: #f7f6f3; }
+
+    .tag { position: absolute; top: -11px; left: 24px; height: 24px; padding: 0 11px; border-radius: 999px; background: #0009dc; color: #fff; font-size: 0.6875rem; font-weight: 600; letter-spacing: 0.07em; text-transform: uppercase; display: inline-flex; align-items: center; }
+    .tag.mute { background: #e7e5e0; color: #6c6a63; }
+
+    .gain { display: flex; align-items: flex-start; gap: 9px; font-size: 0.8125rem; line-height: 1.45; color: #1b1a17; }
+    .gain .plus { width: 17px; height: 17px; border-radius: 5px; background: rgba(0,9,220,0.1); color: #0009dc; flex-shrink: 0; display: flex; align-items: center; justify-content: center; margin-top: 1px; }
+    .gain.off { color: #a5a39b; }
+    .gain.off .plus { background: rgba(27,26,23,0.05); color: #b6b3aa; }
+    .gain.have { color: #4a4841; }
+    .gain.have .plus { background: rgba(27,26,23,0.07); color: #6c6a63; }
+
+    .jump { display: inline-flex; align-items: center; gap: 6px; font-size: 0.75rem; color: #6c6a63; }
+    .jump b { font-weight: 600; color: #1b1a17; }
+    .jump svg { color: #0009dc; animation: nudge 2.4s ease-in-out infinite; }
+    @keyframes nudge { 0%, 100% { transform: translateX(0); } 50% { transform: translateX(3px); } }
+
+    .meter { height: 6px; border-radius: 999px; background: rgba(27,26,23,0.09); overflow: hidden; }
+    .meter > span { display: block; height: 100%; border-radius: 999px; transform-origin: left; animation: grow 1200ms cubic-bezier(0.16,1,0.3,1) both; }
+    @keyframes grow { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+
+    .cta { height: 42px; width: 100%; border-radius: 10px; background: #0009dc; color: #fff; font-weight: 600; font-size: 0.8125rem; display: inline-flex; align-items: center; justify-content: center; gap: 8px; transition: background 160ms ease, transform 120ms ease; }
+    .cta:hover { background: #0007b4; }
+    .cta:active { transform: scale(0.985); }
+    .cta.ghost { background: #fff; color: #1b1a17; border: 1px solid rgba(27,26,23,0.16); }
+    .cta.ghost:hover { border-color: rgba(27,26,23,0.32); background: #fff; }
+    .cta.flat { background: transparent; color: #8a887f; cursor: default; }
+
+    .lock { display: inline-flex; align-items: center; gap: 6px; height: 28px; padding: 0 11px; border-radius: 999px; font-size: 0.75rem; font-weight: 600; transition: background 300ms ease, color 300ms ease; }
+    .lock.closed { background: rgba(27,26,23,0.06); color: #8a887f; }
+    .lock.open { background: rgba(29,122,77,0.13); color: #1d7a4d; }
+
+    .in { opacity: 0; animation: rise 620ms cubic-bezier(0.16,1,0.3,1) forwards; }
+    @media (prefers-reduced-motion: reduce) { .plan, .in, .meter > span, .jump svg { animation: none; opacity: 1; transform: none; } }
+  </style>
+</helmet>
+
+<div style="width: 1180px; height: 920px; box-sizing: border-box; background: #fbfaf8; color: #1b1a17; padding: 40px 48px 0; display: flex; flex-direction: column; gap: 22px; overflow: hidden;">
+
+  <!-- Cabecera -->
+  <div class="in" style="display: flex; align-items: flex-end; justify-content: space-between; gap: 32px;">
+    <div>
+      <h1 style="margin: 0; font-family: 'Fraunces', Georgia, serif; font-weight: 500; font-size: 2.25rem; line-height: 1.06; letter-spacing: -0.02em;">Tu plan</h1>
+      <p style="margin: 8px 0 0; font-size: 0.9375rem; color: #6c6a63;">Estás en <b style="color: #1b1a17; font-weight: 500;">Gratis</b> desde hace 3 semanas. Sin fecha de vencimiento.</p>
+    </div>
+    <a href="#" style="display: inline-flex; align-items: center; gap: 7px; font-size: 0.8125rem;">Comparar todo lo que incluye cada plan<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+  </div>
+
+  <!-- La señal: tu uso -->
+  <div class="in" style="animation-delay: 80ms; border: 1px solid rgba(0,9,220,0.2); border-radius: 16px; background: #f7f7ff; padding: 20px 24px; display: flex; align-items: center; gap: 32px;">
+    <div style="flex-shrink: 0; max-width: 20rem;">
+      <span style="display: block; font-size: 0.6875rem; font-weight: 600; letter-spacing: 0.11em; text-transform: uppercase; color: #0009dc; margin-bottom: 7px;">Lo que dice tu uso</span>
+      <p style="margin: 0; font-size: 0.9375rem; line-height: 1.45; color: #1b1a17;">Te queda <b style="font-weight: 600;">1 producto</b> libre y ya no puedes sumar a nadie a tu equipo.</p>
+    </div>
+    <div style="flex: 1; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 22px;">
+      <div>
+        <div style="display: flex; justify-content: space-between; font-size: 0.75rem; margin-bottom: 7px;"><span style="color: #6c6a63;">Productos</span><span style="font-weight: 600;">9 / 10</span></div>
+        <div class="meter"><span style="width: 90%; background: #bb3a2c; animation-delay: 300ms;"></span></div>
+      </div>
+      <div>
+        <div style="display: flex; justify-content: space-between; font-size: 0.75rem; margin-bottom: 7px;"><span style="color: #6c6a63;">Usuarios admin</span><span style="font-weight: 600;">1 / 1</span></div>
+        <div class="meter"><span style="width: 100%; background: #bb3a2c; animation-delay: 420ms;"></span></div>
+      </div>
+      <div>
+        <div style="display: flex; justify-content: space-between; font-size: 0.75rem; margin-bottom: 7px;"><span style="color: #6c6a63;">Pedidos del mes</span><span style="font-weight: 600;">24 / 30</span></div>
+        <div class="meter"><span style="width: 80%; background: #0009dc; animation-delay: 540ms;"></span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Los tres planes -->
+  <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px;">
+
+    <!-- Gratis -->
+    <button type="button" class="plan mine {{ k.free }}" style="animation-delay: 120ms;" onClick="{{ pickFree }}">
+      <span class="tag mute">Tu plan de hoy</span>
+      <span style="font-family: 'Plus Jakarta Sans', sans-serif; font-size: 1.0625rem; font-weight: 600; margin-bottom: 4px;">Gratis</span>
+      <span style="display: flex; align-items: baseline; gap: 5px; margin-bottom: 16px;">
+        <span style="font-family: 'Fraunces', Georgia, serif; font-size: 2.25rem; font-weight: 500; letter-spacing: -0.02em;">S/ 0</span>
+        <span style="font-size: 0.75rem; color: #8a887f;">/ mes</span>
+      </span>
+      <span style="display: flex; flex-direction: column; gap: 9px; margin-bottom: 18px;">
+        <span class="gain have"><span class="plus"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg></span>Catálogo y control de stock</span>
+        <span class="gain have"><span class="plus"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg></span>Ventas manuales y sus pedidos</span>
+        <span class="gain have"><span class="plus"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg></span>10 productos · 1 usuario</span>
+      </span>
+      <span style="margin-top: auto; font-size: 0.75rem; color: #8a887f; line-height: 1.5;">Sin vencimiento. Se queda ahí mientras lo necesites.</span>
+    </button>
+
+    <!-- Emprende -->
+    <button type="button" class="plan {{ k.emprende }}" style="animation-delay: 200ms;" onClick="{{ pickEmprende }}">
+      <span class="tag">Te calza por tu uso</span>
+      <span style="font-family: 'Plus Jakarta Sans', sans-serif; font-size: 1.0625rem; font-weight: 600; margin-bottom: 4px;">Emprende</span>
+      <span style="display: flex; align-items: baseline; gap: 5px; margin-bottom: 16px;">
+        <span style="font-family: 'Fraunces', Georgia, serif; font-size: 2.25rem; font-weight: 500; letter-spacing: -0.02em;">S/ 50</span>
+        <span style="font-size: 0.75rem; color: #8a887f;">/ mes</span>
+      </span>
+      <span style="display: block; font-size: 0.6875rem; font-weight: 600; letter-spacing: 0.09em; text-transform: uppercase; color: #0009dc; margin-bottom: 10px;">Lo que se te abre</span>
+      <span style="display: flex; flex-direction: column; gap: 9px; margin-bottom: 14px;">
+        <span class="gain"><span class="plus"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></span>Pedidos por WhatsApp</span>
+        <span class="gain"><span class="plus"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></span>Analítica de tus ventas</span>
+        <span class="gain"><span class="plus"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></span>Habilita el add-on Tienda Web</span>
+      </span>
+      <span style="display: flex; flex-direction: column; gap: 7px; padding-top: 14px; border-top: 1px solid rgba(27,26,23,0.08); margin-bottom: 18px;">
+        <span class="jump">Productos <b>10</b> <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg> <b>500</b></span>
+        <span class="jump">Usuarios <b>1</b> <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg> <b>3</b></span>
+        <span class="jump">Pedidos al mes <b>30</b> <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg> <b>300</b></span>
+      </span>
+      <span class="cta" style="margin-top: auto;">Cambiar a Emprende</span>
+    </button>
+
+    <!-- Crece -->
+    <button type="button" class="plan {{ k.crece }}" style="animation-delay: 280ms;" onClick="{{ pickCrece }}">
+      <span class="tag mute">Cuando factures</span>
+      <span style="font-family: 'Plus Jakarta Sans', sans-serif; font-size: 1.0625rem; font-weight: 600; margin-bottom: 4px;">Crece</span>
+      <span style="display: flex; align-items: baseline; gap: 5px; margin-bottom: 16px;">
+        <span style="font-family: 'Fraunces', Georgia, serif; font-size: 2.25rem; font-weight: 500; letter-spacing: -0.02em;">S/ 99</span>
+        <span style="font-size: 0.75rem; color: #8a887f;">/ mes</span>
+      </span>
+      <span style="display: block; font-size: 0.6875rem; font-weight: 600; letter-spacing: 0.09em; text-transform: uppercase; color: #6c6a63; margin-bottom: 10px;">Todo Emprende, más</span>
+      <span style="display: flex; flex-direction: column; gap: 9px; margin-bottom: 14px;">
+        <span class="gain"><span class="plus"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></span>Facturación electrónica SUNAT</span>
+        <span class="gain"><span class="plus"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></span>CRM de clientes</span>
+        <span class="gain"><span class="plus"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></span>500 comprobantes al mes</span>
+      </span>
+      <span style="display: flex; flex-direction: column; gap: 7px; padding-top: 14px; border-top: 1px solid rgba(27,26,23,0.08); margin-bottom: 18px;">
+        <span class="jump">Productos <b>10</b> <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg> <b>5.000</b></span>
+        <span class="jump">Usuarios <b>1</b> <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg> <b>10</b></span>
+        <span class="jump">Pedidos al mes <b>30</b> <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg> <b>2.000</b></span>
+      </span>
+      <span class="cta ghost" style="margin-top: auto;">Cambiar a Crece</span>
+    </button>
+
+  </div>
+
+  <!-- Add-on con su candado explicado -->
+  <div class="in" style="animation-delay: 340ms; border: 1px solid rgba(27,26,23,0.11); border-radius: 16px; background: #fff; padding: 18px 22px; display: flex; align-items: center; gap: 18px;">
+    <span style="width: 40px; height: 40px; border-radius: 12px; background: #f2f1ee; color: #4a4841; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+      <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M7 6.5h.01M10 6.5h.01"/></svg>
+    </span>
+    <span style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 3px;">
+      <span style="font-size: 0.9375rem; font-weight: 600;">Tienda Web <span style="font-weight: 400; color: #6c6a63;">· S/ 50 / mes</span></span>
+      <span style="font-size: 0.8125rem; color: #6c6a63;">Tu sitio en {{ slug }}.proxima.pe, con carrito, checkout y editor visual.</span>
+    </span>
+    <span class="lock {{ lockCls }}">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="{{ lockShackle }}"/></svg>
+      {{ lockText }}
+    </span>
+    <span class="cta {{ addonBtnCls }}" style="width: auto; padding: 0 20px;">{{ addonCta }}</span>
+  </div>
+
+  <!-- Barra de total -->
+  <div class="in" style="animation-delay: 400ms; margin: auto -48px 0; padding: 18px 48px; border-top: 1px solid rgba(27,26,23,0.08); background: #fbfaf8; display: flex; align-items: center; justify-content: space-between; gap: 24px;">
+    <span style="font-size: 0.8125rem; color: #6c6a63;">{{ breakdown }}</span>
+    <span style="display: flex; align-items: baseline; gap: 10px;">
+      <span style="font-size: 0.8125rem; color: #6c6a63;">Total mensual</span>
+      <span style="font-family: 'Fraunces', Georgia, serif; font-size: 1.75rem; font-weight: 500; letter-spacing: -0.02em;">S/ {{ total }}</span>
+    </span>
+  </div>
+
+</div>
+</x-dc>
+<script data-dc-script data-props='{"$preview":{"width":1180,"height":920}}'>
+class Component extends DCLogic {
+  state = { plan: 'emprende', addon: true, slug: 'bodega-san-martin' };
+
+  renderVals() {
+    const st = this.state || {};
+    const prices = { free: 0, emprende: 50, crece: 99 };
+    const names = { free: 'Gratis', emprende: 'Emprende', crece: 'Crece' };
+    const plan = st.plan || 'free';
+    const allowsAddon = plan !== 'free';
+    const addonOn = allowsAddon && st.addon;
+    const total = prices[plan] + (addonOn ? 50 : 0);
+
+    const breakdown = allowsAddon
+      ? (addonOn
+          ? names[plan] + ' S/ ' + prices[plan] + '  +  Tienda Web S/ 50'
+          : names[plan] + ' S/ ' + prices[plan] + '  ·  Tienda Web disponible por S/ 50 más')
+      : 'Plan Gratis. La Tienda Web necesita al menos Emprende.';
+
+    return {
+      slug: st.slug,
+      k: {
+        free: plan === 'free' ? 'on' : '',
+        emprende: plan === 'emprende' ? 'on' : '',
+        crece: plan === 'crece' ? 'on' : '',
+      },
+      pickFree: () => this.setState({ plan: 'free' }),
+      pickEmprende: () => this.setState({ plan: 'emprende' }),
+      pickCrece: () => this.setState({ plan: 'crece' }),
+      lockCls: allowsAddon ? 'open' : 'closed',
+      lockShackle: allowsAddon ? 'M8 11V8a4 4 0 0 1 7.6-1.7' : 'M8 11V7a4 4 0 0 1 8 0v4',
+      lockText: allowsAddon ? 'Habilitado con ' + names[plan] : 'Necesita Emprende o superior',
+      addonCta: allowsAddon ? 'Crear mi tienda' : 'Sube de plan primero',
+      addonBtnCls: allowsAddon ? '' : 'flat',
+      breakdown: breakdown,
+      total: String(total),
+    };
+  }
+}
+</script>
+</body>
+</html>

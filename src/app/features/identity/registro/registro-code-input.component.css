@@ -1,0 +1,28 @@
+:host { display: block; }
+
+.boxes { display: flex; gap: 7px; }
+
+.box {
+  width: 100%;
+  min-width: 0;
+  height: 3.4rem;
+  text-align: center;
+  font-size: 1.6rem;
+  font-weight: 500;
+  color: #15151b;
+  background: #fff;
+  border: 1px solid rgba(18, 18, 26, 0.13);
+  border-radius: 0.6rem;
+  outline: none;
+  font-family: inherit;
+  transition: border-color 0.14s, box-shadow 0.14s;
+}
+
+.box:hover { border-color: rgba(18, 18, 26, 0.26); }
+
+.box:focus {
+  border-color: #0009dc;
+  box-shadow: 0 0 0 3px rgba(0, 9, 220, 0.13);
+}
+
+.box.is-invalid { border-color: #bb3a2c; }

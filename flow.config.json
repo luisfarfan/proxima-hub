@@ -17,6 +17,11 @@
     "mode": "unit",
     "url": "http://localhost:4200"
   },
+  "worktree": {
+    "enabled": false,
+    "prefix": "rein-wt",
+    "baseBranch": "develop"
+  },
   "tracker": {
     "kind": "none"
   }

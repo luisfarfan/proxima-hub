@@ -1,0 +1,150 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap">
+  <style>
+    body { margin: 0; font-family: 'Inter', ui-sans-serif, system-ui, sans-serif; letter-spacing: -0.003em; }
+    a { color: #0009dc; text-decoration: none; } a:hover { color: #000678; }
+    .h { font-family: 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif; letter-spacing: -0.02em; }
+    .lbl { font-family: 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif; font-size: 0.625rem; font-weight: 700; letter-spacing: 0.09em; text-transform: uppercase; color: #8a8f98; }
+    .num { font-family: 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif; font-weight: 800; font-variant-numeric: tabular-nums; letter-spacing: -0.03em; line-height: 1; }
+    .card { border: 1px solid #e3e4e8; border-radius: 12px; background: #fff; }
+    .btn { border: 0; background: none; font: inherit; cursor: pointer; color: inherit; }
+    .tab { height: 38px; padding: 0 14px; border-radius: 9px; font-size: 0.875rem; font-weight: 500; color: #6b6f76; transition: background 140ms ease, color 140ms ease; }
+    .tab:hover { color: #08090a; background: #f4f5f7; }
+    .tab.on { background: #08090a; color: #fff; font-weight: 600; }
+    .seg { display: inline-flex; padding: 3px; border-radius: 10px; background: #eceef2; gap: 2px; }
+    .seg button { height: 30px; padding: 0 11px; border-radius: 7px; font-size: 0.8125rem; font-weight: 500; color: #6b6f76; transition: background 140ms ease; }
+    .seg button.on { background: #fff; color: #08090a; font-weight: 600; box-shadow: 0 1px 2px rgba(8,9,10,.06); }
+    .in { animation: fade 260ms ease both; }
+    @keyframes fade { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+    @media (prefers-reduced-motion: reduce) { .in { animation-duration: 1ms; } }
+  </style>
+</helmet>
+
+<div style="width: 1180px; height: 820px; box-sizing: border-box; padding: 36px 40px; background: #fbfbfc; color: #08090a; overflow: hidden;">
+
+  <p class="lbl" style="margin: 0 0 4px; color: #0009dc;">Dirección A · pestañas de verdad</p>
+  <h2 class="h" style="margin: 0 0 6px; font-size: 1.5rem; font-weight: 800;">Una sección a la vez</h2>
+  <p style="margin: 0 0 22px; font-size: 0.875rem; line-height: 1.6; color: #6b6f76; max-width: 44rem;">La barra ya parecía una pestaña: que lo sea. De 3.044 px de scroll a una pantalla. Nada se pierde — se deja de enseñar todo junto. <strong style="color: #08090a; font-weight: 600;">Prueba a cambiar de pestaña.</strong></p>
+
+  <div class="card" style="overflow: hidden;">
+    <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 20px; padding: 20px 22px 0;">
+      <div>
+        <h1 class="h" style="margin: 0 0 2px; font-size: 1.375rem; font-weight: 800;">Analítica</h1>
+        <p style="margin: 0; font-size: 0.8125rem; color: #8a8f98;">28 jul – 26 ago 2026</p>
+      </div>
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <div class="seg">
+          <button type="button" class="btn" onClick="{{ noop }}">Hoy</button>
+          <button type="button" class="btn" onClick="{{ noop }}">Ayer</button>
+          <button type="button" class="btn" onClick="{{ noop }}">7 días</button>
+          <button type="button" class="btn on" onClick="{{ noop }}">30 días</button>
+          <button type="button" class="btn" onClick="{{ noop }}">Este mes</button>
+        </div>
+        <button type="button" class="btn" style="width: 34px; height: 34px; border-radius: 9px; border: 1px solid #e3e4e8; display: flex; align-items: center; justify-content: center; color: #6b6f76;" onClick="{{ noop }}" aria-label="Refrescar">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a9 9 0 11-3-6.7M21 3v6h-6"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <div style="display: flex; gap: 4px; padding: 16px 22px 0; border-bottom: 1px solid #e3e4e8; margin-bottom: 0;">
+      <sc-for list="{{ tabs }}" as="t" hint-placeholder-count="6">
+        <button type="button" class="btn tab {{ t.cls }}" style="margin-bottom: -1px;" onClick="{{ t.pick }}">{{ t.label }}</button>
+      </sc-for>
+    </div>
+
+    <div style="padding: 24px 22px 26px; background: #fbfbfc; min-height: 330px;">
+      <sc-if value="{{ isVentas }}" hint-placeholder-val="{{ true }}">
+        <div class="in">
+          <div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; margin-bottom: 14px;">
+            <div class="card" style="padding: 16px 18px;">
+              <p class="lbl" style="margin: 0 0 7px;">Vendido</p>
+              <p class="num" style="margin: 0; font-size: 1.5rem;">S/ 1,464.91</p>
+            </div>
+            <div class="card" style="padding: 16px 18px;">
+              <p class="lbl" style="margin: 0 0 7px;">Pedidos</p>
+              <p class="num" style="margin: 0; font-size: 1.5rem;">2</p>
+            </div>
+            <div class="card" style="padding: 16px 18px; opacity: .55;">
+              <p class="lbl" style="margin: 0 0 7px;">Ticket medio</p>
+              <p style="margin: 0; font-size: 0.8125rem; line-height: 1.45; color: #8a8f98;">Con 2 ventas todavía no dice nada. Desde 5.</p>
+            </div>
+            <div class="card" style="padding: 16px 18px;">
+              <p class="lbl" style="margin: 0 0 7px;">Unidades por pedido</p>
+              <p class="num" style="margin: 0; font-size: 1.5rem;">2.0</p>
+            </div>
+          </div>
+          <div class="card" style="padding: 18px 20px;">
+            <p class="lbl" style="margin: 0 0 12px;">De dónde vino</p>
+            <div style="display: flex; align-items: center; gap: 12px; font-size: 0.875rem; margin-bottom: 9px;">
+              <span style="width: 120px; color: #6b6f76;">Tienda</span>
+              <span style="flex: 1; height: 8px; border-radius: 99px; background: #0009dc;"></span>
+              <span class="num" style="font-size: 0.875rem; width: 44px; text-align: right;">2</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 12px; font-size: 0.875rem;">
+              <span style="width: 120px; color: #6b6f76;">Delivery</span>
+              <span style="flex: 1; height: 8px; border-radius: 99px; background: #1a9e4a;"></span>
+              <span class="num" style="font-size: 0.875rem; width: 44px; text-align: right;">2</span>
+            </div>
+            <p style="margin: 12px 0 0; font-size: 0.75rem; color: #a0a4ab;">Todo por un solo canal y una sola entrega — sin nada con qué comparar, la barra va llena. Antes esto eran dos donas al 100 %.</p>
+          </div>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ isTrafico }}" hint-placeholder-val="{{ false }}">
+        <div class="in" style="display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 300px; text-align: center; gap: 10px;">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#a0a4ab" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3v18h18M7 15l4-4 3 3 5-6"/></svg>
+          <p class="h" style="margin: 0; font-size: 1.0625rem; font-weight: 700;">Tu tienda no recibió visitas en este periodo</p>
+          <p style="margin: 0; font-size: 0.875rem; line-height: 1.55; color: #6b6f76; max-width: 26rem;">Vistas, sesiones, rebote y referentes aparecen en cuanto entre alguien. Antes, esto era un gráfico con la palabra «0» escrita treinta y una veces.</p>
+          <a href="#" style="font-size: 0.875rem; font-weight: 600;">Ver mi tienda →</a>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ isOtra }}" hint-placeholder-val="{{ false }}">
+        <div class="in" style="display: flex; align-items: center; justify-content: center; min-height: 300px;">
+          <p style="margin: 0; font-size: 0.875rem; color: #8a8f98;">{{ otraLabel }} — sin datos en este periodo.</p>
+        </div>
+      </sc-if>
+    </div>
+  </div>
+
+  <p style="margin: 18px 0 0; font-size: 0.8125rem; line-height: 1.6; color: #b45309;"><strong class="h" style="font-weight: 700;">A cambio:</strong> sigue siendo un tablero organizado por fuente de dato —tráfico, embudo, catálogo— y no por lo que el comercio quiere saber. Ordena; no reordena.</p>
+
+</div>
+</x-dc>
+<script data-dc-script data-props='{"$preview":{"width":1180,"height":820}}'>
+const TABS = [
+  { id: 'trafico', label: 'Tráfico' },
+  { id: 'embudo', label: 'Embudo' },
+  { id: 'catalogo', label: 'Catálogo' },
+  { id: 'ventas', label: 'Ventas' },
+  { id: 'busqueda', label: 'Búsqueda' },
+  { id: 'clientes', label: 'Clientes' },
+];
+class Component extends DCLogic {
+  renderVals() {
+    const active = this.state?.active ?? 'ventas';
+    return {
+      tabs: TABS.map((t) => ({
+        ...t,
+        cls: t.id === active ? 'on' : '',
+        pick: () => this.setState({ active: t.id }),
+      })),
+      isVentas: active === 'ventas',
+      isTrafico: active === 'trafico',
+      isOtra: active !== 'ventas' && active !== 'trafico',
+      otraLabel: (TABS.find((t) => t.id === active) || {}).label || '',
+      noop: () => {},
+    };
+  }
+}
+</script>
+</body>
+</html>

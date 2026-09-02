@@ -1,0 +1,112 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap">
+  <style>
+    body { margin: 0; font-family: 'Inter', ui-sans-serif, system-ui, sans-serif; letter-spacing: -0.003em; }
+    a { color: #0009dc; text-decoration: none; } a:hover { color: #000678; }
+    .h { font-family: 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif; letter-spacing: -0.02em; }
+    .lbl { font-family: 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif; font-size: 0.625rem; font-weight: 700; letter-spacing: 0.09em; text-transform: uppercase; color: #8a8f98; }
+    .num { font-family: 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif; font-weight: 800; font-variant-numeric: tabular-nums; letter-spacing: -0.03em; line-height: 1; }
+    .card { border: 1px solid #e3e4e8; border-radius: 12px; background: #fff; }
+    .q { display: flex; align-items: baseline; gap: 11px; margin-bottom: 12px; }
+    .qn { font-family: 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif; font-size: 0.6875rem; font-weight: 800; color: #a0a4ab; letter-spacing: .06em; }
+    .ans { font-size: 0.9375rem; line-height: 1.6; color: #6b6f76; }
+    .ans strong { color: #08090a; font-weight: 600; }
+    .seg { display: inline-flex; padding: 3px; border-radius: 10px; background: #eceef2; gap: 2px; }
+    .seg button { border: 0; background: none; font: inherit; cursor: pointer; height: 30px; padding: 0 11px; border-radius: 7px; font-size: 0.8125rem; font-weight: 500; color: #6b6f76; }
+    .seg button.on { background: #fff; color: #08090a; font-weight: 600; box-shadow: 0 1px 2px rgba(8,9,10,.06); }
+  </style>
+</helmet>
+
+<div style="width: 1180px; height: 980px; box-sizing: border-box; padding: 36px 40px; background: #fbfbfc; color: #08090a; overflow: hidden;">
+
+  <p class="lbl" style="margin: 0 0 4px; color: #0009dc;">Dirección B · ordenada por pregunta</p>
+  <h2 class="h" style="margin: 0 0 6px; font-size: 1.5rem; font-weight: 800;">Tres preguntas, no seis fuentes</h2>
+  <p style="margin: 0 0 22px; font-size: 0.875rem; line-height: 1.6; color: #6b6f76; max-width: 46rem;">Tráfico, embudo, catálogo, ventas, búsqueda y clientes son las <em>fuentes del dato</em>, no lo que un comercio quiere saber. Se reagrupan en las tres preguntas que sí se hace, y cada una empieza con la respuesta escrita.</p>
+
+  <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+    <div class="seg">
+      <button type="button">Hoy</button><button type="button">7 días</button>
+      <button type="button" class="on">30 días</button><button type="button">Este mes</button>
+    </div>
+    <span style="font-size: 0.8125rem; color: #8a8f98;">28 jul – 26 ago 2026</span>
+  </div>
+
+  <div style="display: flex; flex-direction: column; gap: 16px;">
+
+    <div class="card" style="padding: 22px 24px;">
+      <div class="q">
+        <span class="qn">01</span>
+        <h3 class="h" style="margin: 0; font-size: 1.125rem; font-weight: 800;">¿Cuánto entró y de qué?</h3>
+      </div>
+      <p class="ans" style="margin: 0 0 16px;">Vendiste <strong>S/ 1,464.91</strong> en <strong>2 pedidos</strong>. El monitor ASUS TUF fue el <strong>83 %</strong> de todo lo que entró.</p>
+      <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px;">
+        <div style="border: 1px solid #eceef2; border-radius: 10px; padding: 13px 15px;">
+          <p class="lbl" style="margin: 0 0 6px;">Por ingreso</p>
+          <div style="display: flex; justify-content: space-between; font-size: 0.8125rem; padding: 4px 0;"><span>ASUS TUF VG259QM</span><span class="num" style="font-size: 0.8125rem;">S/ 1,221.34</span></div>
+          <div style="display: flex; justify-content: space-between; font-size: 0.8125rem; padding: 4px 0;"><span>NZXT H510</span><span class="num" style="font-size: 0.8125rem;">S/ 243.57</span></div>
+        </div>
+        <div style="border: 1px solid #eceef2; border-radius: 10px; padding: 13px 15px;">
+          <p class="lbl" style="margin: 0 0 6px;">Por unidades</p>
+          <div style="display: flex; justify-content: space-between; font-size: 0.8125rem; padding: 4px 0;"><span>NZXT H510</span><span class="num" style="font-size: 0.8125rem;">3 u.</span></div>
+          <div style="display: flex; justify-content: space-between; font-size: 0.8125rem; padding: 4px 0;"><span>ASUS TUF VG259QM</span><span class="num" style="font-size: 0.8125rem;">1 u.</span></div>
+        </div>
+        <div style="border: 1px solid #eceef2; border-radius: 10px; padding: 13px 15px; background: #fbfbfc;">
+          <p class="lbl" style="margin: 0 0 6px;">Productos fríos</p>
+          <p style="margin: 0; font-size: 0.8125rem; line-height: 1.5; color: #8a8f98;">Ninguno con visitas y sin ventas. Aparecen cuando alguien mire un producto y no lo compre.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" style="padding: 22px 24px;">
+      <div class="q">
+        <span class="qn">02</span>
+        <h3 class="h" style="margin: 0; font-size: 1.125rem; font-weight: 800;">¿Quién te compra?</h3>
+      </div>
+      <p class="ans" style="margin: 0 0 16px;"><strong>2 clientes</strong>, los dos comprando por primera vez. Todavía <strong>nadie ha vuelto</strong> — la retención empieza a contar en la segunda compra.</p>
+      <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px;">
+        <div style="border: 1px solid #eceef2; border-radius: 10px; padding: 15px 16px;">
+          <p class="lbl" style="margin: 0 0 8px;">Nuevos</p>
+          <p class="num" style="margin: 0; font-size: 1.5rem;">2</p>
+          <p style="margin: 6px 0 0; font-size: 0.75rem; color: #8a8f98;">Su primera compra cae en el periodo</p>
+        </div>
+        <div style="border: 1px solid #eceef2; border-radius: 10px; padding: 15px 16px; background: #fbfbfc;">
+          <p class="lbl" style="margin: 0 0 8px;">Que vuelven</p>
+          <p style="margin: 0; font-size: 0.8125rem; line-height: 1.5; color: #8a8f98;">Aparece cuando alguien compre por segunda vez.</p>
+        </div>
+        <div style="border: 1px solid #eceef2; border-radius: 10px; padding: 15px 16px; background: #fbfbfc;">
+          <p class="lbl" style="margin: 0 0 8px;">Los que más gastan</p>
+          <p style="margin: 0; font-size: 0.8125rem; line-height: 1.5; color: #8a8f98;">Se ordena solo cuando haya varios compradores.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" style="padding: 22px 24px;">
+      <div class="q">
+        <span class="qn">03</span>
+        <h3 class="h" style="margin: 0; font-size: 1.125rem; font-weight: 800;">¿La tienda está trayendo gente?</h3>
+      </div>
+      <p class="ans" style="margin: 0 0 4px;">No, todavía. <strong>Cero visitas</strong> registradas en 30 días. Sin visitas no hay embudo, ni rebote, ni búsquedas que analizar — por eso esta pregunta está casi vacía y las otras dos no.</p>
+      <p style="margin: 14px 0 0; font-size: 0.8125rem; line-height: 1.55; color: #a0a4ab;">Aquí caben tráfico, embudo y búsqueda: las tres dependen de que entre alguien, así que se responden juntas o no se responden.</p>
+      <p style="margin: 8px 0 0; font-size: 0.8125rem; line-height: 1.55; color: #b45309;">Ojo: tus dos pedidos sí están marcados como «tienda» en su canal de venta. Las visitas se cuentan de los eventos de la tienda y el canal es un campo del pedido — son dos fuentes distintas, así que aquí se dicen por separado en vez de deducir una de la otra.</p>
+      <a href="#" style="display: inline-block; margin-top: 12px; font-size: 0.875rem; font-weight: 600;">Ver mi tienda →</a>
+    </div>
+
+  </div>
+
+  <p style="margin: 18px 0 0; font-size: 0.8125rem; line-height: 1.6; color: #b45309;"><strong class="h" style="font-weight: 700;">A cambio:</strong> agrupar por pregunta obliga a decidir dónde cae cada dato, y algunos caben en dos sitios. Y las frases de respuesta hay que escribirlas: no salen del endpoint.</p>
+
+</div>
+</x-dc>
+<script data-dc-script data-props='{"$preview":{"width":1180,"height":980}}'>
+class Component extends DCLogic { renderVals() { return {}; } }
+</script>
+</body>
+</html>

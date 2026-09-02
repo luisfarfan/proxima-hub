@@ -30,11 +30,8 @@
 }
 
 .hub-mark {
-  font-family: var(--font-heading);
-  font-weight: 600;
-  font-size: 1.1875rem;
-  letter-spacing: -0.02em;
-  color: var(--ink);
+  display: inline-flex;
+  align-items: center;
   text-decoration: none;
 }
 
@@ -132,4 +129,18 @@
   .hub-top {
     padding: 1rem 1.25rem;
   }
+}
+
+/*
+ * La versión va centrada en absoluto: en un teléfono el conmutador de negocio
+ * ocupa ese mismo centro y se leía «M v0.1.Mi negocio». No es información que
+ * un comercio necesite en pantalla chica.
+ */
+@media (max-width: 640px) {
+  .hub-version { display: none; }
+
+  /* Objetivos táctiles: 29 y 36 px se fallan con el pulgar. */
+  .hub-mark { min-height: 44px; display: inline-flex; align-items: center; }
+  .hub-biz { min-height: 44px; }
+  .hub-avatar { width: 44px; height: 44px; }
 }

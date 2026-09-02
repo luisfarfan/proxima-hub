@@ -1,0 +1,207 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap">
+  <style>
+    body { margin: 0; font-family: 'Inter', ui-sans-serif, system-ui, sans-serif; letter-spacing: -0.003em; }
+    a { color: #0009dc; text-decoration: none; } a:hover { color: #000678; }
+    .h { font-family: 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif; letter-spacing: -0.02em; }
+    .lbl { font-family: 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif; font-size: 0.625rem; font-weight: 700; letter-spacing: 0.09em; text-transform: uppercase; color: #8a8f98; }
+
+    .btn { border: 0; background: none; font: inherit; color: inherit; cursor: pointer; }
+    .tap {
+      width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;
+      border-radius: 0.5rem; color: #6b6f76; position: relative;
+      transition: background 140ms ease, color 140ms ease;
+    }
+    .tap:hover { background: #eceef2; color: #08090a; }
+
+    .chip {
+      display: flex; align-items: center; gap: 9px; height: 40px; padding: 0 10px 0 8px;
+      border-radius: 0.5rem; border: 1px solid transparent; background: transparent;
+      transition: background 140ms ease, border-color 140ms ease;
+    }
+    .chip:hover { background: #ffffff; border-color: #e3e4e8; }
+
+    .search {
+      display: flex; align-items: center; gap: 10px; height: 40px; flex: 1; max-width: 34rem;
+      padding: 0 14px; border: 1px solid #e3e4e8; background: #ffffff; border-radius: 0.5rem;
+      transition: border-color 160ms ease, box-shadow 160ms ease;
+    }
+    .search:hover { border-color: #d0d3da; }
+    .search.on { border-color: #0009dc; box-shadow: 0 0 0 3px rgba(0,9,220,0.13); }
+
+    .cta {
+      display: flex; align-items: center; gap: 7px; height: 40px; padding: 0 14px;
+      border-radius: 0.5rem; background: #0009dc; color: #fff; font-size: 0.8125rem; font-weight: 600;
+      font-family: 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif;
+      transition: background 140ms ease;
+    }
+    .cta:hover { background: #1a24e6; }
+
+    .menu {
+      position: absolute; top: 52px; right: 0; width: 248px; z-index: 5;
+      border: 1px solid #e3e4e8; border-radius: 12px; background: #fff; overflow: hidden;
+      box-shadow: 0 8px 28px rgba(8,9,10,0.10);
+      animation: pop 180ms cubic-bezier(0.16,1,0.3,1);
+    }
+    @keyframes pop { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: none; } }
+    .mi { display: flex; align-items: center; gap: 11px; width: 100%; padding: 10px 13px; font-size: 0.8125rem; font-weight: 500; color: #08090a; text-align: left; transition: background 120ms ease; }
+    .mi:hover { background: #f4f5f7; }
+    @media (prefers-reduced-motion: reduce) { .menu { animation-duration: 1ms; } }
+  </style>
+</helmet>
+
+<div style="width: 1400px; height: 760px; box-sizing: border-box; padding: 44px 48px; background: #fbfbfc; color: #08090a; overflow: hidden;">
+
+  <p class="lbl" style="margin: 0 0 4px; color: #0009dc;">Dirección A</p>
+  <h2 class="h" style="margin: 0 0 6px; font-size: 1.75rem; font-weight: 800;">Una sola fila, ordenada</h2>
+  <p style="margin: 0 0 26px; font-size: 0.875rem; line-height: 1.6; color: #6b6f76; max-width: 40rem;">Misma anatomía, densidad honesta: 52 px de alto, controles de 40, el buscador crece hasta llenar el hueco en vez de esconderse, y la acción del día lleva su nombre escrito.</p>
+
+  <p class="lbl" style="margin: 0 0 8px;">Escritorio · 1280 px</p>
+  <div style="width: 1280px; border: 1px solid #e3e4e8; border-radius: 10px 10px 0 0; overflow: visible; position: relative;">
+    <div style="display: flex; align-items: center; height: 52px; padding: 0 12px; gap: 14px; background: #f4f5f7; border-radius: 10px 10px 0 0; position: relative;">
+
+      <button type="button" class="btn chip" onClick="{{ noop }}">
+        <span class="h" style="width: 26px; height: 26px; display: flex; align-items: center; justify-content: center; border-radius: 7px; background: #dbeafe; color: #1e40af; font-size: 0.625rem; font-weight: 700;">BS</span>
+        <span style="font-size: 0.8125rem; font-weight: 500; white-space: nowrap;">Bodega San Martín</span>
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#8a8f98" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19.5 8.25l-7.5 7.5-7.5-7.5"/></svg>
+      </button>
+
+      <span style="width: 1px; height: 22px; background: #e3e4e8; flex-shrink: 0;"></span>
+
+      <div style="display: flex; align-items: baseline; gap: 8px; flex-shrink: 0;">
+        <span style="font-size: 0.8125rem; color: #8a8f98;">Gestionar</span>
+        <span style="font-size: 0.6875rem; color: #c3c6cc;">/</span>
+        <span class="h" style="font-size: 0.9375rem; font-weight: 700;">Catálogo</span>
+      </div>
+
+      <div style="flex: 1; display: flex; justify-content: center; min-width: 0; padding: 0 8px;">
+        <button type="button" class="btn search {{ searchClass }}" onClick="{{ toggleSearch }}">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#8a8f98" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+          <span style="flex: 1; text-align: left; font-size: 0.875rem; color: #8a8f98;">Busca un producto, una venta, una factura…</span>
+          <kbd style="font-family: ui-monospace, monospace; font-size: 0.625rem; font-weight: 500; color: #6b6f76; border: 1px solid #e3e4e8; background: #f4f5f7; border-radius: 5px; padding: 3px 7px;">⌘K</kbd>
+        </button>
+      </div>
+
+      <div style="display: flex; align-items: center; gap: 6px; flex-shrink: 0;">
+        <button type="button" class="btn cta" onClick="{{ noop }}">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v16m8-8H4"/></svg>
+          Nueva venta
+        </button>
+        <button type="button" class="btn tap" onClick="{{ noop }}" aria-label="Avisos">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0"/></svg>
+          <span class="h" style="position: absolute; top: 5px; right: 5px; min-width: 16px; height: 16px; display: flex; align-items: center; justify-content: center; padding: 0 4px; border-radius: 999px; background: #0009dc; color: #fff; font-size: 0.625rem; font-weight: 700; box-shadow: 0 0 0 2px #f4f5f7;">3</span>
+        </button>
+        <button type="button" class="btn tap" onClick="{{ noop }}" aria-label="Configuración">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+        </button>
+        <span style="width: 1px; height: 22px; background: #e3e4e8;"></span>
+        <button type="button" class="btn chip" style="padding: 0 8px;" onClick="{{ toggleMenu }}">
+          <span class="h" style="width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; border-radius: 999px; background: rgba(0,9,220,0.10); color: #0009dc; font-size: 0.75rem; font-weight: 700;">L</span>
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#8a8f98" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19.5 8.25l-7.5 7.5-7.5-7.5"/></svg>
+        </button>
+      </div>
+
+      <sc-if value="{{ menuOpen }}" hint-placeholder-val="{{ true }}">
+        <div class="menu" style="right: 12px;">
+          <div style="padding: 13px 14px; border-bottom: 1px solid #e3e4e8;">
+            <p class="h" style="margin: 0; font-size: 0.8125rem; font-weight: 700;">Luis Farfán</p>
+            <p style="margin: 2px 0 0; font-size: 0.75rem; color: #8a8f98;">lucho@bodegasanmartin.pe</p>
+          </div>
+          <div style="padding: 6px;">
+            <button type="button" class="btn mi" style="border-radius: 7px;" onClick="{{ noop }}">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#8a8f98" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+              Mi cuenta
+            </button>
+            <button type="button" class="btn mi" style="border-radius: 7px;" onClick="{{ noop }}">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#8a8f98" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+              Ayuda
+            </button>
+            <button type="button" class="btn mi" style="border-radius: 7px;" onClick="{{ noop }}">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#8a8f98" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>
+              Tema
+              <span style="margin-left: auto; font-size: 0.75rem; color: #8a8f98;">Claro</span>
+            </button>
+          </div>
+          <div style="padding: 6px; border-top: 1px solid #e3e4e8;">
+            <button type="button" class="btn mi" style="border-radius: 7px; color: #dc2626; font-weight: 600;" onClick="{{ noop }}">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
+              Cerrar sesión
+            </button>
+          </div>
+        </div>
+      </sc-if>
+
+    </div>
+    <div style="height: 60px; background: #fbfbfc; border-top: 1px solid #e3e4e8;"></div>
+  </div>
+
+  <div style="display: flex; align-items: flex-start; gap: 40px; margin-top: 38px;">
+
+    <div>
+      <p class="lbl" style="margin: 0 0 8px;">Teléfono · 390 px · todo a 44</p>
+      <div style="width: 390px; border: 1px solid #e3e4e8; border-radius: 10px; overflow: hidden;">
+        <div style="display: flex; align-items: center; height: 56px; padding: 0 8px; gap: 4px; background: #f4f5f7;">
+          <span class="tap" style="width: 44px; height: 44px;">
+            <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+          </span>
+          <span class="chip" style="height: 44px; min-width: 0; flex: 1;">
+            <span class="h" style="width: 26px; height: 26px; display: flex; align-items: center; justify-content: center; border-radius: 7px; background: #dbeafe; color: #1e40af; font-size: 0.625rem; font-weight: 700; flex-shrink: 0;">BS</span>
+            <span style="font-size: 0.8125rem; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">Bodega San Martín</span>
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#8a8f98" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink: 0;"><path d="M19.5 8.25l-7.5 7.5-7.5-7.5"/></svg>
+          </span>
+          <span class="tap" style="width: 44px; height: 44px;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+          </span>
+          <span class="tap" style="width: 44px; height: 44px;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0"/></svg>
+            <span class="h" style="position: absolute; top: 7px; right: 7px; min-width: 16px; height: 16px; display: flex; align-items: center; justify-content: center; padding: 0 4px; border-radius: 999px; background: #0009dc; color: #fff; font-size: 0.625rem; font-weight: 700; box-shadow: 0 0 0 2px #f4f5f7;">3</span>
+          </span>
+          <span class="tap" style="width: 44px; height: 44px;">
+            <span class="h" style="width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; border-radius: 999px; background: rgba(0,9,220,0.10); color: #0009dc; font-size: 0.75rem; font-weight: 700;">L</span>
+          </span>
+        </div>
+        <div style="padding: 18px 16px 20px; background: #fbfbfc; border-top: 1px solid #e3e4e8;">
+          <p style="margin: 0 0 3px; font-size: 0.75rem; color: #8a8f98;">Gestionar</p>
+          <p class="h" style="margin: 0; font-size: 1.375rem; font-weight: 800;">Catálogo</p>
+        </div>
+      </div>
+    </div>
+
+    <div style="flex: 1; padding-top: 26px; max-width: 32rem;">
+      <p class="lbl" style="margin: 0 0 12px;">Qué cambia</p>
+      <div style="display: flex; flex-direction: column; gap: 13px;">
+        <p style="margin: 0; font-size: 0.8125rem; line-height: 1.6; color: #6b6f76;"><strong class="h" style="color: #08090a; font-weight: 700;">El nombre del negocio no se apaga.</strong> En teléfono el chip toma el ancho que sobra y trunca; nunca se queda en dos letras sueltas.</p>
+        <p style="margin: 0; font-size: 0.8125rem; line-height: 1.6; color: #6b6f76;"><strong class="h" style="color: #08090a; font-weight: 700;">La campana vuelve al teléfono.</strong> Es la superficie de avisos de toda la app; esconderla bajo 640 px la hace inexistente para quien atiende de pie.</p>
+        <p style="margin: 0; font-size: 0.8125rem; line-height: 1.6; color: #6b6f76;"><strong class="h" style="color: #08090a; font-weight: 700;">El título baja a la página.</strong> En teléfono deja de competir por la franja: se lee grande justo debajo, con su sección encima.</p>
+        <p style="margin: 0; font-size: 0.8125rem; line-height: 1.6; color: #6b6f76;"><strong class="h" style="color: #08090a; font-weight: 700;">El buscador se explica.</strong> Ancho real, texto que dice qué se puede buscar, y el ⌘K legible en vez de a 9 px.</p>
+      </div>
+      <p style="margin: 20px 0 0; font-size: 0.8125rem; line-height: 1.6; color: #b45309;"><strong class="h" style="font-weight: 700;">A cambio:</strong> en escritorio el título de la pantalla sigue siendo una miga de 15 px dentro del cromo. Ordena, no reordena.</p>
+    </div>
+
+  </div>
+
+</div>
+</x-dc>
+<script data-dc-script data-props='{"$preview":{"width":1400,"height":760}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {
+      menuOpen: this.state?.menuOpen ?? false,
+      searchClass: this.state?.searchOn ? 'on' : '',
+      toggleMenu: () => this.setState({ menuOpen: !this.state?.menuOpen, searchOn: false }),
+      toggleSearch: () => this.setState({ searchOn: !this.state?.searchOn, menuOpen: false }),
+      noop: () => {},
+    };
+  }
+}
+</script>
+</body>
+</html>

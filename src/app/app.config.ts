@@ -18,8 +18,10 @@ import { errorInterceptor } from './core/http/error.interceptor';
 import {
   provideProximaAuth,
   proximaAuthInterceptors,
+  AuthTokenStorage,
   PROXIMA_AUTH_API_BASE_URL,
 } from '@luisfarfan/auth';
+import { restoreSsoSessionInitializer } from './core/auth/restore-sso-session.initializer';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -47,9 +49,16 @@ export const appConfig: ApplicationConfig = {
       },
     }),
     {
+      // Los dos van encadenados a propósito: restaurar la sesión necesita el
+      // `apiV1BaseUrl` que deja la config, y los APP_INITIALIZER que se
+      // registran por separado corren en paralelo, sin orden garantizado.
       provide: APP_INITIALIZER,
-      useFactory: loadRuntimeConfigInitializer,
-      deps: [RuntimeConfigService],
+      useFactory:
+        (runtime: RuntimeConfigService, tokens: AuthTokenStorage) => async () => {
+          await loadRuntimeConfigInitializer(runtime)();
+          await restoreSsoSessionInitializer(runtime, tokens)();
+        },
+      deps: [RuntimeConfigService, AuthTokenStorage],
       multi: true,
     },
     provideProximaAuth({

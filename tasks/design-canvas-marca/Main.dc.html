@@ -1,0 +1,110 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,400..800&family=Archivo:wght@400;500;600&family=Inter:wght@400;500;600&display=swap">
+  <style>
+    body { margin: 0; font-family: 'Inter', system-ui, sans-serif; letter-spacing: -0.003em; }
+    a { color: #0009dc; } a:hover { color: #000678; }
+    code { font-size: 0.75rem; background: rgba(27,26,23,0.06); padding: 1px 5px; border-radius: 4px; }
+    .in { opacity: 0; animation: up 620ms cubic-bezier(0.16,1,0.3,1) forwards; }
+    @keyframes up { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+    @media (prefers-reduced-motion: reduce) { .in { animation-duration: 1ms; opacity: 1; transform: none; } }
+  </style>
+</helmet>
+<div style="width: 760px; height: 1000px; box-sizing: border-box; background: #fbfaf8; color: #1b1a17; padding: 52px 54px 44px; display: flex; flex-direction: column; gap: 26px; overflow: hidden;">
+
+  <div style="display: flex; align-items: center; justify-content: space-between;">
+    <span style="display: inline-flex; align-items: center; gap: 0.5rem;">
+      <span style="width: 14px; height: 22px; background: oklch(0.365 0.268 265); clip-path: polygon(0 0, 100% 0, 100% 62%, 50% 100%, 0 62%);"></span>
+      <span style="font-family: 'Bricolage Grotesque', system-ui, sans-serif; font-variation-settings: 'wdth' 86; font-weight: 800; letter-spacing: -0.01em; font-size: 1.15rem;">PROXIMA</span>
+    </span>
+    <span style="font-size: 0.6875rem; font-weight: 600; letter-spacing: 0.11em; text-transform: uppercase; color: #0009dc;">Marca y acceso</span>
+  </div>
+
+  <div class="in">
+    <h1 style="margin: 0; font-family: 'Bricolage Grotesque', system-ui, sans-serif; font-variation-settings: 'wdth' 86; font-weight: 800; font-size: 2.875rem; line-height: 1.02; letter-spacing: -0.02em;">Una sola marca</h1>
+    <p style="margin: 16px 0 0; font-size: 1rem; line-height: 1.55; color: #6c6a63; max-width: 32rem;">Hoy hay tres logos distintos en tres superficies, y dos son imágenes que se descargan de internet. Acá está el que ya existe en el sitio, listo para llevarlo a los dos apps.</p>
+  </div>
+
+  <span style="display: block; height: 1px; background: rgba(27,26,23,0.11);"></span>
+
+  <div class="in" style="animation-delay: 100ms;">
+    <span style="display: block; font-size: 0.6875rem; font-weight: 600; letter-spacing: 0.11em; text-transform: uppercase; color: #6c6a63; margin-bottom: 16px;">Lo que hay hoy</span>
+
+    <div style="display: flex; flex-direction: column; gap: 12px;">
+
+      <div style="display: flex; align-items: center; gap: 18px; border: 1px solid rgba(27,26,23,0.11); border-radius: 12px; background: #fff; padding: 16px 18px;">
+        <span style="width: 92px; flex-shrink: 0; font-size: 0.6875rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #8a887f;">Sitio</span>
+        <span style="display: inline-flex; align-items: center; gap: 0.5rem; flex-shrink: 0;">
+          <span style="width: 14px; height: 22px; background: oklch(0.365 0.268 265); clip-path: polygon(0 0, 100% 0, 100% 62%, 50% 100%, 0 62%);"></span>
+          <span style="font-family: 'Bricolage Grotesque', system-ui, sans-serif; font-variation-settings: 'wdth' 86; font-weight: 800; letter-spacing: -0.01em; font-size: 1.15rem;">PROXIMA</span>
+        </span>
+        <span style="margin-left: auto; font-size: 0.75rem; line-height: 1.5; color: #6c6a63; text-align: right;">Vectorial, en el código.<br>Bricolage Grotesque 800, ancho 86.</span>
+      </div>
+
+      <div style="display: flex; align-items: center; gap: 18px; border: 1px solid rgba(187,58,44,0.24); border-radius: 12px; background: #fdf7f6; padding: 16px 18px;">
+        <span style="width: 92px; flex-shrink: 0; font-size: 0.6875rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #8a887f;">Admin</span>
+        <span style="display: inline-flex; align-items: center; gap: 8px; flex-shrink: 0;">
+          <span style="width: 28px; height: 28px; border-radius: 6px; background: rgba(27,26,23,0.1); display: flex; align-items: center; justify-content: center;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#a5a39b" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 15l5-5 4 4 3-3 6 6"/></svg>
+          </span>
+          <span style="font-size: 0.875rem; font-weight: 600; letter-spacing: -0.01em;">Proxima</span>
+        </span>
+        <span style="margin-left: auto; font-size: 0.75rem; line-height: 1.5; color: #6c6a63; text-align: right;">Un <code>.webp</code> de <code>media.proxima.pe</code>.<br>Sin acento, otra tipografía, otro tamaño.</span>
+      </div>
+
+      <div style="display: flex; align-items: center; gap: 18px; border: 1px solid rgba(187,58,44,0.24); border-radius: 12px; background: #fdf7f6; padding: 16px 18px;">
+        <span style="width: 92px; flex-shrink: 0; font-size: 0.6875rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #8a887f;">Hub</span>
+        <span style="font-family: 'Plus Jakarta Sans', system-ui, sans-serif; font-weight: 600; font-size: 1.1875rem; letter-spacing: -0.02em; flex-shrink: 0;">Próxima</span>
+        <span style="margin-left: auto; font-size: 0.75rem; line-height: 1.5; color: #6c6a63; text-align: right;">Solo texto, sin marca.<br>Con acento, y una tercera tipografía.</span>
+      </div>
+
+      <div style="display: flex; align-items: center; gap: 18px; border: 1px solid rgba(187,58,44,0.24); border-radius: 12px; background: #fdf7f6; padding: 16px 18px;">
+        <span style="width: 92px; flex-shrink: 0; font-size: 0.6875rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #8a887f;">Login</span>
+        <span style="display: inline-flex; align-items: center; height: 28px; padding: 0 12px; border-radius: 5px; background: #010228; color: #fff; font-size: 0.8125rem; flex-shrink: 0;">otro .webp, en blanco</span>
+        <span style="margin-left: auto; font-size: 0.75rem; line-height: 1.5; color: #6c6a63; text-align: right;">Un <b style="color:#1b1a17;font-weight:600;">tercer</b> archivo remoto,<br>forzado a blanco con un filtro CSS.</span>
+      </div>
+
+    </div>
+
+    <p style="margin: 16px 0 0; font-size: 0.8125rem; line-height: 1.6; color: #8a887f;">Dos de los cuatro dependen de que <code>media.proxima.pe</code> responda. Si no lo hace —o el comercio está sin señal— la marca sale rota justo en la pantalla de entrar.</p>
+  </div>
+
+  <span style="display: block; height: 1px; background: rgba(27,26,23,0.11);"></span>
+
+  <div class="in" style="animation-delay: 200ms; display: flex; flex-direction: column; gap: 12px;">
+    <div style="border: 1px solid rgba(27,26,23,0.11); border-radius: 14px; background: #fff; padding: 18px 20px;">
+      <h2 style="margin: 0 0 7px; font-family: 'Bricolage Grotesque', system-ui, sans-serif; font-variation-settings: 'wdth' 86; font-weight: 800; font-size: 1rem;">La marca</h2>
+      <p style="margin: 0; font-size: 0.8125rem; line-height: 1.55; color: #6c6a63;">El mismo bloque del sitio, dibujado en CSS: nada que descargar. Con sus tamaños y sus tres fondos —papel, azul y la pared amarilla— para que quien lo implemente no adivine.</p>
+    </div>
+    <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px;">
+      <div style="border: 1px solid rgba(27,26,23,0.11); border-radius: 14px; background: #fff; padding: 18px 20px;">
+        <span style="display: block; font-size: 0.625rem; font-weight: 600; letter-spacing: 0.11em; text-transform: uppercase; color: #0009dc; margin-bottom: 8px;">Login A</span>
+        <h2 style="margin: 0 0 7px; font-family: 'Bricolage Grotesque', system-ui, sans-serif; font-variation-settings: 'wdth' 86; font-weight: 800; font-size: 1rem;">La fachada</h2>
+        <p style="margin: 0; font-size: 0.8125rem; line-height: 1.5; color: #6c6a63;">El panel se pinta de amarillo pared, como el sitio. Entrar al producto se siente como entrar a la misma marca.</p>
+      </div>
+      <div style="border: 1px solid rgba(27,26,23,0.11); border-radius: 14px; background: #fff; padding: 18px 20px;">
+        <span style="display: block; font-size: 0.625rem; font-weight: 600; letter-spacing: 0.11em; text-transform: uppercase; color: #0009dc; margin-bottom: 8px;">Login B</span>
+        <h2 style="margin: 0 0 7px; font-family: 'Bricolage Grotesque', system-ui, sans-serif; font-variation-settings: 'wdth' 86; font-weight: 800; font-size: 1rem;">La puerta</h2>
+        <p style="margin: 0; font-size: 0.8125rem; line-height: 1.5; color: #6c6a63;">Sin panel. Una columna centrada en papel. Lo mismo en teléfono que en escritorio — hoy la mitad izquierda simplemente desaparece.</p>
+      </div>
+    </div>
+  </div>
+
+  <p style="margin: auto 0 0; font-size: 0.75rem; line-height: 1.5; color: #8a887f;">Los valores salen de <code>packages/brand/tokens.css</code> y del <code>Header.astro</code> del sitio. El favicon dice que la figura es provisional — si tienes el logo definitivo, esto se cambia en un lugar.</p>
+
+</div>
+</x-dc>
+<script data-dc-script data-props='{"$preview":{"width":760,"height":1000}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

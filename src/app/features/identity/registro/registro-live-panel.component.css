@@ -1,0 +1,322 @@
+/*
+ * `height: 100%` acá rompía el estirado del flex: al fijar una altura, el
+ * item deja de estirarse y el panel quedaba tan alto como su contenido, con
+ * el papel asomando debajo. Como columna flex, `.stage` toma lo que haya.
+ */
+:host {
+  display: flex;
+  flex-direction: column;
+}
+
+.stage {
+  position: relative;
+  flex: 1;
+  box-sizing: border-box;
+  padding: 2.75rem 3rem;
+  overflow: hidden;
+  background: #060818;
+  color: #f6f6f8;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Trama de puntos: da profundidad sin recurrir a un degradado. */
+.stage::before {
+  content: '';
+  position: absolute;
+  inset: -40px;
+  background-image: radial-gradient(rgba(255, 255, 255, 0.1) 1px, transparent 1px);
+  background-size: 22px 22px;
+  animation: stage-drift 26s linear infinite;
+}
+
+.stage::after {
+  content: '';
+  position: absolute;
+  left: -80px;
+  top: 140px;
+  width: 420px;
+  height: 420px;
+  border-radius: 50%;
+  background: rgba(0, 9, 220, 0.5);
+  filter: blur(90px);
+  animation: stage-breathe 9s ease-in-out infinite;
+}
+
+@keyframes stage-drift {
+  from { transform: translate3d(0, 0, 0); }
+  to { transform: translate3d(22px, 22px, 0); }
+}
+
+@keyframes stage-breathe {
+  0%, 100% { opacity: 0.55; transform: scale(1); }
+  50% { opacity: 0.85; transform: scale(1.1); }
+}
+
+.inner {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.eyebrow {
+  display: block;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  color: rgba(246, 246, 248, 0.5);
+  margin-bottom: 1.375rem;
+}
+
+.card {
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 1rem;
+  background: rgba(255, 255, 255, 0.05);
+  padding: 1.25rem;
+  display: flex;
+  align-items: center;
+  gap: 0.875rem;
+}
+
+.mono {
+  width: 52px;
+  height: 52px;
+  flex-shrink: 0;
+  border-radius: 14px;
+  background: #6272f9;
+  color: #fff;
+  font-family: var(--font-display, 'Fraunces', Georgia, serif);
+  font-weight: 500;
+  font-size: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.meta {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  gap: 3px;
+}
+
+.biz-name,
+.biz-slug {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.biz-name {
+  font-family: var(--font-heading, 'Plus Jakarta Sans', sans-serif);
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+.biz-slug {
+  font-size: 0.75rem;
+  color: rgba(246, 246, 248, 0.55);
+}
+
+.badge {
+  margin-left: auto;
+  flex-shrink: 0;
+  font-size: 0.625rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #9fe8b6;
+  background: rgba(45, 170, 90, 0.16);
+  padding: 4px 9px;
+  border-radius: 999px;
+}
+
+.panel {
+  margin-top: 0.875rem;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 1rem;
+  background: rgba(255, 255, 255, 0.05);
+  overflow: hidden;
+}
+
+.panel-bar {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 0.75rem 1.125rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.09);
+}
+
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.18);
+}
+
+.panel-title {
+  margin-left: 6px;
+  font-size: 0.6875rem;
+  color: rgba(246, 246, 248, 0.45);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.panel-body {
+  padding: 1.125rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.75rem;
+  margin-bottom: 7px;
+}
+
+.row-k { color: rgba(246, 246, 248, 0.62); }
+.row-v { font-weight: 600; }
+
+.row-check {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 600;
+  color: #9fe8b6;
+}
+
+.bar {
+  height: 5px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.1);
+  overflow: hidden;
+}
+
+.bar > span {
+  display: block;
+  height: 100%;
+  border-radius: 999px;
+  background: #6272f9;
+  transform-origin: left;
+  animation: bar-fill 1400ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes bar-fill {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
+}
+
+.ticks {
+  margin-top: 1.625rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.8125rem;
+}
+
+.tick {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  opacity: 0;
+  animation: tick-in 560ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.tick-box {
+  width: 20px;
+  height: 20px;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.09);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: #9fe8b6;
+}
+
+.tick-text {
+  font-size: 0.8125rem;
+  color: rgba(246, 246, 248, 0.82);
+}
+
+@keyframes tick-in {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: none; }
+}
+
+.summary {
+  margin: 1.625rem 0 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.summary-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.7rem 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  opacity: 0;
+  animation: row-in 460ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.summary-row:last-child { border-bottom: none; }
+
+.summary-row dt {
+  margin: 0;
+  font-size: 0.75rem;
+  color: rgba(246, 246, 248, 0.55);
+  flex-shrink: 0;
+}
+
+.summary-row dd {
+  margin: 0;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: #f6f6f8;
+  text-align: right;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+@keyframes row-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: none; }
+}
+
+.foot {
+  margin-top: auto;
+  padding-top: 1.625rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.foot-text {
+  font-size: 0.75rem;
+  line-height: 1.5;
+  color: rgba(246, 246, 248, 0.55);
+}
+
+/*
+ * Reducción de movimiento: todo lo de arriba se queda quieto y visible.
+ * `registro-css-rules.spec.ts` verifica que ninguna animación quede sin
+ * anular acá — si agregas una, agrega también su línea en este bloque.
+ */
+@media (prefers-reduced-motion: reduce) {
+  .stage::before,
+  .stage::after,
+  .bar > span,
+  .summary-row,
+  .tick {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+}

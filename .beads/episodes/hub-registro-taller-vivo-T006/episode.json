@@ -1,0 +1,10 @@
+{
+  "change": "hub-registro-taller-vivo",
+  "task": "T006",
+  "verification": "pnpm exec ng test --watch=false --include=src/app/features/identity/registro/registro-password.spec.ts",
+  "result": "passed",
+  "tests": "5 passed",
+  "suite": "pnpm exec ng test --watch=false → 39/39",
+  "build": "pnpm build → ok",
+  "recorded_at": "2026-08-24T22:17:42Z"
+}

@@ -1,0 +1,94 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700&family=Inter:wght@400;500;600&display=swap">
+  <style>
+    body { margin: 0; font-family: 'Inter', system-ui, sans-serif; letter-spacing: -0.003em; }
+    a { color: #0009dc; text-decoration: none; } a:hover { text-decoration: underline; }
+    .lbl { font-size: 0.8125rem; font-weight: 500; color: #1b1a17; }
+    .inp { width: 100%; box-sizing: border-box; height: 36px; padding: 0 12px; border: 1px solid rgba(27,26,23,0.11); border-radius: 6px; background: #fff; font-size: 0.8125rem; color: #767575; display: flex; align-items: center; }
+  </style>
+</helmet>
+
+<div style="width: 1180px; height: 760px; box-sizing: border-box; display: flex; background: #fbfaf8; overflow: hidden;">
+
+  <!-- Panel oscuro -->
+  <aside style="width: 55%; flex-shrink: 0; box-sizing: border-box; background: #010228; padding: 48px 56px; display: flex; flex-direction: column; justify-content: space-between; color: #f8f9ff;">
+    <div>
+      <!-- El .webp remoto, forzado a blanco con brightness-0 invert -->
+      <span style="display: inline-flex; align-items: center; justify-content: center; width: 144px; height: 36px; border: 1px dashed rgba(248,249,255,0.3); border-radius: 4px; font-size: 0.6875rem; color: rgba(248,249,255,0.45);">logo .webp remoto</span>
+    </div>
+
+    <div>
+      <h2 style="margin: 0 0 16px; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 2rem; font-weight: 600; line-height: 1.2; letter-spacing: -0.02em;">Gestión inteligente<br>para tu negocio</h2>
+      <p style="margin: 0 0 32px; font-size: 0.9375rem; line-height: 1.6; color: rgba(248,249,255,0.5);">Catálogo, ventas, inventario y facturación<br>en una sola plataforma.</p>
+
+      <ul style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 16px;">
+        <li style="display: flex; align-items: center; gap: 14px;">
+          <span style="width: 28px; height: 28px; border-radius: 8px; background: rgba(26,108,246,0.18); display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#1a6cf6" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          </span>
+          <span style="font-size: 0.8125rem; color: rgba(248,249,255,0.65);">Enriquecimiento de catálogo con IA</span>
+        </li>
+        <li style="display: flex; align-items: center; gap: 14px;">
+          <span style="width: 28px; height: 28px; border-radius: 8px; background: rgba(26,108,246,0.18); display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#1a6cf6" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          </span>
+          <span style="font-size: 0.8125rem; color: rgba(248,249,255,0.65);">Pedidos y ventas en tiempo real</span>
+        </li>
+        <li style="display: flex; align-items: center; gap: 14px;">
+          <span style="width: 28px; height: 28px; border-radius: 8px; background: rgba(26,108,246,0.18); display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#1a6cf6" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          </span>
+          <span style="font-size: 0.8125rem; color: rgba(248,249,255,0.65);">Facturación electrónica SUNAT</span>
+        </li>
+      </ul>
+    </div>
+
+    <p style="margin: 0; font-size: 0.75rem; color: rgba(248,249,255,0.5);">© 2025 Proxima · proxima.pe</p>
+  </aside>
+
+  <!-- Formulario -->
+  <main style="flex: 1; display: flex; align-items: center; justify-content: center; padding: 40px;">
+    <div style="width: 100%; max-width: 21rem;">
+      <h1 style="margin: 0 0 6px; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 1.25rem; font-weight: 600; letter-spacing: -0.015em; color: #1b1a17;">Inicia sesión</h1>
+      <p style="margin: 0 0 26px; font-size: 0.8125rem; color: #6c6a63;">Bienvenido de vuelta</p>
+
+      <div style="display: flex; flex-direction: column; gap: 6px; margin-bottom: 16px;">
+        <span class="lbl">Correo electrónico</span>
+        <span class="inp"></span>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 6px; margin-bottom: 22px;">
+        <span style="display: flex; align-items: baseline; justify-content: space-between;">
+          <span class="lbl">Contraseña</span>
+          <a href="#" style="font-size: 0.75rem; font-weight: 500;">¿Olvidaste tu contraseña?</a>
+        </span>
+        <span class="inp">
+          <span style="margin-left: auto;">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#767575" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.6-6 10-6 10 6 10 6-3.6 6-10 6-10-6-10-6z"/><circle cx="12" cy="12" r="2.6"/></svg>
+          </span>
+        </span>
+      </div>
+
+      <span style="display: flex; align-items: center; justify-content: center; height: 36px; border-radius: 6px; background: #0009dc; color: #fff; font-size: 0.8125rem; font-weight: 600;">Iniciar sesión</span>
+
+      <p style="margin: 20px 0 0; text-align: center; font-size: 0.8125rem; color: #6c6a63;">¿No tienes cuenta? <a href="#" style="font-weight: 500;">Regístrate gratis</a></p>
+    </div>
+  </main>
+
+</div>
+</x-dc>
+<script data-dc-script data-props='{"$preview":{"width":1180,"height":760}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

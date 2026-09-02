@@ -1,0 +1,239 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500&family=Plus+Jakarta+Sans:wght@500;600;700&family=Inter:wght@400;500;600&display=swap">
+  <style>
+    body { margin: 0; font-family: 'Inter', system-ui, sans-serif; letter-spacing: -0.003em; }
+    a { color: #0009dc; text-decoration: none; } a:hover { color: #000678; text-decoration: underline; }
+    button { font: inherit; cursor: pointer; border: 0; background: none; color: inherit; text-align: left; }
+
+    /* La escalera: cada peldaño más alto que el anterior. */
+    .rung { position: relative; flex: 1; min-width: 0; display: flex; flex-direction: column; justify-content: flex-end; border: 1px solid rgba(27,26,23,0.13); border-radius: 14px 14px 0 0; border-bottom: 0; background: #fff; padding: 16px 15px 18px; transition: background .18s ease, border-color .18s ease, transform .22s cubic-bezier(0.16,1,0.3,1); }
+    .rung:hover { transform: translateY(-3px); border-color: rgba(27,26,23,0.3); }
+    .rung.is-now { background: #f4f2ee; }
+    .rung.on { border-color: #0009dc; background: #f7f7ff; }
+    .rung.is-assisted { border-style: dashed; }
+
+    .rung-n { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 0.9375rem; font-weight: 600; }
+    .rung-p { display: block; margin-top: 3px; font-family: 'Fraunces', Georgia, serif; font-size: 1.375rem; font-weight: 500; letter-spacing: -0.02em; }
+    .rung-adds { display: block; margin-top: 9px; font-size: 0.75rem; line-height: 1.4; color: #6c6a63; }
+    .rung-here { position: absolute; top: -11px; left: 15px; height: 22px; padding: 0 10px; border-radius: 999px; background: #1b1a17; color: #fff; font-size: 0.625rem; font-weight: 600; letter-spacing: 0.07em; text-transform: uppercase; display: inline-flex; align-items: center; }
+    .rung-assisted { position: absolute; top: -11px; left: 15px; height: 22px; padding: 0 10px; border-radius: 999px; background: #e7e5e0; color: #6c6a63; font-size: 0.625rem; font-weight: 600; letter-spacing: 0.07em; text-transform: uppercase; display: inline-flex; align-items: center; }
+
+    .ground { height: 3px; background: rgba(27,26,23,0.13); border-radius: 999px; }
+
+    .adds { display: flex; align-items: flex-start; gap: 10px; font-size: 0.875rem; line-height: 1.45; color: #1b1a17; }
+    .adds-i { width: 18px; height: 18px; border-radius: 6px; background: rgba(0,9,220,0.1); color: #0009dc; flex-shrink: 0; display: flex; align-items: center; justify-content: center; margin-top: 1px; }
+
+    .q { display: flex; align-items: center; gap: 7px; padding: 7px 12px; border-radius: 999px; background: rgba(27,26,23,0.05); font-size: 0.75rem; color: #6c6a63; }
+    .q b { font-weight: 600; color: #1b1a17; }
+
+    .in { opacity: 0; animation: up 560ms cubic-bezier(0.16,1,0.3,1) forwards; }
+    @keyframes up { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+    @media (prefers-reduced-motion: reduce) { .in { animation-duration: 1ms; opacity: 1; transform: none; } .rung:hover { transform: none; } }
+  </style>
+</helmet>
+
+<div style="width: 1180px; height: 1000px; box-sizing: border-box; background: #fbfaf8; color: #1b1a17; overflow: hidden;">
+
+  <nav style="display: flex; gap: 28px; padding: 0 40px; border-bottom: 1px solid rgba(27,26,23,0.07);">
+    <span style="padding: 14px 0; font-size: 0.875rem; font-weight: 500; color: #6c6a63;">Cuenta</span>
+    <span style="padding: 14px 0; font-size: 0.875rem; font-weight: 500; color: #1b1a17; border-bottom: 2px solid #1b1a17;">Plan</span>
+    <span style="padding: 14px 0; font-size: 0.875rem; font-weight: 500; color: #6c6a63;">Seguridad</span>
+    <span style="padding: 14px 0; font-size: 0.875rem; font-weight: 500; color: #6c6a63;">Equipo</span>
+  </nav>
+
+  <main style="max-width: 1060px; margin: 0 auto; padding: 34px 40px; display: flex; flex-direction: column; gap: 28px;">
+
+    <div class="in">
+      <h1 style="margin: 0; font-family: 'Fraunces', Georgia, serif; font-weight: 500; font-size: 1.875rem; letter-spacing: -0.02em;">Hasta dónde puede llegar tu negocio</h1>
+      <p style="margin: 8px 0 0; font-size: 0.9375rem; line-height: 1.5; color: #6c6a63; max-width: 38rem;">Cinco peldaños. Estás en el primero. Cada uno agrega una cosa concreta — toca cualquiera para ver qué cambia desde donde estás hoy.</p>
+    </div>
+
+    <!-- La escalera -->
+    <div class="in" style="animation-delay: 60ms;">
+      <div style="display: flex; align-items: flex-end; gap: 8px; height: 210px;">
+        <button type="button" class="rung is-now {{ r.free }}" style="height: 46%;" onClick="{{ pickFree }}">
+          <span class="rung-here">Estás aquí</span>
+          <span class="rung-n">Gratis</span>
+          <span class="rung-p">S/ 0</span>
+          <span class="rung-adds">Catálogo, stock y ventas manuales</span>
+        </button>
+        <button type="button" class="rung {{ r.emprende }}" style="height: 58%;" onClick="{{ pickEmprende }}">
+          <span class="rung-n">Emprende</span>
+          <span class="rung-p">S/ 50</span>
+          <span class="rung-adds">+ Pedidos por WhatsApp</span>
+        </button>
+        <button type="button" class="rung {{ r.crece }}" style="height: 72%;" onClick="{{ pickCrece }}">
+          <span class="rung-n">Crece</span>
+          <span class="rung-p">S/ 99</span>
+          <span class="rung-adds">+ Facturación SUNAT</span>
+        </button>
+        <button type="button" class="rung is-assisted {{ r.despega }}" style="height: 86%;" onClick="{{ pickDespega }}">
+          <span class="rung-assisted">Asistido</span>
+          <span class="rung-n">Despega</span>
+          <span class="rung-p">S/ 149</span>
+          <span class="rung-adds">+ Cobras en mostrador</span>
+        </button>
+        <button type="button" class="rung is-assisted {{ r.lidera }}" style="height: 100%;" onClick="{{ pickLidera }}">
+          <span class="rung-assisted">Asistido</span>
+          <span class="rung-n">Lidera</span>
+          <span class="rung-p">S/ 249</span>
+          <span class="rung-adds">+ App de Caja y almacenes</span>
+        </button>
+      </div>
+      <div class="ground"></div>
+    </div>
+
+    <!-- El detalle del peldaño elegido -->
+    <div class="in" style="animation-delay: 140ms; display: grid; grid-template-columns: 1.25fr 1fr; gap: 14px;">
+
+      <section style="border: 1px solid rgba(27,26,23,0.11); border-radius: 16px; background: #fff; padding: 24px;">
+        <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 16px; margin-bottom: 16px;">
+          <h2 style="margin: 0; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 1.0625rem; font-weight: 600;">{{ detailTitle }}</h2>
+          <span style="flex-shrink: 0; font-size: 0.8125rem; color: #6c6a63;">{{ detailPrice }}</span>
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 12px;">
+          <sc-for list="{{ adds }}" as="a" hint-placeholder-count="3">
+            <span class="adds">
+              <span class="adds-i" aria-hidden="true">
+                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
+              </span>
+              {{ a.text }}
+            </span>
+          </sc-for>
+        </div>
+
+        <sc-if value="{{ hasJumps }}" hint-placeholder-val="{{ true }}">
+          <div style="margin-top: 20px; padding-top: 18px; border-top: 1px solid rgba(27,26,23,0.07); display: flex; flex-wrap: wrap; gap: 8px;">
+            <sc-for list="{{ jumps }}" as="j" hint-placeholder-count="3">
+              <span class="q">
+                {{ j.label }} <b>{{ j.from }}</b>
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#0009dc" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+                <b>{{ j.to }}</b>
+              </span>
+            </sc-for>
+          </div>
+        </sc-if>
+      </section>
+
+      <section style="border: 1px solid rgba(27,26,23,0.11); border-radius: 16px; background: #fff; padding: 24px; display: flex; flex-direction: column;">
+        <span style="display: block; font-size: 0.6875rem; font-weight: 600; letter-spacing: 0.11em; text-transform: uppercase; color: #6c6a63; margin-bottom: 12px;">Cómo se activa</span>
+        <p style="margin: 0 0 18px; font-size: 0.875rem; line-height: 1.55; color: #6c6a63;">{{ howText }}</p>
+
+        <div style="margin-top: auto;">
+          <span style="height: 46px; border-radius: 11px; background: {{ ctaBg }}; color: {{ ctaColor }}; font-weight: 600; font-size: 0.9375rem; display: flex; align-items: center; justify-content: center;">{{ ctaLabel }}</span>
+          <p style="margin: 10px 0 0; font-size: 0.75rem; line-height: 1.5; color: #8a887f; text-align: center;">{{ ctaNote }}</p>
+        </div>
+      </section>
+
+    </div>
+
+    <p class="in" style="animation-delay: 220ms; margin: 0; font-size: 0.75rem; line-height: 1.55; color: #8a887f;">
+      La <b style="color: #6c6a63;">Tienda Web</b> (S/ 50 al mes) se suma sobre cualquier peldaño desde Emprende, e <b style="color: #6c6a63;">Intelligence</b> (S/ 100) sobre cualquiera. <a href="#">Ver add-ons</a>
+    </p>
+
+  </main>
+
+</div>
+</x-dc>
+<script data-dc-script data-props='{"$preview":{"width":1180,"height":1000}}'>
+class Component extends DCLogic {
+  state = { plan: 'emprende' };
+
+  renderVals() {
+    const st = this.state || {};
+    const LADDER = [
+      { id: 'free', name: 'Gratis', price: 0, assisted: false,
+        q: { Productos: 10, Usuarios: 1, 'Pedidos al mes': 30 },
+        adds: ['Catálogo de productos', 'Control de stock', 'Ventas manuales y sus pedidos'] },
+      { id: 'emprende', name: 'Emprende', price: 50, assisted: false,
+        q: { Productos: 500, Usuarios: 3, 'Pedidos al mes': 300 },
+        adds: ['Pedidos por WhatsApp', 'Analítica de tus ventas', 'Re-enriquecimiento de productos con IA'] },
+      { id: 'crece', name: 'Crece', price: 99, assisted: false,
+        q: { Productos: 5000, Usuarios: 10, 'Pedidos al mes': 2000, 'Comprobantes al mes': 500 },
+        adds: ['Facturación electrónica SUNAT', 'CRM de clientes'] },
+      { id: 'despega', name: 'Despega', price: 149, assisted: true,
+        q: { Productos: 15000, Usuarios: 25, 'Pedidos al mes': 5000, 'Comprobantes al mes': 1500 },
+        adds: ['Cobrar en mostrador con comprobante', 'Operación multicanal'] },
+      { id: 'lidera', name: 'Lidera', price: 249, assisted: true,
+        q: { Productos: 50000, Usuarios: 100, 'Pedidos al mes': -1, 'Comprobantes al mes': -1 },
+        adds: ['App de Caja en tu mostrador', 'Inventario y almacenes', 'Despacho y guías de remisión'] },
+    ];
+
+    const currentIdx = 0;                       // hoy: Gratis
+    const idx = Math.max(0, LADDER.map((p) => p.id).indexOf(st.plan));
+    const current = LADDER[currentIdx];
+    const chosen = LADDER[idx];
+    const fmt = (n) => (n === -1 ? 'ilimitado' : n.toLocaleString('es-PE'));
+
+    // Todo lo que se acumula entre el peldaño de hoy y el elegido.
+    const adds = [];
+    for (let i = currentIdx + 1; i <= idx; i++) {
+      LADDER[i].adds.forEach((t) => adds.push({ text: t }));
+    }
+
+    const jumps = Object.keys(chosen.q)
+      .filter((k) => {
+        const from = current.q[k];
+        if (chosen.q[k] === -1) return true;          // ilimitado siempre sube
+        return from === undefined || chosen.q[k] > from;
+      })
+      .map((k) => ({
+        label: k,
+        from: current.q[k] === undefined ? '—' : fmt(current.q[k]),
+        to: fmt(chosen.q[k]),
+      }));
+
+    const isCurrent = idx === currentIdx;
+
+    return {
+      detailTitle: isCurrent
+        ? 'Lo que ya tienes con Gratis'
+        : 'De Gratis a ' + chosen.name + ', ganas',
+      detailPrice: isCurrent
+        ? 'S/ 0 al mes'
+        : 'S/ ' + fmt(chosen.price - current.price) + ' más al mes',
+      adds: isCurrent ? current.adds.map((t) => ({ text: t })) : adds,
+      jumps: jumps,
+      hasJumps: jumps.length > 0,
+      howText: isCurrent
+        ? 'Ya estás acá. El plan Gratis no vence: se queda mientras lo necesites.'
+        : (chosen.assisted
+            ? chosen.name + ' se arma con nuestro equipo: revisamos tu operación, migramos lo que haga falta y lo dejamos andando. No se contrata solo desde esta pantalla.'
+            : 'Al confirmar te llevamos a MercadoPago. El cambio aplica de inmediato y el cobro sale prorrateado.'),
+      ctaLabel: isCurrent
+        ? 'Elige un peldaño'
+        : (chosen.assisted ? 'Hablar con el equipo' : 'Cambiar a ' + chosen.name),
+      ctaNote: isCurrent
+        ? 'Toca cualquier peldaño de arriba para ver qué te daría.'
+        : (chosen.assisted
+            ? 'Te respondemos en horario de oficina.'
+            : 'Puedes bajar de plan cuando quieras.'),
+      ctaBg: isCurrent ? '#f1f0ec' : '#0009dc',
+      ctaColor: isCurrent ? '#8a887f' : '#ffffff',
+      r: {
+        free: st.plan === 'free' ? 'on' : '',
+        emprende: st.plan === 'emprende' ? 'on' : '',
+        crece: st.plan === 'crece' ? 'on' : '',
+        despega: st.plan === 'despega' ? 'on' : '',
+        lidera: st.plan === 'lidera' ? 'on' : '',
+      },
+      pickFree: () => this.setState({ plan: 'free' }),
+      pickEmprende: () => this.setState({ plan: 'emprende' }),
+      pickCrece: () => this.setState({ plan: 'crece' }),
+      pickDespega: () => this.setState({ plan: 'despega' }),
+      pickLidera: () => this.setState({ plan: 'lidera' }),
+    };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,144 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,400..800&family=Inter:wght@400;500;600&display=swap">
+  <style>
+    body { margin: 0; font-family: 'Inter', system-ui, sans-serif; letter-spacing: -0.003em; }
+    a { color: #0009dc; } a:hover { color: #000678; }
+
+    /* El bloque de marca, calcado del Header.astro del sitio. */
+    .marca { display: inline-flex; align-items: center; gap: 0.5rem; }
+    .marca-fig {
+      background: oklch(0.365 0.268 265);
+      clip-path: polygon(0 0, 100% 0, 100% 62%, 50% 100%, 0 62%);
+      flex-shrink: 0;
+    }
+    .marca-txt {
+      font-family: 'Bricolage Grotesque', system-ui, sans-serif;
+      font-variation-settings: 'wdth' 86;
+      font-weight: 800;
+      letter-spacing: -0.01em;
+      line-height: 1;
+    }
+
+    .cel { border: 1px solid rgba(27,26,23,0.11); border-radius: 14px; padding: 22px; display: flex; flex-direction: column; }
+    .cel-h { font-size: 0.6875rem; font-weight: 600; letter-spacing: 0.11em; text-transform: uppercase; margin-bottom: 18px; }
+    .cel-n { margin-top: auto; padding-top: 16px; font-size: 0.75rem; line-height: 1.5; }
+
+    .fila { display: flex; align-items: flex-end; gap: 30px; }
+    .fila-i { display: flex; flex-direction: column; align-items: flex-start; gap: 9px; }
+    .fila-l { font-size: 0.6875rem; color: #8a887f; }
+    .fila-l b { color: #1b1a17; font-weight: 600; }
+  </style>
+</helmet>
+
+<div style="width: 1180px; height: 860px; box-sizing: border-box; background: #fbfaf8; color: #1b1a17; padding: 42px 48px; display: flex; flex-direction: column; gap: 24px; overflow: hidden;">
+
+  <div>
+    <h1 style="margin: 0; font-family: 'Bricolage Grotesque', system-ui, sans-serif; font-variation-settings: 'wdth' 86; font-weight: 800; font-size: 2rem; letter-spacing: -0.02em;">El bloque de marca</h1>
+    <p style="margin: 9px 0 0; font-size: 0.9375rem; line-height: 1.5; color: #6c6a63; max-width: 44rem;">Calcado del <b style="color:#1b1a17;font-weight:500;">Header.astro</b> del sitio: figura de 14×22 recortada con <b style="color:#1b1a17;font-weight:500;">clip-path</b>, separación de 8&nbsp;px, y la palabra en Bricolage Grotesque 800 con el ancho apretado a 86. Todo en CSS — no hay archivo que descargar.</p>
+  </div>
+
+  <!-- Los tres fondos -->
+  <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px;">
+
+    <div class="cel" style="background: oklch(0.973 0.012 88);">
+      <span class="cel-h" style="color: #8a887f;">Sobre papel</span>
+      <span class="marca">
+        <span class="marca-fig" style="width: 22px; height: 34px;"></span>
+        <span class="marca-txt" style="font-size: 1.75rem; color: oklch(0.205 0.016 74);">PROXIMA</span>
+      </span>
+      <span class="cel-n" style="color: #6c6a63; border-top: 1px solid rgba(27,26,23,0.09);">El caso normal: cabecera del Hub, barra lateral del Admin.</span>
+    </div>
+
+    <div class="cel" style="background: #010228; border-color: rgba(255,255,255,0.14);">
+      <span class="cel-h" style="color: rgba(248,249,255,0.5);">Sobre azul profundo</span>
+      <span class="marca">
+        <span class="marca-fig" style="width: 22px; height: 34px; background: oklch(0.655 0.198 262);"></span>
+        <span class="marca-txt" style="font-size: 1.75rem; color: #f8f9ff;">PROXIMA</span>
+      </span>
+      <span class="cel-n" style="color: rgba(248,249,255,0.55); border-top: 1px solid rgba(255,255,255,0.12);">La figura sube a <b style="color:#f8f9ff;font-weight:500;">azul claro</b>: el azul del producto tiene L≈0.36 y sobre este fondo desaparece.</span>
+    </div>
+
+    <div class="cel" style="background: oklch(0.868 0.163 89); border-color: rgba(27,26,23,0.16);">
+      <span class="cel-h" style="color: oklch(0.318 0.018 74);">Sobre la pared</span>
+      <span class="marca">
+        <span class="marca-fig" style="width: 22px; height: 34px;"></span>
+        <span class="marca-txt" style="font-size: 1.75rem; color: oklch(0.205 0.016 74);">PROXIMA</span>
+      </span>
+      <span class="cel-n" style="color: oklch(0.318 0.018 74); border-top: 1px solid rgba(27,26,23,0.16);">El amarillo del sitio. Azul y tinta se sostienen sin cambios.</span>
+    </div>
+
+  </div>
+
+  <!-- Tamaños -->
+  <div style="border: 1px solid rgba(27,26,23,0.11); border-radius: 14px; background: #fff; padding: 26px 28px;">
+    <span style="display: block; font-size: 0.6875rem; font-weight: 600; letter-spacing: 0.11em; text-transform: uppercase; color: #8a887f; margin-bottom: 22px;">Los tamaños que hacen falta</span>
+
+    <div class="fila">
+      <span class="fila-i">
+        <span class="marca">
+          <span class="marca-fig" style="width: 12px; height: 19px;"></span>
+          <span class="marca-txt" style="font-size: 1rem;">PROXIMA</span>
+        </span>
+        <span class="fila-l"><b>Compacto</b> · figura 12×19 · texto 16&nbsp;px</span>
+      </span>
+
+      <span class="fila-i">
+        <span class="marca">
+          <span class="marca-fig" style="width: 14px; height: 22px;"></span>
+          <span class="marca-txt" style="font-size: 1.15rem;">PROXIMA</span>
+        </span>
+        <span class="fila-l"><b>Cabecera</b> · 14×22 · 18.4&nbsp;px — el del sitio</span>
+      </span>
+
+      <span class="fila-i">
+        <span class="marca">
+          <span class="marca-fig" style="width: 22px; height: 34px;"></span>
+          <span class="marca-txt" style="font-size: 1.75rem;">PROXIMA</span>
+        </span>
+        <span class="fila-l"><b>Entrada</b> · 22×34 · 28&nbsp;px — login y registro</span>
+      </span>
+
+      <span class="fila-i" style="margin-left: auto;">
+        <span style="display: flex; align-items: flex-end; gap: 12px;">
+          <span class="marca-fig" style="width: 14px; height: 22px;"></span>
+          <span class="marca-fig" style="width: 20px; height: 31px;"></span>
+          <span class="marca-fig" style="width: 28px; height: 44px;"></span>
+        </span>
+        <span class="fila-l"><b>Sola</b> · cuando no cabe la palabra</span>
+      </span>
+    </div>
+  </div>
+
+  <!-- La regla que hoy se rompe -->
+  <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px;">
+    <div style="border: 1px solid rgba(27,26,23,0.11); border-radius: 14px; background: #fff; padding: 18px 20px;">
+      <span style="display: block; font-size: 0.75rem; font-weight: 600; color: #1b1a17; margin-bottom: 6px;">Se escribe PROXIMA</span>
+      <p style="margin: 0; font-size: 0.75rem; line-height: 1.55; color: #6c6a63;">En versalitas y sin tilde, como en el sitio. Hoy el Hub dice «Próxima» y el Admin «Proxima»: tres grafías para un nombre.</p>
+    </div>
+    <div style="border: 1px solid rgba(27,26,23,0.11); border-radius: 14px; background: #fff; padding: 18px 20px;">
+      <span style="display: block; font-size: 0.75rem; font-weight: 600; color: #1b1a17; margin-bottom: 6px;">La proporción no se toca</span>
+      <p style="margin: 0; font-size: 0.75rem; line-height: 1.55; color: #6c6a63;">La figura mide de alto 1.57× su ancho. Estirarla la vuelve otra cosa; el <code style="font-size:0.6875rem;">clip-path</code> lo mantiene solo si el alto se calcula.</p>
+    </div>
+    <div style="border: 1px solid rgba(27,26,23,0.11); border-radius: 14px; background: #fff; padding: 18px 20px;">
+      <span style="display: block; font-size: 0.75rem; font-weight: 600; color: #1b1a17; margin-bottom: 6px;">Nada que descargar</span>
+      <p style="margin: 0; font-size: 0.75rem; line-height: 1.55; color: #6c6a63;">Es CSS. No depende de <code style="font-size:0.6875rem;">media.proxima.pe</code>, no parpadea al cargar y no se rompe sin señal.</p>
+    </div>
+  </div>
+
+</div>
+</x-dc>
+<script data-dc-script data-props='{"$preview":{"width":1180,"height":860}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,55 @@
+{
+  "artboards": [
+    {
+      "file": "Actual.dc.html",
+      "title": "Hoy — el centro del Hub",
+      "x": 0,
+      "y": 0,
+      "w": 1120,
+      "h": 1180
+    },
+    {
+      "file": "Main.dc.html",
+      "title": "Propuesta — apps con identidad y estado",
+      "x": 1240,
+      "y": 0,
+      "w": 1120,
+      "h": 1400,
+      "is_interactive": true
+    },
+    {
+      "file": "Movil.dc.html",
+      "title": "Propuesta en teléfono — 390×844",
+      "x": 2480,
+      "y": 0,
+      "w": 390,
+      "h": 844
+    }
+  ],
+  "annotations": [
+    {
+      "id": "auditoria",
+      "x": 0,
+      "y": -760,
+      "w": 700,
+      "text": "LO QUE PASA HOY\n\nTres filas idénticas de 958×87. El mismo cuadrado azul de marca, la misma píldora azul «Abrir», el mismo texto a la izquierda. Nada distingue Panel de Caja.\n\n· ~55% de cada tarjeta es blanco vacío.\n· La tarjeta ya es un botón: la píldora azul adentro es un segundo botón sobre el primero, y son tres acciones primarias compitiendo.\n· Ninguna app dice por qué la abrirías ahora.\n· Panel (se abre 50 veces al día) pesa igual que Tienda Web (se configura una vez).\n· «Almacenamiento 0 / -1»: el API manda -1 por «sin tope» y se imprime tal cual.\n\nRecreado desde el código, no desde la captura: home.component.css, los tokens y las medidas exactas."
+    },
+    {
+      "id": "propuesta",
+      "x": 1240,
+      "y": -760,
+      "w": 700,
+      "text": "QUÉ CAMBIA\n\n1. Cada app tiene identidad propia — su glifo sobre un chip teñido. El color vive solo en el chip: la página sigue casi monocroma y el azul de marca sigue significando «acción».\n\n2. Cada app dice por qué abrirla ahora: 12 pedidos por atender, caja abierta, tienda sin publicar.\n\n3. Panel manda — ocupa el ancho entero y trae sus tres números.\n\n4. Se va la píldora «Abrir». La tarjeta entera es el destino y el «Abrir →» sube de opacidad al pasar el mouse: es el patrón .hub-app-cta que ya estaba en su CSS y quedó sin usar.\n\n5. El paso que falta deja de ser una píldora muerta al costado del saludo y pasa a ser una tarjeta con botón.\n\n6. Los iconos dicen qué es cada app: Caja es un terminal de punto de venta con su boleta, Tienda Web es un lienzo con un bloque puesto y otro esperando —un builder—, Panel es un panel con su barra lateral, Intelligence es una curva que sube con la chispa de la IA. Mismo trazo de 1.7 y grilla de 24 que el resto del sistema.\n\n7. Las descripciones dicen el producto, no el beneficio: «Punto de venta: cobra en mostrador y emite boleta» y «Arrastra bloques, arma tu tienda y publícala», en vez de «sin fricción» y «diseña y publica».\n\n8. «Almacenamiento» dice Ilimitado en vez de -1.\n\nSe puede tocar: marca pasos del checklist, dale a Empezar, y cambia el plan con el control de arriba del artboard para ver los estados Emprende y Gratis.\n\n— IMPLEMENTADO —\n\nEsto ya está en el código. Los dos números de Panel salen de admin/fulfillment/stats y admin/sales-summary?days=1, en paralelo y sin bloquear el render; si la API responde 403 la tarjeta se queda sin número, no con un cero. «Sin publicar» sale del readiness que el Hub ya pedía.\n\nQuedaron fuera dos cosas que este canvas prometía y el API no tiene: el monto cobrado en caja (el módulo POS no expone ni una agregación) y «productos agotados» (depleted_count se calcula sobre la página devuelta, no sobre el total)."
+    },
+    {
+      "id": "movil",
+      "x": 2480,
+      "y": -400,
+      "w": 500,
+      "text": "TELÉFONO — 390×844\n\nEntra completo en una pantalla de iPhone, sin scroll. Todo lo tocable llega a 44 pt. Sin barra de estado falsa: en un teléfono real la pinta el sistema encima."
+    }
+  ],
+  "launch": {
+    "view": "canvas"
+  }
+}

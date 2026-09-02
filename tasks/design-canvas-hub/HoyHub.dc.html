@@ -1,0 +1,108 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500&family=Plus+Jakarta+Sans:wght@500;600&family=Inter:wght@400;500;600&display=swap">
+  <style>
+    body { margin: 0; font-family: 'Inter', system-ui, sans-serif; letter-spacing: -0.003em; }
+    .app { display: flex; align-items: flex-start; gap: 14px; border: 1px solid rgba(27,26,23,0.11); border-radius: 14px; background: #fff; padding: 18px; }
+    .app-ico { width: 38px; height: 38px; border-radius: 11px; background: #f2f1ee; color: #4a4841; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .app-name { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 0.9375rem; font-weight: 600; display: flex; align-items: center; gap: 8px; }
+    .app-desc { display: block; margin-top: 4px; font-size: 0.8125rem; line-height: 1.45; color: #6c6a63; }
+    .badge { font-size: 0.625rem; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #8a887f; background: #f1f0ec; padding: 2px 7px; border-radius: 999px; }
+    .check { display: flex; align-items: center; gap: 12px; padding: 13px 0; border-bottom: 1px solid rgba(27,26,23,0.06); font-size: 0.875rem; }
+    .check:last-child { border-bottom: none; }
+    .check-box { width: 18px; height: 18px; border-radius: 50%; border: 1.5px solid rgba(27,26,23,0.2); flex-shrink: 0; }
+  </style>
+</helmet>
+<div style="width: 1180px; height: 1020px; box-sizing: border-box; background: #fbfaf8; color: #1b1a17; overflow: hidden;">
+
+  <header style="display: flex; align-items: center; justify-content: space-between; padding: 18px 40px; border-bottom: 1px solid rgba(27,26,23,0.07);">
+    <span style="font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 600; font-size: 1.1875rem; letter-spacing: -0.02em;">Próxima</span>
+    <span style="font-size: 0.6875rem; color: #a5a39b;">v0.1.0</span>
+    <span style="display: flex; align-items: center; gap: 12px;">
+      <span style="display: inline-flex; align-items: center; gap: 8px; height: 34px; padding: 0 12px; border: 1px solid rgba(27,26,23,0.11); border-radius: 999px; background: #fff; font-size: 0.8125rem; font-weight: 500;">
+        <span style="width: 22px; height: 22px; border-radius: 6px; background: #1b1a17; color: #fff; font-family: 'Fraunces', Georgia, serif; font-size: 0.6875rem; display: flex; align-items: center; justify-content: center;">M</span>
+        Mi negocio
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#73716a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+      </span>
+      <span style="width: 32px; height: 32px; border-radius: 50%; background: #0009dc; color: #fff; font-weight: 600; font-size: 0.8125rem; display: flex; align-items: center; justify-content: center;">L</span>
+    </span>
+  </header>
+
+  <main style="max-width: 1100px; margin: 0 auto; padding: 34px 40px;">
+    <span style="display: block; font-size: 0.6875rem; font-weight: 600; letter-spacing: 0.11em; text-transform: uppercase; color: #0009dc; margin-bottom: 10px;">Tu centro</span>
+    <h1 style="margin: 0; font-family: 'Fraunces', Georgia, serif; font-weight: 500; font-size: 2.25rem; letter-spacing: -0.02em;">Hola, Luis</h1>
+    <p style="margin: 8px 0 30px; font-size: 0.9375rem; color: #6c6a63;">Mi negocio · Gratis — Catálogo y control de stock</p>
+
+    <div style="display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 14px;">
+      <h2 style="margin: 0; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 1rem; font-weight: 600;">Tus aplicaciones</h2>
+      <span style="font-size: 0.75rem; color: #8a887f;">Una sesión, todos tus productos</span>
+    </div>
+
+    <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin-bottom: 30px;">
+      <div class="app">
+        <span class="app-ico"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg></span>
+        <span><span class="app-name">Panel</span><span class="app-desc">Catálogo, pedidos, stock y clientes</span></span>
+      </div>
+      <div class="app">
+        <span class="app-ico"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="8" width="18" height="13" rx="2"/><path d="M3 8l2-4h14l2 4M8 13h8M8 17h5"/></svg></span>
+        <span><span class="app-name">Caja <span class="badge">Add-on</span></span><span class="app-desc">Vende en mostrador, sin fricción</span></span>
+      </div>
+      <div class="app">
+        <span class="app-ico"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18"/></svg></span>
+        <span><span class="app-name">Tienda Web <span class="badge">Add-on</span></span><span class="app-desc">Diseña y publica tu tienda online</span></span>
+      </div>
+      <div class="app">
+        <span class="app-ico"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.8 4.3L18 9l-4.2 1.7L12 15l-1.8-4.3L6 9l4.2-1.7L12 3z"/></svg></span>
+        <span><span class="app-name">Intelligence <span class="badge">Add-on</span></span><span class="app-desc">Precios y decisiones con IA</span></span>
+      </div>
+    </div>
+
+    <div style="display: grid; grid-template-columns: 1.35fr 1fr; gap: 14px;">
+      <section style="border: 1px solid rgba(27,26,23,0.11); border-radius: 14px; background: #fff; padding: 22px;">
+        <div style="display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 12px;">
+          <h2 style="margin: 0; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 1rem; font-weight: 600;">Termina de configurar</h2>
+          <span style="font-size: 0.8125rem; color: #6c6a63;">0/7</span>
+        </div>
+        <div style="height: 3px; border-radius: 999px; background: rgba(27,26,23,0.09); margin-bottom: 6px;"></div>
+        <div class="check"><span class="check-box"></span>Configurar nombre de tienda</div>
+        <div class="check"><span class="check-box"></span>Subir logo</div>
+        <div class="check"><span class="check-box"></span>Configurar contacto</div>
+        <div class="check"><span class="check-box"></span>Configurar número de WhatsApp</div>
+        <div class="check"><span class="check-box"></span>Configurar métodos de pago</div>
+        <div class="check"><span class="check-box"></span>Agregar productos</div>
+        <div class="check"><span class="check-box"></span>Completar datos de productos</div>
+      </section>
+
+      <section style="border: 1px solid rgba(27,26,23,0.11); border-radius: 14px; background: #fff; padding: 22px; display: flex; flex-direction: column;">
+        <span style="display: block; font-size: 0.6875rem; font-weight: 600; letter-spacing: 0.11em; text-transform: uppercase; color: #0009dc; margin-bottom: 10px;">Tu plan</span>
+        <h2 style="margin: 0 0 8px; font-family: 'Fraunces', Georgia, serif; font-size: 1.5rem; font-weight: 500; line-height: 1.15;">Gratis — Catálogo y control de stock</h2>
+        <p style="margin: 0 0 18px; font-size: 0.8125rem; line-height: 1.5; color: #6c6a63;">Estás en el plan Gratis — Catálogo y control de stock. Mejora cuando quieras vender en vivo.</p>
+        <div style="display: flex; justify-content: space-between; font-size: 0.8125rem; margin-bottom: 6px;"><span>Usuarios</span><b>1 / 1</b></div>
+        <div style="height: 4px; border-radius: 999px; background: rgba(27,26,23,0.09); margin-bottom: 14px;"><span style="display: block; height: 100%; width: 100%; background: #1b1a17; border-radius: 999px;"></span></div>
+        <div style="display: flex; justify-content: space-between; font-size: 0.8125rem; margin-bottom: 6px;"><span>Almacenamiento</span><b>0 / 256</b></div>
+        <div style="height: 4px; border-radius: 999px; background: rgba(27,26,23,0.09); margin-bottom: 20px;"></div>
+        <span style="height: 44px; border-radius: 10px; background: #0009dc; color: #fff; font-weight: 600; font-size: 0.875rem; display: flex; align-items: center; justify-content: center; gap: 8px;">
+          Salir en vivo
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        </span>
+        <p style="margin: 12px 0 0; font-size: 0.75rem; line-height: 1.5; color: #8a887f; text-align: center;">Publica tu tienda, emite boletas SUNAT y conecta WhatsApp.</p>
+      </section>
+    </div>
+  </main>
+
+</div>
+</x-dc>
+<script data-dc-script data-props='{"$preview":{"width":1180,"height":1020}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

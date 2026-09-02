@@ -1,0 +1,106 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Plus+Jakarta+Sans:wght@500;600;700&family=Inter:wght@400;500;600&display=swap">
+  <style>
+    body { margin: 0; font-family: 'Inter', system-ui, sans-serif; letter-spacing: -0.003em; }
+    a { color: #0009dc; } a:hover { color: #000678; }
+    .fade-up { opacity: 0; animation: fadeUp 620ms cubic-bezier(0.16,1,0.3,1) forwards; }
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+    .rule { display: block; height: 1px; background: rgba(27,26,23,0.11); transform-origin: left; animation: grow 900ms cubic-bezier(0.16,1,0.3,1) both; }
+    @keyframes grow { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+    @media (prefers-reduced-motion: reduce) {
+      .fade-up, .rule { animation-duration: 1ms; opacity: 1; transform: none; }
+    }
+  </style>
+</helmet>
+<div style="width: 720px; height: 1060px; box-sizing: border-box; background: #fbfaf8; color: #1b1a17; padding: 56px 56px 44px; display: flex; flex-direction: column; gap: 30px; overflow: hidden;">
+
+  <div style="display: flex; align-items: baseline; justify-content: space-between;">
+    <span style="font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 600; font-size: 1.1875rem; letter-spacing: -0.02em;">Próxima</span>
+    <span style="font-size: 0.6875rem; font-weight: 600; letter-spacing: 0.11em; text-transform: uppercase; color: #0009dc;">Propuesta de diseño</span>
+  </div>
+
+  <div class="fade-up" style="animation-delay: 60ms;">
+    <h1 style="margin: 0; font-family: 'Fraunces', Georgia, serif; font-weight: 500; font-size: 3.125rem; line-height: 1.02; letter-spacing: -0.02em; text-wrap: pretty;">Registro y<br>adquisición</h1>
+    <p style="margin: 18px 0 0; font-size: 1rem; line-height: 1.55; color: #6c6a63; max-width: 30rem;">Dos flujos, dos direcciones cada uno, sobre los mismos tokens del Hub: Fraunces para los títulos, azul <b style="color:#1b1a17; font-weight:500;">#0009dc</b> como único acento, papel cálido <b style="color:#1b1a17; font-weight:500;">#fbfaf8</b>.</p>
+  </div>
+
+  <span class="rule" style="animation-delay: 240ms;"></span>
+
+  <div class="fade-up" style="animation-delay: 180ms;">
+    <span style="display: block; font-size: 0.6875rem; font-weight: 600; letter-spacing: 0.11em; text-transform: uppercase; color: #6c6a63; margin-bottom: 16px;">Qué encontré hoy</span>
+    <div style="display: flex; flex-direction: column; gap: 14px;">
+
+      <div style="display: flex; gap: 14px; align-items: flex-start;">
+        <span style="flex-shrink: 0; width: 22px; height: 22px; border-radius: 7px; background: rgba(187,58,44,0.1); color: #bb3a2c; font-size: 0.6875rem; font-weight: 600; display: flex; align-items: center; justify-content: center;">01</span>
+        <p style="margin: 0; font-size: 0.875rem; line-height: 1.55; color: #6c6a63;"><b style="color: #1b1a17; font-weight: 600;">La columna mide 408 px y el resto de la pantalla está vacío.</b> Nada acompaña al usuario mientras escribe: ni lo que gana, ni cómo va quedando su negocio.</p>
+      </div>
+
+      <div style="display: flex; gap: 14px; align-items: flex-start;">
+        <span style="flex-shrink: 0; width: 22px; height: 22px; border-radius: 7px; background: rgba(187,58,44,0.1); color: #bb3a2c; font-size: 0.6875rem; font-weight: 600; display: flex; align-items: center; justify-content: center;">02</span>
+        <p style="margin: 0; font-size: 0.875rem; line-height: 1.55; color: #6c6a63;"><b style="color: #1b1a17; font-weight: 600;">El formulario pide sin explicar.</b> «¿Tu negocio tiene RUC?» no dice qué pasa si respondes que sí — y el RUC ya trae razón social desde SUNAT, que es justo el argumento para responderlo.</p>
+      </div>
+
+      <div style="display: flex; gap: 14px; align-items: flex-start;">
+        <span style="flex-shrink: 0; width: 22px; height: 22px; border-radius: 7px; background: rgba(187,58,44,0.1); color: #bb3a2c; font-size: 0.6875rem; font-weight: 600; display: flex; align-items: center; justify-content: center;">03</span>
+        <p style="margin: 0; font-size: 0.875rem; line-height: 1.55; color: #6c6a63;"><b style="color: #1b1a17; font-weight: 600;">El progreso es una línea de 2 px.</b> Sin hitos con nombre, sin cuánto falta, sin cuánto demora. El único aviso de paso vive en un eyebrow de 11 px.</p>
+      </div>
+
+      <div style="display: flex; gap: 14px; align-items: flex-start;">
+        <span style="flex-shrink: 0; width: 22px; height: 22px; border-radius: 7px; background: rgba(187,58,44,0.1); color: #bb3a2c; font-size: 0.6875rem; font-weight: 600; display: flex; align-items: center; justify-content: center;">04</span>
+        <p style="margin: 0; font-size: 0.875rem; line-height: 1.55; color: #6c6a63;"><b style="color: #1b1a17; font-weight: 600;">En «Plan» los planes son filas de texto.</b> No se ve qué gano al subir ni cuánto me queda de mi cuota — y «Tienda Web» ofrece «Crear mi tienda» sin decir que exige mínimo Emprende.</p>
+      </div>
+
+    </div>
+  </div>
+
+  <span class="rule" style="animation-delay: 380ms;"></span>
+
+  <div class="fade-up" style="animation-delay: 300ms; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px;">
+
+    <div style="border: 1px solid rgba(27,26,23,0.11); border-radius: 14px; background: #ffffff; padding: 18px 20px 20px;">
+      <span style="display: block; font-size: 0.625rem; font-weight: 600; letter-spacing: 0.11em; text-transform: uppercase; color: #0009dc; margin-bottom: 10px;">Página 1</span>
+      <h2 style="margin: 0 0 8px; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 1rem; font-weight: 600; letter-spacing: -0.015em;">Registro de comercio</h2>
+      <p style="margin: 0 0 14px; font-size: 0.8125rem; line-height: 1.5; color: #6c6a63;">El estado actual, dos direcciones y una lámina con los micro-estados animados.</p>
+      <ul style="margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 7px; font-size: 0.8125rem; color: #1b1a17;">
+        <li style="display: flex; gap: 8px; align-items: center;"><span style="width: 5px; height: 5px; border-radius: 50%; background: #a5a39b;"></span>Hoy · paso 1</li>
+        <li style="display: flex; gap: 8px; align-items: center;"><span style="width: 5px; height: 5px; border-radius: 50%; background: #0009dc;"></span><b style="font-weight: 600;">A · Taller en vivo</b></li>
+        <li style="display: flex; gap: 8px; align-items: center;"><span style="width: 5px; height: 5px; border-radius: 50%; background: #0009dc;"></span><b style="font-weight: 600;">B · Una pregunta a la vez</b></li>
+        <li style="display: flex; gap: 8px; align-items: center;"><span style="width: 5px; height: 5px; border-radius: 50%; background: #a5a39b;"></span>Micro-estados</li>
+      </ul>
+    </div>
+
+    <div style="border: 1px solid rgba(27,26,23,0.11); border-radius: 14px; background: #ffffff; padding: 18px 20px 20px;">
+      <span style="display: block; font-size: 0.625rem; font-weight: 600; letter-spacing: 0.11em; text-transform: uppercase; color: #0009dc; margin-bottom: 10px;">Página 2</span>
+      <h2 style="margin: 0 0 8px; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 1rem; font-weight: 600; letter-spacing: -0.015em;">Adquisición de plan</h2>
+      <p style="margin: 0 0 14px; font-size: 0.8125rem; line-height: 1.5; color: #6c6a63;">Planes reales del API: Gratis, Emprende S/&nbsp;50, Crece S/&nbsp;99, Despega S/&nbsp;149 (asistido) y el add-on Tienda Web.</p>
+      <ul style="margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 7px; font-size: 0.8125rem; color: #1b1a17;">
+        <li style="display: flex; gap: 8px; align-items: center;"><span style="width: 5px; height: 5px; border-radius: 50%; background: #a5a39b;"></span>Hoy · /plan</li>
+        <li style="display: flex; gap: 8px; align-items: center;"><span style="width: 5px; height: 5px; border-radius: 50%; background: #0009dc;"></span><b style="font-weight: 600;">A · Tu uso decide</b></li>
+        <li style="display: flex; gap: 8px; align-items: center;"><span style="width: 5px; height: 5px; border-radius: 50%; background: #0009dc;"></span><b style="font-weight: 600;">B · Asistente por objetivo</b></li>
+        <li style="display: flex; gap: 8px; align-items: center;"><span style="width: 5px; height: 5px; border-radius: 50%; background: #a5a39b;"></span>Tienda Web</li>
+      </ul>
+    </div>
+
+  </div>
+
+  <p style="margin: auto 0 0; font-size: 0.75rem; line-height: 1.5; color: #8a887f;">Las láminas «Hoy» son recreación fiel del código actual, para comparar. Todo lo demás es propuesta.</p>
+
+</div>
+</x-dc>
+<script data-dc-script data-props='{"$preview":{"width":720,"height":1060}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {};
+  }
+}
+</script>
+</body>
+</html>

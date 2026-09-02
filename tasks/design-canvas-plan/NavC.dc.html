@@ -1,0 +1,102 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500&family=Plus+Jakarta+Sans:wght@500;600;700&family=Inter:wght@400;500;600&display=swap">
+  <style>
+    body { margin: 0; font-family: 'Inter', system-ui, sans-serif; letter-spacing: -0.003em; }
+    a { color: #0009dc; text-decoration: none; } a:hover { color: #000678; }
+    .mi { display: flex; align-items: center; gap: 11px; padding: 10px 14px; font-size: 0.8125rem; color: #1b1a17; }
+    .mi:hover { background: rgba(27,26,23,0.04); }
+    .mi svg { color: #8a887f; flex-shrink: 0; }
+    .mi.on { color: #0009dc; font-weight: 600; }
+    .mi.on svg { color: #0009dc; }
+    .mi small { display: block; font-size: 0.6875rem; color: #8a887f; font-weight: 400; margin-top: 1px; }
+    .mh { display: block; padding: 12px 14px 7px; font-size: 0.625rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #a5a39b; }
+  </style>
+</helmet>
+
+<div style="position: relative; width: 1180px; height: 820px; box-sizing: border-box; background: #fbfaf8; color: #1b1a17; overflow: hidden;">
+
+  <header style="display: flex; align-items: center; justify-content: space-between; padding: 16px 40px; border-bottom: 1px solid rgba(27,26,23,0.07);">
+    <span style="display: flex; align-items: center; gap: 14px;">
+      <span style="font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 600; font-size: 1.1875rem; letter-spacing: -0.02em;">Próxima</span>
+      <span style="color: #c9c6bf;">/</span>
+      <span style="display: inline-flex; align-items: center; gap: 8px; height: 34px; padding: 0 13px; border: 1px solid #0009dc; border-radius: 999px; background: #f3f4ff; font-size: 0.8125rem; font-weight: 600; color: #0009dc;">
+        <span style="width: 22px; height: 22px; border-radius: 6px; background: #1b1a17; color: #fff; font-family: 'Fraunces', Georgia, serif; font-size: 0.6875rem; display: flex; align-items: center; justify-content: center;">L</span>
+        LuchoEcommerce
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+      </span>
+    </span>
+    <span style="width: 32px; height: 32px; border-radius: 50%; background: #0009dc; color: #fff; font-weight: 600; font-size: 0.8125rem; display: flex; align-items: center; justify-content: center;">L</span>
+  </header>
+
+  <!-- El menú del negocio: lo del negocio, y solo eso -->
+  <div style="position: absolute; top: 62px; left: 150px; width: 264px; border: 1px solid rgba(27,26,23,0.11); border-radius: 14px; background: #fff; box-shadow: 0 20px 44px -24px rgba(27,26,23,0.5); padding: 4px 0; z-index: 5;">
+    <span class="mh">LuchoEcommerce</span>
+    <div class="mi on">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="13" rx="2"/><path d="M2 11h20"/></svg>
+      <span>Plan y facturación<small>Gratis · S/ 0 al mes</small></span>
+    </div>
+    <div class="mi">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.5"/><path d="M2 20c0-3.3 3.1-5 7-5s7 1.7 7 5M17 11a3 3 0 1 0 0-6M18 20c0-2.2-.8-3.6-2-4.4"/></svg>
+      <span>Equipo<small>Solo tú por ahora</small></span>
+    </div>
+    <div style="height: 1px; background: rgba(27,26,23,0.08); margin: 5px 0;"></div>
+    <span class="mh">Cambiar de negocio</span>
+    <div class="mi">
+      <span style="width: 22px; height: 22px; border-radius: 6px; background: #e7e5e0; color: #6c6a63; font-family: 'Fraunces', Georgia, serif; font-size: 0.6875rem; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">M</span>
+      <span>Moda Andina</span>
+    </div>
+  </div>
+
+  <!-- El menú de la persona: sin plan, sin equipo -->
+  <div style="position: absolute; top: 62px; right: 34px; width: 232px; border: 1px solid rgba(27,26,23,0.11); border-radius: 14px; background: #fff; box-shadow: 0 20px 44px -24px rgba(27,26,23,0.5); padding: 4px 0; z-index: 5;">
+    <span class="mh">Luis Farfán</span>
+    <div class="mi">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-6 8-6s8 2 8 6"/></svg>
+      <span>Perfil<small>Nombre y correo</small></span>
+    </div>
+    <div class="mi">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
+      <span>Acceso y seguridad<small>Contraseña, Google, sesiones</small></span>
+    </div>
+    <div style="height: 1px; background: rgba(27,26,23,0.08); margin: 5px 0;"></div>
+    <div class="mi" style="color: #bb3a2c;">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15 17l5-5-5-5M20 12H9M12 3H5v18h7"/></svg>
+      Cerrar sesión
+    </div>
+  </div>
+
+  <!-- Sin barra de pestañas: la página se queda con todo el ancho -->
+  <main style="max-width: 1100px; margin: 0 auto; padding: 30px 40px;">
+    <p style="margin: 0 0 14px; font-size: 0.8125rem; color: #8a887f;">
+      <a href="#">LuchoEcommerce</a> <span style="color: #c9c6bf;">/</span> Plan y facturación
+    </p>
+    <h1 style="margin: 0 0 26px; font-family: 'Fraunces', Georgia, serif; font-weight: 500; font-size: 1.875rem; letter-spacing: -0.02em;">Hasta dónde puede llegar tu negocio</h1>
+
+    <div style="display: flex; align-items: flex-end; gap: 8px; height: 150px; opacity: 0.5;">
+      <div style="flex: 1; height: 46%; border: 1px solid rgba(27,26,23,0.13); border-radius: 14px 14px 0 0; border-bottom: 0; background: #f4f2ee;"></div>
+      <div style="flex: 1; height: 58%; border: 1px solid rgba(27,26,23,0.13); border-radius: 14px 14px 0 0; border-bottom: 0; background: #fff;"></div>
+      <div style="flex: 1; height: 72%; border: 1px solid rgba(27,26,23,0.13); border-radius: 14px 14px 0 0; border-bottom: 0; background: #fff;"></div>
+      <div style="flex: 1; height: 86%; border: 1px dashed rgba(27,26,23,0.18); border-radius: 14px 14px 0 0; border-bottom: 0; background: #fff;"></div>
+      <div style="flex: 1; height: 100%; border: 1px dashed rgba(27,26,23,0.18); border-radius: 14px 14px 0 0; border-bottom: 0; background: #fff;"></div>
+    </div>
+    <div style="height: 3px; background: rgba(27,26,23,0.13); border-radius: 999px; opacity: 0.5;"></div>
+    <p style="margin: 20px 0 0; font-size: 0.8125rem; color: #8a887f;">La escalera de la dirección C entra completa: sin barra lateral ni fila de pestañas, la página conserva los 1.100 px.</p>
+  </main>
+
+</div>
+</x-dc>
+<script data-dc-script data-props='{"$preview":{"width":1180,"height":820}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

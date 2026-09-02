@@ -1,0 +1,132 @@
+{
+  "changes": {
+    "hub-plan-decision": {
+      "tasks": {
+        "T001": {
+          "bead_id": "proxima-hub-ptc",
+          "created_at": "2026-08-24T22:05:31Z",
+          "dependency_hash": "sha256:4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+          "external_ref": "hub-plan-decision:T001",
+          "last_known_status": "open",
+          "last_synced_at": "2026-08-24T22:05:34Z",
+          "managed_content_hash": "sha256:f4ddd0e841547b1d11da7a37f4e913b44c63ca05fc7bb6e85fe2576798755f05"
+        },
+        "T002": {
+          "bead_id": "proxima-hub-gvf",
+          "created_at": "2026-08-24T22:05:32Z",
+          "dependency_hash": "sha256:2bf8c3c22392d6e559cbe44f419340bf86361fbf07438bf11e8e44d8fbf7a07d",
+          "external_ref": "hub-plan-decision:T002",
+          "last_known_status": "open",
+          "last_synced_at": "2026-08-24T22:05:35Z",
+          "managed_content_hash": "sha256:7e9dacee928a998ad0ed614f9a0c58339a25722c9b15327d691728bd5ae5c4b5"
+        },
+        "T003": {
+          "bead_id": "proxima-hub-c0w",
+          "created_at": "2026-08-24T22:05:33Z",
+          "dependency_hash": "sha256:2bf8c3c22392d6e559cbe44f419340bf86361fbf07438bf11e8e44d8fbf7a07d",
+          "external_ref": "hub-plan-decision:T003",
+          "last_known_status": "open",
+          "last_synced_at": "2026-08-24T22:05:36Z",
+          "managed_content_hash": "sha256:ec02ad6291f65a3013fea5a411b1afe041abc4542f27959bc93c51cb4397696c"
+        },
+        "T004": {
+          "bead_id": "proxima-hub-b9m",
+          "created_at": "2026-08-24T22:05:33Z",
+          "dependency_hash": "sha256:868b5ba814d0d5c576331f7134cdcb68d6a3625bfd399725d97854538936be78",
+          "external_ref": "hub-plan-decision:T004",
+          "last_known_status": "open",
+          "last_synced_at": "2026-08-24T22:05:36Z",
+          "managed_content_hash": "sha256:25213993a46e857c44e7c7300c73d69d5f2be985184255315c28f019b004e6ed"
+        },
+        "T005": {
+          "bead_id": "proxima-hub-7ve",
+          "created_at": "2026-08-24T22:05:34Z",
+          "dependency_hash": "sha256:bf159c5f6609c90f5920e4b443e9394e06ddb2a98a4b4b93c7dc13a86152fa43",
+          "external_ref": "hub-plan-decision:T005",
+          "last_known_status": "open",
+          "last_synced_at": "2026-08-24T22:05:39Z",
+          "managed_content_hash": "sha256:9147a766cbe7e6c75474b2efb3c9c4c4fea9fbe639d3261a054c59d3713ea09b"
+        }
+      }
+    },
+    "hub-registro-taller-vivo": {
+      "tasks": {
+        "T001": {
+          "bead_id": "proxima-hub-8lu",
+          "created_at": "2026-08-24T22:05:20Z",
+          "dependency_hash": "sha256:4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+          "external_ref": "hub-registro-taller-vivo:T001",
+          "last_known_status": "open",
+          "last_synced_at": "2026-08-24T22:05:25Z",
+          "managed_content_hash": "sha256:dd547b0d4309d8e10e0fe405757cadf7972ea49c995f28d73fb30863b8e39c94"
+        },
+        "T002": {
+          "bead_id": "proxima-hub-jlh",
+          "created_at": "2026-08-24T22:05:21Z",
+          "dependency_hash": "sha256:2bf8c3c22392d6e559cbe44f419340bf86361fbf07438bf11e8e44d8fbf7a07d",
+          "external_ref": "hub-registro-taller-vivo:T002",
+          "last_known_status": "open",
+          "last_synced_at": "2026-08-24T22:05:26Z",
+          "managed_content_hash": "sha256:c59b46b82ccd21bca1175c066d9691e3ab801ba30003def80bdcae9098906457"
+        },
+        "T003": {
+          "bead_id": "proxima-hub-zrk",
+          "created_at": "2026-08-24T22:05:22Z",
+          "dependency_hash": "sha256:868b5ba814d0d5c576331f7134cdcb68d6a3625bfd399725d97854538936be78",
+          "external_ref": "hub-registro-taller-vivo:T003",
+          "last_known_status": "open",
+          "last_synced_at": "2026-08-24T22:05:27Z",
+          "managed_content_hash": "sha256:f2e8a869c4530334aca4b43e96edd82c8afb99a2845035379a063bbc7e250809"
+        },
+        "T004": {
+          "bead_id": "proxima-hub-rmg",
+          "created_at": "2026-08-24T22:05:22Z",
+          "dependency_hash": "sha256:868b5ba814d0d5c576331f7134cdcb68d6a3625bfd399725d97854538936be78",
+          "external_ref": "hub-registro-taller-vivo:T004",
+          "last_known_status": "open",
+          "last_synced_at": "2026-08-24T22:05:28Z",
+          "managed_content_hash": "sha256:5e7917e1de51a97f30b311b65b70d4ca3a2cf82b22eba3ea6530699c3dc6357a"
+        },
+        "T005": {
+          "bead_id": "proxima-hub-d8v",
+          "created_at": "2026-08-24T22:05:23Z",
+          "dependency_hash": "sha256:4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+          "external_ref": "hub-registro-taller-vivo:T005",
+          "last_known_status": "open",
+          "last_synced_at": "2026-08-24T22:05:28Z",
+          "managed_content_hash": "sha256:76664a88254e423401a151b633d88b197c0f2e4ac7f42127e43a303d97ca7c8b"
+        },
+        "T006": {
+          "bead_id": "proxima-hub-e3f",
+          "created_at": "2026-08-24T22:05:24Z",
+          "dependency_hash": "sha256:4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+          "external_ref": "hub-registro-taller-vivo:T006",
+          "last_known_status": "open",
+          "last_synced_at": "2026-08-24T22:05:28Z",
+          "managed_content_hash": "sha256:8ef839ab7fdf5232a04172466d410c914256a02258265d1278a73228813da432"
+        },
+        "T007": {
+          "bead_id": "proxima-hub-cfw",
+          "created_at": "2026-08-24T22:05:25Z",
+          "dependency_hash": "sha256:868b5ba814d0d5c576331f7134cdcb68d6a3625bfd399725d97854538936be78",
+          "external_ref": "hub-registro-taller-vivo:T007",
+          "last_known_status": "open",
+          "last_synced_at": "2026-08-24T22:05:28Z",
+          "managed_content_hash": "sha256:f2ba402715889f8263316907f1ee22caf859513c642fc47a9d0b30e494e0e102"
+        },
+        "T008": {
+          "bead_id": "proxima-hub-1di",
+          "created_at": "2026-08-24T22:05:25Z",
+          "dependency_hash": "sha256:868b5ba814d0d5c576331f7134cdcb68d6a3625bfd399725d97854538936be78",
+          "external_ref": "hub-registro-taller-vivo:T008",
+          "last_known_status": "open",
+          "last_synced_at": "2026-08-24T22:05:29Z",
+          "managed_content_hash": "sha256:7ebad12d9bb2da7b9a0d249303706abbb4f8ffa86f3d4ce2d21e4afd1189f0bd"
+        }
+      }
+    }
+  },
+  "project": "proxima-hub",
+  "sync_version": 1,
+  "version": 1
+}

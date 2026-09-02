@@ -1,0 +1,70 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;family=Inter:wght@400;500;600&amp;display=swap">
+  <style>
+    body { margin: 0; }
+    a { color: #0009dc; text-decoration: none; }
+    a:hover { color: #0007b4; text-decoration: underline; }
+    .biz { cursor: pointer; font-family: inherit; text-align: left; transition: border-color .16s ease, background .16s ease; }
+    .biz:hover { border-color: rgba(0, 9, 220, .3); background: rgba(0, 9, 220, .03); }
+    .biz .go { opacity: 0; transition: opacity .16s ease, transform .16s ease; transform: translateX(-3px); }
+    .biz:hover .go { opacity: 1; transform: translateX(0); }
+  </style>
+</helmet>
+
+<div style="width: 900px; box-sizing: border-box; min-height: 560px; background: #fbfbfc; color: #08090a; font-family: Inter, ui-sans-serif, system-ui, sans-serif; letter-spacing: -0.003em; display: flex; align-items: flex-start; justify-content: center; padding: 40px 24px;">
+  <div style="width: 100%; max-width: 440px; box-sizing: border-box; border-radius: 16px; background: #ffffff; border: 1px solid #e3e4e8; padding: 32px;">
+
+    <div style="text-align: center; margin-bottom: 26px;">
+      <div style="width: 44px; height: 44px; margin: 0 auto 16px; border-radius: 16px; background: #0009dc; color: #f8f9ff; font-size: 15px; font-weight: 600; letter-spacing: -0.01em; display: flex; align-items: center; justify-content: center;">P</div>
+      <h1 style="font-family: 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif; font-size: 20px; font-weight: 600; letter-spacing: -0.02em; margin: 0;">Elige tu negocio</h1>
+      <p style="margin: 6px 0 0; font-size: 13px; color: #6b6f76;">Tienes dos, y cada uno tiene su catálogo y su caja.</p>
+    </div>
+
+    <div style="display: flex; flex-direction: column; gap: 10px;">
+
+      <button class="biz" style="display: flex; width: 100%; box-sizing: border-box; align-items: center; gap: 14px; border-radius: 12px; background: #ffffff; border: 1px solid #e3e4e8; padding: 16px;">
+        <span style="width: 40px; height: 40px; flex-shrink: 0; border-radius: 10px; background: rgba(0, 9, 220, 0.09); color: #0009dc; font-size: 15px; font-weight: 600; display: flex; align-items: center; justify-content: center;">M</span>
+        <span style="display: flex; min-width: 0; flex: 1; flex-direction: column; gap: 3px;">
+          <span style="font-size: 14px; font-weight: 600; letter-spacing: -0.01em;">Megatienda Lima</span>
+          <span style="display: inline-flex; align-items: center; gap: 7px; font-size: 12px; color: #6b6f76;">
+            <span style="width: 7px; height: 7px; border-radius: 50%; background: #27a644; flex-shrink: 0;"></span>
+            Listo para vender
+          </span>
+        </span>
+        <span class="go" style="display: flex; color: #0009dc; flex-shrink: 0;">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
+        </span>
+      </button>
+
+      <button class="biz" style="display: flex; width: 100%; box-sizing: border-box; align-items: center; gap: 14px; border-radius: 12px; background: #ffffff; border: 1px solid #e3e4e8; padding: 16px;">
+        <span style="width: 40px; height: 40px; flex-shrink: 0; border-radius: 10px; background: rgba(0, 9, 220, 0.09); color: #0009dc; font-size: 15px; font-weight: 600; display: flex; align-items: center; justify-content: center;">B</span>
+        <span style="display: flex; min-width: 0; flex: 1; flex-direction: column; gap: 3px;">
+          <span style="font-size: 14px; font-weight: 600; letter-spacing: -0.01em;">Botica Vida</span>
+          <span style="display: inline-flex; align-items: center; gap: 7px; font-size: 12px; color: #6b6f76;">
+            <span style="width: 7px; height: 7px; border-radius: 50%; background: #8a6d1f; flex-shrink: 0;"></span>
+            Te faltan pasos para vender
+          </span>
+        </span>
+        <span class="go" style="display: flex; color: #0009dc; flex-shrink: 0;">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
+        </span>
+      </button>
+
+    </div>
+
+    <footer style="margin-top: 26px; border-top: 1px solid #e3e4e8; padding-top: 20px; text-align: center;">
+      <span style="font-size: 12px; font-weight: 500; color: #6b6f76;">Cerrar sesión <span style="color: #0009dc;">→</span></span>
+    </footer>
+  </div>
+</div>
+</x-dc>
+</body>
+</html>

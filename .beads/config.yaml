@@ -65,7 +65,7 @@
 # - linear.api_key  → use LINEAR_API_KEY env var instead
 # - github.token    → use GITHUB_TOKEN env var instead
 
-sync.remote: "git+ssh://git@github.com-personal/luisfarfan/proxima-hub.git"
+sync.remote: "git+ssh://git@github.com/luisfarfan/proxima-hub.git"
 agents:
     file: BEADS.md
 git:

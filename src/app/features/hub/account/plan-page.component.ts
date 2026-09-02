@@ -11,7 +11,7 @@ import {
 import { ActivatedRoute, Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
-import { DatePipe } from '@angular/common';
+import { DatePipe, LowerCasePipe } from '@angular/common';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { BusinessContextService } from '@luisfarfan/auth';
 import { RuntimeConfigService } from '../../../core/config/runtime-config.service';
@@ -26,7 +26,104 @@ interface Plan {
   name: string;
   monthly_price: number;
   description?: string;
+  /** `PlanRead.features` del API: clave canónica → si el plan la incluye. */
   features?: Record<string, boolean>;
+  /** `PlanRead.quotas` del API: clave canónica → tope numérico (-1 = ilimitado). */
+  quotas?: Record<string, number>;
+}
+
+/**
+ * Etiquetas en español de las features canónicas. Espejo de `FEATURE_LABELS_ES`
+ * del API, que hoy no las expone por HTTP: `PlanRead.features` viaja como
+ * `{clave: bool}`. Mismo trato que `QuotaLabelPipe` le da a las cuotas.
+ */
+/**
+ * `PlanRead.name` viene como «Emprende — Catálogo, pedidos y control de stock»:
+ * sirve para un listado, no para un peldaño de 190 px.
+ */
+function planLabel(plan: { name: string }): string {
+  return plan.name.split('—')[0].trim() || plan.name;
+}
+
+/**
+ * Qué feature encabeza un peldaño cuando agrega varias.
+ *
+ * `PlanRead.features` llega como objeto y su orden de claves es el del hash,
+ * no el de importancia: tomar la primera hacía que Emprende se anunciara con
+ * «Analítica» en vez de «Pedidos por WhatsApp», y Crece con «CRM» en vez de
+ * «Facturación SUNAT». Esta lista decide qué merece ser el titular.
+ */
+const HEADLINE_PRIORITY = [
+  'electronic_invoicing',
+  'pos',
+  'mostrador',
+  'whatsapp_checkout',
+  'crm',
+  'fulfillment',
+  'inventory',
+  'warehouses',
+  'analytics',
+  'pricing_intelligence',
+  'cms',
+  'product_reenrichment',
+];
+
+function byHeadlinePriority(a: string, b: string): number {
+  const ia = HEADLINE_PRIORITY.indexOf(a);
+  const ib = HEADLINE_PRIORITY.indexOf(b);
+  return (ia === -1 ? 99 : ia) - (ib === -1 ? 99 : ib);
+}
+
+/**
+ * Alto mínimo de un peldaño. No es el alto del contenido pelado (118 px): el
+ * peldaño más bajo es justo el que lleva la etiqueta «Estás aquí», y el
+ * contenido va alineado abajo, así que el aire de más se convierte en la
+ * separación entre la etiqueta y el nombre. Con 124 quedaban 5 px y se leía
+ * como choque.
+ */
+const RUNG_MIN_H = 142;
+/** Cuánto crece del más barato al más caro. */
+const RUNG_RANGE_H = 82;
+
+/** `launch_posture: assisted_only` en el packaging del API: no se contratan solos. */
+const ASSISTED_PLAN_IDS = ['despega', 'lidera'];
+
+const FEATURE_LABELS_ES: Record<string, string> = {
+  catalog: 'Catálogo de productos',
+  whatsapp_checkout: 'Pedidos por WhatsApp',
+  analytics: 'Analítica de tus ventas',
+  stock: 'Control de stock',
+  manual_sales: 'Ventas manuales',
+  orders: 'Gestión de pedidos',
+  crm: 'CRM de clientes',
+  electronic_invoicing: 'Facturación electrónica SUNAT',
+  mostrador: 'Venta de mostrador',
+  inventory: 'Inventario',
+  warehouses: 'Almacenes',
+  fulfillment: 'Despacho y envíos (GRE)',
+  pos: 'Punto de venta (POS)',
+  pricing_intelligence: 'Inteligencia de precios',
+  product_reenrichment: 'Re-enriquecimiento de productos con IA',
+  cms: 'Sitio web y CMS',
+  cart: 'Carrito web',
+};
+
+/** Una cuota que sube al cambiar de plan: `10 → 500`. */
+interface QuotaJump {
+  key: string;
+  /** Ausente cuando el plan vigente ni siquiera declara esa cuota. */
+  from: number | undefined;
+  to: number;
+}
+
+interface PlanCard {
+  plan: Plan;
+  isCurrent: boolean;
+  isDowngrade: boolean;
+  /** Solo lo que el plan actual NO tiene, calculado contra sus `features`. */
+  gains: string[];
+  quotaJumps: QuotaJump[];
+  includes: string[];
 }
 
 interface UsageSummary {
@@ -57,20 +154,35 @@ interface AddonDef {
   name: string;
   description: string;
   entitlementKey: string;
+  /** Qué dice el botón. `tienda_web` no arranca un cobro, arranca un asistente. */
+  cta: string;
+  /** Precio mensual del add-on, para el total que ve el usuario antes de decidir. */
+  monthlyPrice: number;
+  /**
+   * Plan mínimo que lo habilita, espejo de `ADDON_LADDER.min_plan` del API.
+   * Hoy el piso solo lo aplica `provision_addon`: sin declararlo acá, el hub
+   * ofrece un botón que el backend va a rechazar y el usuario se entera tarde.
+   */
+  minPlan?: string;
 }
 
 const ADDON_DEFS: AddonDef[] = [
   {
     key: 'tienda_web',
     name: 'Tienda Web',
-    description: 'Diseña y publica tu tienda online',
+    description: 'Tu sitio con carrito, checkout y subdominio propio',
     entitlementKey: 'cms',
+    cta: 'Crear mi tienda',
+    monthlyPrice: 50,
+    minPlan: 'emprende',
   },
   {
     key: 'precios_inteligentes',
     name: 'Intelligence',
     description: 'Precios y decisiones con IA',
     entitlementKey: 'pricing_intelligence',
+    cta: 'Contratar',
+    monthlyPrice: 100,
   },
 ];
 
@@ -81,7 +193,7 @@ const ADDON_DEFS: AddonDef[] = [
 @Component({
   selector: 'app-plan-page',
   standalone: true,
-  imports: [QuotaLabelPipe, DatePipe],
+  imports: [QuotaLabelPipe, DatePipe, LowerCasePipe],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
 <div class="page-root">
@@ -97,71 +209,54 @@ const ADDON_DEFS: AddonDef[] = [
     }
   </div>
 
-  <!-- ── Plan actual ──────────────────────────────────────────────────── -->
-  <section class="page-card" aria-labelledby="current-plan-h">
-    <h2 class="card-h2" id="current-plan-h">Plan actual</h2>
-
-    @if (subLoading()) {
-      <div class="skeleton" role="status" aria-label="Cargando plan"></div>
-    } @else if (subscription(); as sub) {
-      <div class="plan-header">
-        <span class="plan-name">{{ sub.plan_name }}</span>
-        <span class="plan-status-badge"
-              [class.active]="sub.status === 'active'"
-              [class.trial]="sub.status === 'trial'"
-              [class.cancelled]="sub.status === 'cancelled'">
-          {{ statusLabel(sub.status) }}
-        </span>
-      </div>
-
-      @if (sub.usage.length > 0) {
-        <div class="usage-list" aria-label="Uso del plan">
-          @for (item of sub.usage; track item.resource) {
-            <div class="usage-item">
-              <div class="usage-row">
-                <span class="usage-label">{{ item.resource | quotaLabel }}</span>
-                @if (item.limit === 0) {
-                  <span class="usage-count usage-not-included">No incluido</span>
-                } @else {
-                  <span class="usage-count">{{ item.current }} / {{ item.limit }}</span>
-                }
-              </div>
-              @if (item.limit > 0) {
-                <div class="usage-bar"
-                     role="progressbar"
-                     [attr.aria-valuenow]="usagePct(item)"
-                     aria-valuemin="0"
-                     aria-valuemax="100"
-                     [attr.aria-label]="(item.resource | quotaLabel) + ': ' + item.current + ' de ' + item.limit">
-                  <span [style.width.%]="usagePct(item)"></span>
-                </div>
+  <!-- ── Lo que dice tu uso ───────────────────────────────────────────── -->
+  @if (usageRows().length > 0) {
+    <section class="usage-strip" [class.has-alert]="usageAlerts().length > 0" aria-labelledby="usage-h">
+      <div class="usage-strip-lead">
+        <span class="usage-eyebrow" id="usage-h">Lo que dice tu uso</span>
+        @if (usageAlerts().length > 0) {
+          <p class="usage-claim">
+            @for (row of usageAlerts(); track row.key; let last = $last) {
+              @if (row.remaining === 0) {
+                Llegaste al tope de <b>{{ row.key | quotaLabel | lowercase }}</b>
+              } @else {
+                Te {{ row.remaining === 1 ? 'queda' : 'quedan' }} <b>{{ row.remaining }} de {{ row.limit }}</b> en {{ row.key | quotaLabel | lowercase }}
               }
-            </div>
+              @if (!last) { · }
+            }
+          </p>
+          @if (suggestedPlan(); as plan) {
+            <p class="usage-suggestion">El plan <b>{{ planTitle(plan) }}</b> es el más barato que lo resuelve.</p>
+          } @else {
+            <p class="usage-suggestion">Ningún plan superior sube esas cuotas, así que no te proponemos ninguno.</p>
           }
-        </div>
-      }
-
-      @if (sub.status === 'cancelled' && sub.current_period_end) {
-        <p class="cancelled-note">
-          Tienes acceso hasta el <strong>{{ sub.current_period_end | date:'d MMM yyyy' : undefined : 'es-PE' }}</strong>.
-        </p>
-      }
-
-      @if (sub.status === 'active' || sub.status === 'trial') {
-        <div class="plan-actions">
-          <button class="btn-danger-sm" type="button" (click)="cancelConfirm.set(true)">
-            Cancelar suscripción
-          </button>
-        </div>
-      }
-    } @else {
-      <div class="plan-header">
-        <span class="plan-name">Gratis</span>
-        <span class="plan-status-badge">Prueba</span>
+        } @else {
+          <p class="usage-claim">Vas holgado en todas tus cuotas.</p>
+        }
       </div>
-      <p class="plan-desc">Estás en el plan gratuito de Próxima.</p>
-    }
-  </section>
+
+      <div class="usage-meters">
+        @for (row of usageRows(); track row.key) {
+          <div class="usage-meter">
+            <div class="usage-meter-head">
+              <span>{{ row.key | quotaLabel }}</span>
+              <b>{{ row.current }} / {{ row.limit }}</b>
+            </div>
+            <div
+              class="usage-meter-bar"
+              role="progressbar"
+              [attr.aria-valuenow]="row.pct"
+              aria-valuemin="0"
+              aria-valuemax="100"
+              [attr.aria-label]="(row.key | quotaLabel) + ': ' + row.current + ' de ' + row.limit"
+            >
+              <span [class.is-alert]="row.alert" [style.width.%]="row.pct"></span>
+            </div>
+          </div>
+        }
+      </div>
+    </section>
+  }
 
   <!-- ── Confirmación de cancelación ─────────────────────────────────── -->
   @if (cancelConfirm()) {
@@ -188,60 +283,129 @@ const ADDON_DEFS: AddonDef[] = [
     </section>
   }
 
-  <!-- ── Planes disponibles ───────────────────────────────────────────── -->
-  @if (!plansLoading() && plans().length > 0) {
-    <section class="page-card" aria-labelledby="plans-h">
-      <h2 class="card-h2" id="plans-h">Planes disponibles</h2>
-      <ul class="plans-list" role="list">
-        @for (plan of plans(); track plan.id) {
-          <li class="plan-row"
-              [class.highlighted]="targetPlanId() === plan.id && !isCurrent(plan)"
-              [class.current-row]="isCurrent(plan)"
-              role="listitem">
-            <div class="plan-row-info">
-              <span class="plan-row-name">
-                {{ plan.name }}
-                @if (isCurrent(plan)) {
-                  <span class="plan-current-badge">Plan actual</span>
-                } @else if (targetPlanId() === plan.id) {
-                  <span class="plan-recommended-badge">Recomendado</span>
-                }
-              </span>
-              @if (plan.description) {
-                <span class="plan-row-desc">{{ plan.description }}</span>
+  <!-- ── La escalera ──────────────────────────────────────────────────── -->
+  @if (!plansLoading() && ladder().length > 0) {
+    <section aria-labelledby="ladder-h">
+      <h2 class="ladder-h" id="ladder-h">Hasta dónde puede llegar tu negocio</h2>
+      <p class="ladder-sub">
+        {{ ladder().length }} peldaños. Cada uno agrega una cosa concreta — toca cualquiera
+        para ver qué cambia desde donde estás hoy.
+      </p>
+
+      <ul class="ladder" role="list">
+        @for (rung of ladder(); track rung.plan.id) {
+          <li class="rung-slot" [style.height.px]="rung.height">
+            <button
+              type="button"
+              class="rung"
+              [class.is-now]="rung.isCurrent"
+              [class.is-assisted]="rung.assisted"
+              [class.is-on]="rung.plan.id === selectedStep()?.plan?.id"
+              [attr.aria-pressed]="rung.plan.id === selectedStep()?.plan?.id"
+              (click)="pickStep(rung.plan.id)"
+            >
+              @if (rung.isCurrent) {
+                <span class="rung-flag">Estás aquí</span>
+              } @else if (rung.assisted) {
+                <span class="rung-flag is-mute">Asistido</span>
               }
-            </div>
-            <div class="plan-row-right">
-              <span class="plan-row-price">
-                @if (plan.monthly_price === 0) { Gratis
-                } @else { S/ {{ plan.monthly_price }} / mes }
-              </span>
-              @if (!isCurrent(plan)) {
-                @if (isDowngrade(plan)) {
-                  @if (downgradeConfirmId() === plan.id) {
-                    <div class="inline-confirm">
-                      <span class="inline-confirm-label">¿Confirmar?</span>
-                      <button class="btn-danger-sm" type="button" [disabled]="actionLoading()" (click)="confirmDowngrade()">
-                        {{ actionLoading() ? '…' : 'Sí' }}
-                      </button>
-                      <button class="btn-outline" type="button" (click)="downgradeConfirmId.set(null)">No</button>
-                    </div>
-                  } @else {
-                    <button class="btn-outline" type="button" (click)="downgradeConfirmId.set(plan.id)">
-                      Bajar de plan
-                    </button>
-                  }
-                } @else {
-                  <button class="btn-primary" type="button" [disabled]="upgrading()" (click)="upgrade(plan.id)">
-                    {{ targetPlanId() === plan.id ? 'Elegir' : 'Mejorar' }}
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
-                  </button>
-                }
-              }
-            </div>
+              <span class="rung-name">{{ planTitle(rung.plan) }}</span>
+              <span class="rung-price">S/ {{ rung.plan.monthly_price }}</span>
+              <span class="rung-headline">{{ rung.headline }}</span>
+            </button>
           </li>
         }
       </ul>
+      <div class="ladder-ground" aria-hidden="true"></div>
+
+      @if (selectedStep(); as step) {
+        <div class="step-detail">
+          <section class="page-card">
+            <div class="card-head">
+              <h3 class="card-h2">
+                @if (step.isCurrent) {
+                  Lo que ya tienes con {{ planTitle(step.plan) }}
+                } @else {
+                  De {{ planTitle(currentPlanName()) }} a {{ planTitle(step.plan) }}, ganas
+                }
+              </h3>
+              <span class="step-delta">{{ stepDeltaLabel() }}</span>
+            </div>
+
+            <ul class="step-gains" role="list">
+              @for (gain of stepGains(); track gain) {
+                <li class="step-gain">
+                  <span class="step-gain-ico" aria-hidden="true">
+                    @if (step.isCurrent) {
+                      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                    } @else {
+                      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
+                    }
+                  </span>
+                  {{ gain }}
+                </li>
+              }
+            </ul>
+
+            @if (stepJumps().length > 0) {
+              <ul class="step-jumps" role="list">
+                @for (jump of stepJumps(); track jump.key) {
+                  <li class="step-jump">
+                    {{ jump.key | quotaLabel }}
+                    <b>{{ quotaValue(jump.from) }}</b>
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-label="sube a"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+                    <b>{{ quotaValue(jump.to) }}</b>
+                  </li>
+                }
+              </ul>
+            }
+          </section>
+
+          <section class="page-card step-how">
+            <h3 class="card-h2">Cómo se activa</h3>
+            <p class="step-how-text">{{ stepHowText() }}</p>
+
+            <div class="step-how-cta">
+              @if (step.isCurrent) {
+                @if (subscription(); as sub) {
+                  @if (sub.status === 'cancelled' && sub.current_period_end) {
+                    <p class="cancelled-note">
+                      Cancelado. Tienes acceso hasta el
+                      <strong>{{ sub.current_period_end | date:'d MMM yyyy' : undefined : 'es-PE' }}</strong>.
+                    </p>
+                  } @else if (step.plan.monthly_price > 0) {
+                    <button class="btn-danger-sm" type="button" (click)="cancelConfirm.set(true)">
+                      Cancelar suscripción
+                    </button>
+                  }
+                }
+              } @else if (step.assisted) {
+                <a class="btn-primary step-cta" [href]="assistedContactHref()">Hablar con el equipo</a>
+              } @else if (step.isBelow) {
+                @if (downgradeConfirmId() === step.plan.id) {
+                  <div class="inline-confirm">
+                    <span class="inline-confirm-label">¿Confirmar?</span>
+                    <button class="btn-danger-sm" type="button" [disabled]="actionLoading()" (click)="confirmDowngrade()">
+                      {{ actionLoading() ? '…' : 'Sí' }}
+                    </button>
+                    <button class="btn-outline" type="button" (click)="downgradeConfirmId.set(null)">No</button>
+                  </div>
+                } @else {
+                  <button class="btn-outline step-cta" type="button" (click)="downgradeConfirmId.set(step.plan.id)">
+                    Bajar a {{ planTitle(step.plan) }}
+                  </button>
+                }
+              } @else {
+                <button class="btn-primary step-cta" type="button" [disabled]="upgrading()" (click)="upgrade(step.plan.id)">
+                  Cambiar a {{ planTitle(step.plan) }}
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+                </button>
+              }
+            </div>
+          </section>
+        </div>
+      }
+
       @if (upgradeError()) {
         <p class="field-error" role="alert">{{ upgradeError() }}</p>
       }
@@ -252,38 +416,58 @@ const ADDON_DEFS: AddonDef[] = [
   }
 
   <!-- ── Add-ons ───────────────────────────────────────────────────────── -->
-  @if (addons().length > 0) {
+  @if (addonCards().length > 0) {
     <section class="page-card" aria-labelledby="addons-h">
-      <h2 class="card-h2" id="addons-h">Add-ons</h2>
-      <ul class="plans-list" role="list">
-        @for (addon of addons(); track addon.key) {
-          <li class="plan-row" role="listitem">
-            <div class="plan-row-info">
-              <span class="plan-row-name">{{ addon.name }}</span>
-              <span class="plan-row-desc">{{ addon.description }}</span>
-            </div>
-            <div class="plan-row-right">
-              @if (hasAddon(addon)) {
-                <span class="addon-active-badge">Activo</span>
-                <button class="btn-danger-sm" type="button"
-                        [disabled]="addonLoading() === addon.key"
-                        (click)="cancelAddon(addon.key)">
-                  {{ addonLoading() === addon.key ? 'Cancelando…' : 'Cancelar' }}
-                </button>
-              } @else {
-                <button class="btn-outline" type="button"
-                        [disabled]="addonLoading() === addon.key"
-                        (click)="contractAddon(addon.key)">
-                  {{ addonLoading() === addon.key ? '…' : 'Contratar' }}
-                </button>
-              }
-            </div>
+      <div class="card-head">
+        <h2 class="card-h2" id="addons-h">Add-ons</h2>
+        <span class="plans-hint">Se suman a tu plan</span>
+      </div>
+
+      <ul class="addon-cards" role="list">
+        @for (card of addonCards(); track card.key) {
+          <li class="addon-card" role="listitem" [class.is-locked]="card.locked">
+            <span class="addon-card-main">
+              <span class="addon-card-name">
+                {{ card.def.name }}
+                <span class="addon-card-price">· S/ {{ card.def.monthlyPrice }} / mes</span>
+              </span>
+              <span class="addon-card-desc">{{ card.def.description }}</span>
+            </span>
+
+            @if (card.active) {
+              <span class="addon-active-badge">Activo</span>
+              <button class="btn-danger-sm" type="button"
+                      [disabled]="addonLoading() === card.key"
+                      (click)="cancelAddon(card.key)">
+                {{ addonLoading() === card.key ? 'Cancelando…' : 'Cancelar' }}
+              </button>
+            } @else if (card.locked) {
+              <span class="addon-lock">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
+                Necesita el plan {{ card.minPlanLabel }} o superior
+              </span>
+            } @else {
+              <button class="btn-outline" type="button"
+                      [disabled]="addonLoading() === card.key"
+                      (click)="contractAddon(card.key)">
+                {{ addonLoading() === card.key ? '…' : card.def.cta }}
+              </button>
+            }
           </li>
         }
       </ul>
+
       @if (addonError()) {
         <p class="field-error" role="alert">{{ addonError() }}</p>
       }
+
+      <div class="total-bar">
+        <span class="total-breakdown">{{ totalBreakdown() }}</span>
+        <span class="total-amount">
+          <span>Tu total mensual</span>
+          <b>S/ {{ monthlyTotal() }}</b>
+        </span>
+      </div>
     </section>
   }
 
@@ -322,250 +506,7 @@ const ADDON_DEFS: AddonDef[] = [
   }
 </div>
   `,
-  styles: [`
-:host { display: block; }
-
-/* Plan header */
-.plan-header {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  margin-bottom: 1rem;
-}
-
-.plan-name {
-  font-family: var(--font-display);
-  font-size: 1.625rem;
-  font-weight: 500;
-  color: var(--ink);
-  letter-spacing: -0.01em;
-}
-
-.plan-status-badge {
-  font-size: 0.6875rem;
-  font-weight: 600;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  padding: 2px 8px;
-  border-radius: 999px;
-  background: #f1f0ec;
-  color: var(--muted);
-}
-
-.plan-status-badge.active  { background: #dcfce7; color: #15803d; }
-.plan-status-badge.trial   { background: #fef9c3; color: #92400e; }
-.plan-status-badge.cancelled { background: #fee2e2; color: #b91c1c; }
-
-.plan-desc, .cancelled-note {
-  font-size: 0.875rem;
-  color: var(--muted);
-  margin: 0 0 0.75rem;
-}
-
-.plan-actions {
-  margin-top: 1.25rem;
-  display: flex;
-  gap: 0.75rem;
-  align-items: center;
-}
-
-.usage-not-included {
-  font-weight: 400 !important;
-  font-style: italic;
-  color: var(--faint) !important;
-}
-
-/* Plans list */
-.plans-list {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-.plan-row {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  padding: 0.875rem 0;
-  border-bottom: 1px solid var(--line-soft);
-}
-
-.plan-row:last-child { border-bottom: none; }
-
-.plan-row.highlighted {
-  margin: 0 -1.5rem;
-  padding-left: 1.5rem;
-  padding-right: 1.5rem;
-  background: #f8f7ff;
-  border-radius: 0.5rem;
-  border-bottom: none;
-  outline: 1.5px solid var(--accent);
-}
-
-.plan-row.current-row { opacity: 0.6; }
-
-.plan-row-info {
-  flex: 1;
-  min-width: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 0.2rem;
-}
-
-.plan-row-name {
-  font-size: 0.9375rem;
-  font-weight: 500;
-  color: var(--ink);
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  flex-wrap: wrap;
-}
-
-.plan-row-desc {
-  font-size: 0.8125rem;
-  color: var(--muted);
-}
-
-.plan-current-badge, .plan-recommended-badge {
-  font-size: 0.625rem;
-  font-weight: 600;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  padding: 1px 6px;
-  border-radius: 999px;
-}
-
-.plan-current-badge     { background: #f1f0ec; color: var(--muted); }
-.plan-recommended-badge { background: var(--accent); color: #fff; }
-
-.plan-row-right {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  flex-shrink: 0;
-}
-
-.plan-row-price {
-  font-size: 0.875rem;
-  color: var(--muted);
-  white-space: nowrap;
-}
-
-/* Inline downgrade confirm */
-.inline-confirm {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.inline-confirm-label {
-  font-size: 0.8125rem;
-  color: var(--muted);
-  white-space: nowrap;
-}
-
-/* Add-on active badge */
-.addon-active-badge {
-  font-size: 0.6875rem;
-  font-weight: 600;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  padding: 2px 8px;
-  border-radius: 999px;
-  background: #dcfce7;
-  color: #15803d;
-}
-
-/* Flash alert */
-.alert {
-  border-radius: 0.6rem;
-  padding: 0.75rem 1rem;
-  font-size: 0.875rem;
-  font-weight: 500;
-}
-
-.alert-success { background: #f0fdf4; border: 1px solid #bbf7d0; color: #15803d; }
-.alert-error   { background: #fef2f2; border: 1px solid #fecaca; color: #b91c1c; }
-
-/* Cancel confirmation card */
-.confirm-card {
-  border: 1px solid rgba(185, 28, 28, 0.25);
-  border-radius: 0.875rem;
-  background: #fff9f9;
-  padding: 1.5rem;
-}
-
-.confirm-h {
-  font-family: var(--font-heading);
-  font-size: 0.9375rem;
-  font-weight: 600;
-  color: var(--ink);
-  margin: 0 0 0.6rem;
-}
-
-.confirm-body {
-  font-size: 0.875rem;
-  color: var(--muted);
-  margin: 0 0 1.1rem;
-  line-height: 1.55;
-}
-
-.confirm-actions {
-  display: flex;
-  gap: 0.75rem;
-  flex-wrap: wrap;
-}
-
-.btn-primary.btn-danger             { background: #b91c1c; }
-.btn-primary.btn-danger:hover:not([disabled]) { background: #991b1b; }
-
-/* Payment history table */
-.payments-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 0.875rem;
-}
-
-.payments-table th {
-  text-align: left;
-  font-size: 0.75rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  color: var(--muted);
-  padding: 0.4rem 0.5rem 0.75rem;
-  border-bottom: 1px solid var(--line);
-}
-
-.payments-table th:first-child,
-.payments-table td:first-child { padding-left: 0; }
-
-.payments-table td {
-  padding: 0.75rem 0.5rem;
-  color: var(--ink);
-  border-bottom: 1px solid var(--line-soft);
-  vertical-align: middle;
-}
-
-.payments-table tr:last-child td { border-bottom: none; }
-
-.payment-status {
-  display: inline-block;
-  font-size: 0.6875rem;
-  font-weight: 600;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  padding: 2px 8px;
-  border-radius: 999px;
-  background: #f1f0ec;
-  color: var(--muted);
-}
-
-.payment-status.paid    { background: #dcfce7; color: #15803d; }
-.payment-status.pending { background: #fef9c3; color: #92400e; }
-.payment-status.failed  { background: #fee2e2; color: #b91c1c; }
-  `],
+  styleUrl: './plan-page.component.css',
 })
 export class PlanPageComponent {
   private readonly http = inject(HttpClient);
@@ -637,7 +578,10 @@ export class PlanPageComponent {
     },
   });
 
-  protected readonly plans = computed(() => this.plansRes.value() ?? []);
+  /** Del más barato al más caro: el orden en que se decide subir. */
+  protected readonly plans = computed(() =>
+    [...(this.plansRes.value() ?? [])].sort((a, b) => a.monthly_price - b.monthly_price),
+  );
   protected readonly plansLoading = this.plansRes.isLoading;
 
   // ---------------------------------------------------------------------------
@@ -674,6 +618,286 @@ export class PlanPageComponent {
     return plan.id === current.id;
   }
 
+  /**
+   * El argumento del cambio de plan, calculado — no escrito a mano.
+   *
+   * `gains` sale de restar las `features` del plan actual a las del candidato,
+   * y `quotaJumps` de comparar sus `quotas`. Si mañana el API mueve una feature
+   * de un plan a otro, esto se entera solo; una lista hardcodeada, no.
+   */
+  /**
+   * El uso real, que es lo que de verdad motiva subir de plan. Una cuota se
+   * marca en alerta desde el 80 %: es el punto en el que al comercio le quedan
+   * días, no semanas, antes de chocar con el tope.
+   */
+  protected readonly usageRows = computed(() => {
+    const usage = this.subscription()?.usage ?? [];
+    return usage
+      .filter((item) => item.limit > 0)
+      .map((item) => {
+        const pct = Math.min(100, Math.round((item.current / item.limit) * 100));
+        return {
+          key: item.resource,
+          current: item.current,
+          limit: item.limit,
+          pct,
+          alert: pct >= 80,
+          remaining: Math.max(0, item.limit - item.current),
+        };
+      });
+  });
+
+  protected readonly usageAlerts = computed(() => this.usageRows().filter((row) => row.alert));
+
+  /**
+   * El plan más barato que resuelve TODO lo que está en alerta. Si ninguno lo
+   * hace, no se sugiere nada — inventar una recomendación es peor que callar.
+   */
+  protected readonly suggestedPlanId = computed<string | null>(() => {
+    const alerts = this.usageAlerts();
+    if (alerts.length === 0) return null;
+
+    const current = this.currentPlanObj();
+    const currentPrice = current?.monthly_price ?? 0;
+
+    const candidate = this.plans()
+      .filter((plan) => plan.id !== current?.id && plan.monthly_price > currentPrice)
+      .find((plan) =>
+        alerts.every((row) => {
+          const cap = plan.quotas?.[row.key];
+          return cap === -1 || (typeof cap === 'number' && cap > row.limit);
+        }),
+      );
+
+    return candidate?.id ?? null;
+  });
+
+  protected readonly suggestedPlan = computed(
+    () => this.plans().find((plan) => plan.id === this.suggestedPlanId()) ?? null,
+  );
+
+  protected readonly planCards = computed<PlanCard[]>(() => {
+    const current = this.currentPlanObj();
+    const currentFeatures = current?.features ?? {};
+    const currentQuotas = current?.quotas ?? {};
+
+    return this.plans().map((plan) => {
+      const isCurrent = current ? plan.id === current.id : false;
+      const features = plan.features ?? {};
+
+      const gains = isCurrent
+        ? []
+        : Object.keys(features)
+            .filter((key) => features[key] === true && currentFeatures[key] !== true)
+            .map((key) => FEATURE_LABELS_ES[key] ?? key);
+
+      const includes = Object.keys(features)
+        .filter((key) => features[key] === true)
+        .map((key) => FEATURE_LABELS_ES[key] ?? key);
+
+      const quotaJumps: QuotaJump[] = isCurrent
+        ? []
+        : Object.entries(plan.quotas ?? {})
+            .filter(([key, to]) => {
+              const from = currentQuotas[key];
+              return typeof from === 'number' && typeof to === 'number' && to > from;
+            })
+            .map(([key, to]) => ({ key, from: currentQuotas[key], to }));
+
+      return {
+        plan,
+        isCurrent,
+        isDowngrade: this.isDowngrade(plan),
+        gains,
+        includes,
+        quotaJumps,
+      };
+    });
+  });
+
+  /**
+   * `PlanRead.name` viene como «Emprende — Catálogo, pedidos y control de
+   * stock»: sirve para un listado, no para el título de una tarjeta de 300 px
+   * —se comía cuatro líneas y repetía la palabra «Gratis» encima del precio—.
+   * El API tiene `public_name` en su packaging pero no lo expone por HTTP, así
+   * que el corte se hace acá, por el guión largo, y el resto queda de bajada.
+   */
+  /**
+   * La escalera. `PLAN_LADDER` del API trae los cinco planes; los dos de arriba
+   * son `assisted_only` y hoy esta pantalla no los mencionaba nunca, aunque son
+   * la mitad del catálogo. Se muestran, con su borde punteado, porque un
+   * comercio que evalúa necesita ver hasta dónde llega esto.
+   */
+  protected readonly ladder = computed(() => {
+    const plans = this.plans();
+    const current = this.currentPlanObj();
+    const currentIdx = current ? plans.findIndex((p) => p.id === current.id) : 0;
+    const maxPrice = plans.length ? plans[plans.length - 1].monthly_price : 1;
+
+    return plans.map((plan, idx) => ({
+      plan,
+      idx,
+      isCurrent: idx === currentIdx,
+      isBelow: idx < currentIdx,
+      /** Un plan sin precio público se activa con el equipo, no solo. */
+      assisted: ASSISTED_PLAN_IDS.includes(plan.id),
+      /**
+       * Altura en px, proporcional al precio. El piso NO es decorativo: el
+       * peldaño tiene que caber su nombre, su precio y su titular —unos 118 px
+       * con el ramp actual—; por debajo de eso el contenido se desborda hacia
+       * arriba y el nombre desaparece.
+       */
+      height: RUNG_MIN_H + Math.round((plan.monthly_price / (maxPrice || 1)) * RUNG_RANGE_H),
+      /** Lo primero que agrega respecto del peldaño anterior. */
+      headline: this.stepHeadline(plans, idx),
+    }));
+  });
+
+  protected readonly selectedPlanId = signal<string | null>(null);
+
+  protected readonly selectedStep = computed(() => {
+    const rungs = this.ladder();
+    if (rungs.length === 0) return null;
+    const chosen = rungs.find((r) => r.plan.id === this.selectedPlanId());
+    // Sin elección previa, se abre en el peldaño siguiente al actual: es la
+    // pregunta que trae a esta pantalla.
+    const currentIdx = rungs.findIndex((r) => r.isCurrent);
+    return chosen ?? rungs[Math.min(currentIdx + 1, rungs.length - 1)] ?? rungs[0];
+  });
+
+  /** Todo lo que se acumula entre el plan vigente y el peldaño elegido. */
+  protected readonly stepGains = computed(() => {
+    const rungs = this.ladder();
+    const target = this.selectedStep();
+    if (!target) return [];
+    const currentIdx = rungs.findIndex((r) => r.isCurrent);
+    if (target.idx <= currentIdx) {
+      // Mirando el propio peldaño (o uno menor): se lista lo que ya se tiene.
+      const features = target.plan.features ?? {};
+      return Object.keys(features)
+        .filter((key) => features[key] === true)
+        .sort(byHeadlinePriority)
+        .map((key) => FEATURE_LABELS_ES[key] ?? key);
+    }
+    const currentFeatures = rungs[currentIdx]?.plan.features ?? {};
+    const gained: string[] = [];
+    for (let i = currentIdx + 1; i <= target.idx; i++) {
+      const features = rungs[i].plan.features ?? {};
+      Object.keys(features)
+        .filter((key) => features[key] === true && currentFeatures[key] !== true)
+        .sort(byHeadlinePriority)
+        .forEach((key) => {
+          const label = FEATURE_LABELS_ES[key] ?? key;
+          if (gained.indexOf(label) === -1) gained.push(label);
+        });
+    }
+    return gained;
+  });
+
+  protected readonly stepJumps = computed<QuotaJump[]>(() => {
+    const rungs = this.ladder();
+    const target = this.selectedStep();
+    const currentIdx = rungs.findIndex((r) => r.isCurrent);
+    if (!target || target.idx <= currentIdx) return [];
+    const from = rungs[currentIdx]?.plan.quotas ?? {};
+    return Object.entries(target.plan.quotas ?? {})
+      .filter(([key, to]) => to === -1 || typeof from[key] !== 'number' || to > from[key])
+      .map(([key, to]) => ({ key, from: from[key], to }));
+  });
+
+  /** Lo que distingue a este peldaño del anterior, en una línea. */
+  private stepHeadline(plans: Plan[], idx: number): string {
+    if (idx === 0) {
+      // El peldaño base no «agrega» nada: describe de dónde partes. La cola del
+      // nombre del API ya lo dice («Gratis — Catálogo y control de stock»), y
+      // `description` no viene en la respuesta.
+      return this.planSubtitle(plans[idx]) || 'Tu punto de partida';
+    }
+    const prev = plans[idx - 1].features ?? {};
+    const here = plans[idx].features ?? {};
+    const added = Object.keys(here)
+      .filter((key) => here[key] === true && prev[key] !== true)
+      .sort(byHeadlinePriority);
+    if (added.length === 0) return 'Más capacidad';
+    return '+ ' + (FEATURE_LABELS_ES[added[0]] ?? added[0]);
+  }
+
+  protected readonly currentPlanName = computed(
+    () => this.currentPlanObj() ?? { name: this.subscription()?.plan_name ?? 'Gratis' } as Plan,
+  );
+
+  protected readonly stepDeltaLabel = computed(() => {
+    const step = this.selectedStep();
+    if (!step) return '';
+    const current = this.currentPlanObj();
+    if (step.isCurrent) {
+      return step.plan.monthly_price === 0 ? 'S/ 0 al mes' : `S/ ${step.plan.monthly_price} al mes`;
+    }
+    const delta = step.plan.monthly_price - (current?.monthly_price ?? 0);
+    return delta >= 0
+      ? `S/ ${delta} más al mes`
+      : `S/ ${Math.abs(delta)} menos al mes`;
+  });
+
+  protected readonly stepHowText = computed(() => {
+    const step = this.selectedStep();
+    if (!step) return '';
+    if (step.isCurrent) {
+      return step.plan.monthly_price === 0
+        ? 'Ya estás acá. El plan Gratis no vence: se queda mientras lo necesites.'
+        : 'Es tu plan vigente. Se renueva solo cada mes.';
+    }
+    if (step.assisted) {
+      return `${planLabel(step.plan)} se arma con nuestro equipo: revisamos tu operación, migramos lo que haga falta y lo dejamos andando. No se contrata solo desde esta pantalla.`;
+    }
+    if (step.isBelow) {
+      return 'El cambio a un plan menor aplica al final del período que ya pagaste.';
+    }
+    return 'Al confirmar te llevamos a MercadoPago. El cambio aplica de inmediato y el cobro sale prorrateado.';
+  });
+
+  /** Contacto para los planes asistidos. No hay flujo self-serve que ofrecer. */
+  protected readonly assistedContactHref = computed(() => {
+    const step = this.selectedStep();
+    const plan = step ? planLabel(step.plan) : '';
+    return `mailto:hola@proxima.pe?subject=${encodeURIComponent('Quiero activar el plan ' + plan)}`;
+  });
+
+  protected pickStep(planId: string): void {
+    this.selectedPlanId.set(planId);
+  }
+
+  /** «Tu plan de hoy», o el estado real cuando no es el normal. */
+  protected readonly currentStatusLabel = computed(() => {
+    const status = this.subscription()?.status;
+    if (status === 'cancelled') return 'Cancelado';
+    if (status === 'trial') return 'En prueba';
+    return 'Tu plan de hoy';
+  });
+
+  protected planTitle(plan: Plan): string {
+    return planLabel(plan);
+  }
+
+  protected planSubtitle(plan: Plan): string {
+    const [, ...rest] = plan.name.split('—');
+    const tail = rest.join('—').trim();
+    return tail || plan.description || '';
+  }
+
+  /**
+   * `1000` → `1.000`; `-1` es ilimitado en el ladder del API.
+   *
+   * `undefined` es un caso real, no defensivo: Crece declara
+   * `invoices_per_month` y Emprende no, así que al saltar de uno a otro el
+   * «desde» no existe. Se dice «—», no se revienta la página.
+   */
+  protected quotaValue(value: number | undefined): string {
+    if (value === undefined) return '—';
+    if (value === -1) return 'ilimitado';
+    return value.toLocaleString('es-PE');
+  }
+
   protected isDowngrade(plan: Plan): boolean {
     const current = this.currentPlanObj();
     if (!current) return false;
@@ -696,6 +920,11 @@ export class PlanPageComponent {
   // Upgrade (checkout → MercadoPago)
   // ---------------------------------------------------------------------------
 
+  /** Única salida del componente hacia el navegador (seam de prueba). */
+  protected navigateTo(url: string): void {
+    window.location.href = url;
+  }
+
   protected readonly upgrading = signal(false);
   protected readonly upgradeError = signal<string | null>(null);
 
@@ -713,7 +942,7 @@ export class PlanPageComponent {
         }),
       );
       if (res?.checkout_url) {
-        window.location.href = res.checkout_url;
+        this.navigateTo(res.checkout_url);
         return;
       }
       this.upgradeError.set('No se pudo iniciar el pago. Intenta de nuevo.');
@@ -788,11 +1017,77 @@ export class PlanPageComponent {
     return !!this.businessCtx.entitlements()?.[addon.entitlementKey];
   }
 
+  /**
+   * Cada add-on con su piso de plan resuelto contra el catálogo real: el rango
+   * sale del precio, que es el mismo orden del `PLAN_LADDER` del API.
+   */
+  protected readonly addonCards = computed(() => {
+    const plans = this.plans();
+    const current = this.currentPlanObj();
+    const rank = (planId: string | undefined) =>
+      planId ? plans.findIndex((p) => p.id === planId) : -1;
+    const currentRank = rank(current?.id);
+
+    return this.addons().map((addon) => {
+      const floorRank = rank(addon.minPlan);
+      const locked = floorRank > -1 && currentRank > -1 && currentRank < floorRank;
+      return {
+        def: addon,
+        key: addon.key,
+        active: this.hasAddon(addon),
+        locked,
+        minPlanLabel: plans[floorRank] ? planLabel(plans[floorRank]) : addon.minPlan ?? '',
+      };
+    });
+  });
+
+  protected readonly totalBreakdown = computed(() => {
+    const plan = this.currentPlanObj();
+    const active = this.addonCards().filter((card) => card.active);
+    const planPart = plan ? `${planLabel(plan)} S/ ${plan.monthly_price}` : 'Plan Gratis S/ 0';
+    if (active.length === 0) return `${planPart}, sin add-ons`;
+    return [planPart, ...active.map((c) => `${c.def.name} S/ ${c.def.monthlyPrice}`)].join('  +  ');
+  });
+
+  /** Plan vigente más los add-ons activos: lo que se cobra este mes, en un número. */
+  protected readonly monthlyTotal = computed(() => {
+    const planPrice = this.currentPlanObj()?.monthly_price ?? 0;
+    const addonsPrice = this.addonCards()
+      .filter((card) => card.active)
+      .reduce((sum, card) => sum + card.def.monthlyPrice, 0);
+    return planPrice + addonsPrice;
+  });
+
   protected readonly addonLoading = signal<string | null>(null);
   protected readonly addonError = signal<string | null>(null);
 
   protected async contractAddon(addonKey: string): Promise<void> {
     if (this.addonLoading()) return;
+
+    // Piso de plan: `provision_addon` lo rechazaría igual, pero después de
+    // haber prometido algo. Se corta acá, con el motivo escrito.
+    const card = this.addonCards().find((c) => c.key === addonKey);
+    if (card?.locked) {
+      this.addonError.set(
+        `${card.def.name} necesita el plan ${card.minPlanLabel} o superior.`,
+      );
+      return;
+    }
+
+    // `tienda_web` no puede empezar por el cobro: `provision_addon` exige el
+    // `template_id` del diseño elegido (TEMPLATE_REQUIRED), así que un checkout
+    // sin diseño cobra y después falla al provisionar — el comercio paga y no
+    // recibe nada. El asistente junta diseño, subdominio y respuestas primero.
+    // Que el asistente arranque el cobro es lo que falta: bead proxima-api-3wy.
+    if (addonKey === 'tienda_web') {
+      const admin = this.runtimeConfig.adminUrl();
+      if (!admin) {
+        this.addonError.set('No pudimos abrir el asistente de tienda web.');
+        return;
+      }
+      this.navigateTo(`${admin}/websites/nueva`);
+      return;
+    }
     this.addonLoading.set(addonKey);
     this.addonError.set(null);
     try {
@@ -805,7 +1100,7 @@ export class PlanPageComponent {
         }),
       );
       if (res?.checkout_url) {
-        window.location.href = res.checkout_url;
+        this.navigateTo(res.checkout_url);
       } else {
         this.addonError.set('No se pudo iniciar el pago. Intenta de nuevo.');
       }

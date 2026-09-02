@@ -1,0 +1,55 @@
+{
+  "artboards": [
+    {
+      "file": "Actual.dc.html",
+      "title": "Hoy — elegir comercio",
+      "x": 0,
+      "y": 0,
+      "w": 900,
+      "h": 1000
+    },
+    {
+      "file": "Main.dc.html",
+      "title": "Propuesta — super admin",
+      "x": 1020,
+      "y": 0,
+      "w": 1120,
+      "h": 780,
+      "is_interactive": true
+    },
+    {
+      "file": "Comerciante.dc.html",
+      "title": "Comerciante con dos negocios",
+      "x": 2260,
+      "y": 0,
+      "w": 900,
+      "h": 560
+    }
+  ],
+  "annotations": [
+    {
+      "id": "hoy",
+      "x": 0,
+      "y": -560,
+      "w": 700,
+      "text": "LO QUE PASA HOY\n\nUna tarjeta de 440 px con filas de inicial + nombre + @slug. Nada más.\n\nPara un super admin con todo el ecosistema listado, esto es una guía telefónica: no hay forma de distinguir un comercio que factura de uno que se registró y nunca volvió. El buscador aparece recién pasados los 6, y busca sobre lo único que hay — el nombre.\n\nRecreado desde el código: select-business-page.component.ts, con los tokens de PrimeNG resueltos (bg-surface-100 = #f4f5f7, text-muted-color = #6b6f76, border-hairline = #e3e4e8)."
+    },
+    {
+      "id": "api",
+      "x": 1020,
+      "y": -560,
+      "w": 700,
+      "text": "LA API YA EXISTE — Y ES MEJOR DE LO QUE PEDISTE\n\n`GET /platform/businesses/summary` ya devuelve, en lotes y cacheado en Redis 5 min:\n\n· plan_name, subscription_status, subscription_period_end\n· has_website, website_domain, website_published\n· product_count, product_ready_count\n· order_count_30d, revenue_30d\n· fiscal_configured, fiscal_environment\n· status_snapshot (el readiness) y logo_url\n\nY trae paginado, búsqueda y filtro por plan de fábrica. Todo lo que se ve en este artboard sale de ahí.\n\nFALTA UNA COSA: `created_at`. Lo pediste y no está en el esquema, aunque `Business.created_at` sí existe en el modelo. La columna «Alta» de acá depende de agregarlo — es un campo, no un endpoint.\n\nLos nombres de los comercios son los reales de tu base. Los números son de muestra.\n\nENTRAR A LA TIENDA\n\nEl dominio es un enlace que abre la web en otra pestaña, sin salir de la lista. Sale de `website_domain`, que la API ya devuelve. Un borrador no tiene dirección pública todavía, así que apunta a su subdominio de la plataforma.\n\nLa fila dejó de ser un <button> envolviendo todo: un enlace dentro de un botón es HTML inválido y los dos clicks se pelean. Ahora es una fila con un botón transparente estirado detrás y el enlace por encima."
+    },
+    {
+      "id": "comerciante",
+      "x": 2260,
+      "y": -560,
+      "w": 620,
+      "text": "EL OTRO CASO, Y SU PROBLEMA\n\nUn comerciante con dos negocios NO puede llamar a ese endpoint: está detrás de `platform:read`. Lo que recibe es `me/businesses`, que trae id, name, slug, currency, entitlements, permissions y onboarding_status — ni plan, ni web, ni fecha.\n\nAsí que acá no invento columnas que no puedo llenar. Lo único que sí sé es el estado de configuración, y con eso basta: con dos negocios no hace falta una tabla, hace falta saber en cuál falta trabajo.\n\nSi lo quieres igual de rico que el del super admin, hay que llevar el resumen a `me/businesses`. Dímelo y lo hago."
+    }
+  ],
+  "launch": {
+    "view": "canvas"
+  }
+}

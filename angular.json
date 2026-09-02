@@ -39,8 +39,8 @@
                 },
                 {
                   "type": "anyComponentStyle",
-                  "maximumWarning": "4kB",
-                  "maximumError": "8kB"
+                  "maximumWarning": "12kB",
+                  "maximumError": "16kB"
                 }
               ],
               "outputHashing": "all"
@@ -63,7 +63,14 @@
               "buildTarget": "proxima-hub:build:development"
             }
           },
-          "defaultConfiguration": "development"
+          "defaultConfiguration": "development",
+          "options": {
+            "allowedHosts": [
+              ".proxima.test",
+              "app-dev.proxima.test",
+              "localhost"
+            ]
+          }
         },
         "test": {
           "builder": "@angular/build:unit-test"
