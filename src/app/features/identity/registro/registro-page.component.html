@@ -298,7 +298,14 @@
                 </div>
                 <div class="field">
                   <label for="acc-pass">Contraseña</label>
-                  <p-password inputId="acc-pass" formControlName="password" [feedback]="false" [toggleMask]="true" placeholder="Mínimo 8 caracteres" styleClass="w-full" [inputStyleClass]="'w-full'" />
+                  <proxima-password-input
+                    inputId="acc-pass"
+                    autocomplete="new-password"
+                    placeholder="Mínimo 8 caracteres"
+                    styleClass="w-full"
+                    [required]="true"
+                    [control]="cuenta.controls.password"
+                  />
 
                   <div class="pw-meter" aria-hidden="true">
                     @for (segment of passwordSegments; track segment) {

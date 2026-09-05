@@ -15,7 +15,6 @@ import { RouterLink } from '@angular/router';
 import { catchError, debounceTime, distinctUntilChanged, filter, of, switchMap } from 'rxjs';
 import { InputTextModule } from 'primeng/inputtext';
 import { SelectModule } from 'primeng/select';
-import { PasswordModule } from 'primeng/password';
 import { CheckboxModule } from 'primeng/checkbox';
 import { ButtonModule } from 'primeng/button';
 
@@ -26,6 +25,7 @@ import { RegistroLivePanelComponent } from './registro-live-panel.component';
 import { RegistroCodeInputComponent } from './registro-code-input.component';
 import { businessSlug } from './registro-identity.util';
 import { ProximaLogoComponent } from '../../../shared/ui/proxima-logo.component';
+import { ProximaPasswordInputComponent } from '../../../shared/ui/proxima-password-input.component';
 
 interface TurnstileApi {
   render(el: HTMLElement, opts: Record<string, unknown>): string;
@@ -43,7 +43,7 @@ type Step = 1 | 2 | 3;
     RouterLink,
     InputTextModule,
     SelectModule,
-    PasswordModule,
+    ProximaPasswordInputComponent,
     CheckboxModule,
     ButtonModule,
     RegistroLivePanelComponent,

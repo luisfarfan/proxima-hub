@@ -11,12 +11,17 @@
   }
 
   @if (authStore.error(); as err) {
-    <div class="mb-5">
+    <div #errorBox tabindex="-1" class="mb-5 focus-linear">
       <app-auth-inline-alert severity="error" [message]="err" />
     </div>
   }
 
-  <form [formGroup]="form" (ngSubmit)="submit()" class="space-y-5">
+  <form
+    [formGroup]="form"
+    (ngSubmit)="submit()"
+    class="space-y-5"
+    [attr.aria-busy]="authStore.loading() ? 'true' : null"
+  >
     <div class="flex flex-col gap-5">
       <div class="flex flex-col gap-1.5">
         <label for="login-email" [class]="labelClass">Correo electrónico</label>
@@ -26,6 +31,7 @@
           id="login-email"
           type="email"
           autocomplete="username"
+          aria-required="true"
           [formControl]="form.controls.email"
           [class]="inputClass"
           [attr.aria-invalid]="form.controls.email.invalid && form.controls.email.touched ? 'true' : null"
@@ -36,25 +42,33 @@
         }
       </div>
 
-      <div class="flex flex-col gap-1.5">
-        <div class="flex items-center justify-between gap-2">
-          <label for="login-password" [class]="labelClass">Contraseña</label>
-          <a routerLink="/recuperar" [class]="linkClass" data-testid="login-forgot-password">
-            ¿Olvidaste tu contraseña?
-          </a>
-        </div>
-        <p-password
+      <!--
+        El link va después del campo en el DOM aunque se pinte arriba a la
+        derecha: cuando iba en la fila del label, Tab desde el correo caía en el
+        link en vez de en la contraseña y el recorrido se sentía roto.
+      -->
+      <div class="grid grid-cols-[1fr_auto] items-center gap-x-3 gap-y-1.5">
+        <label for="login-password" [class]="labelClass + ' col-start-1 row-start-1'">Contraseña</label>
+        <proxima-password-input
+          class="col-span-2 col-start-1 row-start-2"
           data-testid="login-password"
           inputId="login-password"
-          [formControl]="form.controls.password"
-          [feedback]="false"
-          [toggleMask]="true"
-          styleClass="w-full [&_.p-inputtext]:w-full"
-          [inputStyleClass]="passwordInputClass + ' w-full'"
           autocomplete="current-password"
+          [required]="true"
+          [control]="form.controls.password"
+          [inputStyleClass]="passwordInputClass + ' w-full'"
         />
+        <a
+          routerLink="/recuperar"
+          [class]="linkClass + ' col-start-2 row-start-1 justify-self-end'"
+          data-testid="login-forgot-password"
+        >
+          ¿Olvidaste tu contraseña?
+        </a>
         @if (form.controls.password.invalid && form.controls.password.touched) {
-          <p id="login-password-err" [class]="fieldErrorClass" role="alert">La contraseña es requerida.</p>
+          <p id="login-password-err" [class]="fieldErrorClass + ' col-span-2 row-start-3'" role="alert">
+            La contraseña es requerida.
+          </p>
         }
       </div>
     </div>
@@ -66,6 +80,9 @@
       [styleClass]="btnClass"
       [loading]="authStore.loading()"
     />
+
+    <!-- El botón se deshabilita al enviar y pierde el foco; que al menos se oiga. -->
+    <p class="sr-only" role="status">{{ authStore.loading() ? 'Iniciando sesión…' : '' }}</p>
   </form>
 
   @if (googleClientId()) {

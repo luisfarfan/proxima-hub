@@ -5,6 +5,7 @@ import {
   NgZone,
   OnInit,
   afterNextRender,
+  effect,
   inject,
   signal,
   viewChild,
@@ -13,8 +14,8 @@ import { ActivatedRoute, RouterLink } from '@angular/router';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { InputTextModule } from 'primeng/inputtext';
 import { ButtonModule } from 'primeng/button';
-import { PasswordModule } from 'primeng/password';
 import { AuthStore } from './store/auth.store';
+import { ProximaPasswordInputComponent } from '../../../shared/ui/proxima-password-input.component';
 import { AuthGuestShellComponent } from '../auth-guest-shell.component';
 import { AuthInlineAlertComponent } from '../auth-inline-alert.component';
 import { RuntimeConfigService } from '../../../core/config/runtime-config.service';
@@ -35,7 +36,7 @@ import {
     ReactiveFormsModule,
     ButtonModule,
     InputTextModule,
-    PasswordModule,
+    ProximaPasswordInputComponent,
     AuthGuestShellComponent,
     AuthInlineAlertComponent,
   ],
@@ -51,6 +52,7 @@ export class LoginPageComponent implements OnInit {
   readonly passwordUpdatedMessage = signal<string | null>(null);
   private readonly nextUrl = signal<string | null>(null);
   readonly googleBtnRef = viewChild<ElementRef<HTMLDivElement>>('googleBtn');
+  private readonly errorBox = viewChild<ElementRef<HTMLDivElement>>('errorBox');
   readonly googleClientId = this.runtimeConfig.googleClientId;
 
   readonly inputClass = AUTH_GUEST_INPUT;
@@ -82,6 +84,14 @@ export class LoginPageComponent implements OnInit {
         size: 'large',
         text: 'signin_with',
       });
+    });
+
+    // Enviar deshabilita el botón, así que el foco se cae al body: cuando el
+    // login falla, el teclado queda en la nada y el error pasa desapercibido.
+    effect(() => {
+      if (this.authStore.error()) {
+        this.errorBox()?.nativeElement.focus();
+      }
     });
   }
 

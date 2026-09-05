@@ -9,9 +9,9 @@ import {
 import { AbstractControl, FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { ButtonModule } from 'primeng/button';
-import { PasswordModule } from 'primeng/password';
 import { HttpErrorResponse } from '@angular/common/http';
 import { AuthService, mapAuthDetailToMessageKey, extractErrorCode } from '@luisfarfan/auth';
+import { ProximaPasswordInputComponent } from '../../shared/ui/proxima-password-input.component';
 import { AuthGuestShellComponent } from './auth-guest-shell.component';
 import { AuthInlineAlertComponent } from './auth-inline-alert.component';
 import {
@@ -35,7 +35,7 @@ function passwordsMatch(control: AbstractControl): { passwordMismatch: true } | 
   imports: [
     ReactiveFormsModule,
     ButtonModule,
-    PasswordModule,
+    ProximaPasswordInputComponent,
     RouterLink,
     AuthGuestShellComponent,
     AuthInlineAlertComponent,
